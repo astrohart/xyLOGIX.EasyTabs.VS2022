@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OperatingSystem.cs" />
+    <Compile Include="TabClosingEventHandler.cs" />
     <Compile Include="TabRendererBase.cs" />
     <Compile Include="ChromeTabRenderer.cs" />
     <Compile Include="DisplayType.cs" />
@@ -146,7 +147,9 @@
     </Compile>
     <Compile Include="TitleBarTab.cs" />
     <Compile Include="TitleBarTabCancelEventArgs.cs" />
+    <Compile Include="TitleBarTabCancelEventHandler.cs" />
     <Compile Include="TitleBarTabEventArgs.cs" />
+    <Compile Include="TitleBarTabEventHandler.cs" />
     <Compile Include="TitleBarTabs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +182,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core.Logging\Core.Logging\Core.Logging.csproj">
+      <Project>{0D198925-B01C-4DDE-A062-ED7D7BFD0FAA}</Project>
+      <Name>Core.Logging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

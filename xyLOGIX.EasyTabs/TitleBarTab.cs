@@ -8,29 +8,35 @@ namespace xyLOGIX.EasyTabs
 {
     /// <summary>
     /// Wraps a <see cref="T:System.Windows.Forms.Form" /> instance (
-    /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTab._content" />), that represents the content
-    /// that should be displayed within a tab instance.
+    /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTab._content" />), that represents the
+    /// content
+    /// that should be displayed within a <c>Tab</c> instance.
     /// </summary>
-    public class TitleBarTab
+    public class TitleBarTab<TContent> where TContent : Form
     {
-        /// <summary>Flag indicating whether this tab is active.</summary>
+        /// <summary>Flag indicating whether this <c>Tab</c> is active.</summary>
         protected bool _active;
 
-        /// <summary>Content that should be displayed within the tab.</summary>
-        protected Form _content;
+        /// <summary>Content that should be displayed within the <c>Tab</c>.</summary>
+        protected TContent _content;
 
-        /// <summary>Parent window that contains this tab.</summary>
-        protected TitleBarTabs _parent;
+        /// <summary>Parent window that contains this <c>Tab</c>.</summary>
+        protected TitleBarTabs<TContent> _parent;
 
         /// <summary>Default constructor that initializes the various properties.</summary>
-        /// <param name="parent">Parent window that contains this tab.</param>
-        public TitleBarTab(TitleBarTabs parent)
+        /// <param name="parent">Parent window that contains this <c>Tab</c>.</param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// Thrown if the required
+        /// parameter, <paramref name="parent" />, is passed a <see langword="null" />
+        /// value.
+        /// </exception>
+        public TitleBarTab(TitleBarTabs<TContent> parent)
         {
             ShowCloseButton = true;
-            Parent = parent;
+            Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         }
 
-        /// <summary>Flag indicating whether or not this tab is active.</summary>
+        /// <summary>Flag indicating whether this <c>Tab</c> is active.</summary>
         public bool Active
         {
             get => _active;
@@ -42,11 +48,11 @@ namespace xyLOGIX.EasyTabs
             }
         }
 
-        /// <summary>The area in which the tab is rendered in the client window.</summary>
+        /// <summary>The area in which the <c>Tab</c> is rendered in the client window.</summary>
         internal Rectangle Area { get; set; }
 
         /// <summary>
-        /// The caption that's displayed in the tab's title (simply uses the
+        /// The caption that's displayed in the <c>Tab</c>'s title (simply uses the
         /// <see cref="P:System.Windows.Forms.Form.Text" /> of
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" />).
         /// </summary>
@@ -56,11 +62,11 @@ namespace xyLOGIX.EasyTabs
             set => Content.Text = value;
         }
 
-        /// <summary>The area of the close button for this tab in the client window.</summary>
+        /// <summary>The area of the close button for this <c>Tab</c> in the client window.</summary>
         internal Rectangle CloseButtonArea { get; set; }
 
-        /// <summary>The content that should be displayed for this tab.</summary>
-        public Form Content
+        /// <summary>The content that should be displayed for this <c>Tab</c>.</summary>
+        public TContent Content
         {
             get => _content;
             set
@@ -81,7 +87,7 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// The icon that's displayed in the tab's title (simply uses the
+        /// The icon that's displayed in the <c>Tab</c>'s title (simply uses the
         /// <see cref="P:System.Windows.Forms.Form.Icon" /> of
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" />).
         /// </summary>
@@ -91,8 +97,14 @@ namespace xyLOGIX.EasyTabs
             set => Content.Icon = value;
         }
 
-        /// <summary>Parent window that contains this tab.</summary>
-        public TitleBarTabs Parent
+        /// <summary>
+        /// Gets a value indicating whether the content of the <c>Tab</c> has been disposed.
+        /// </summary>
+        public bool IsDisposed
+            => _content != null && _content.IsDisposed;
+
+        /// <summary>Parent window that contains this <c>Tab</c>.</summary>
+        public TitleBarTabs<TContent> Parent
         {
             get => _parent;
             internal set
@@ -106,11 +118,11 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Flag indicating whether or not we should display the close button for
-        /// this tab.
+        /// this <c>Tab</c>.
         /// </summary>
         public bool ShowCloseButton { get; set; }
 
-        /// <summary>Pre-rendered image of the tab's background.</summary>
+        /// <summary>Pre-rendered image of the <c>Tab</c>'s background.</summary>
         internal Bitmap TabImage { get; set; }
 
         /// <summary>
@@ -126,7 +138,7 @@ namespace xyLOGIX.EasyTabs
         public event EventHandler TextChanged;
 
         /// <summary>
-        /// Unsubscribes the tab from any event handlers that may have been
+        /// Unsubscribes the <c>Tab</c> from any event handlers that may have been
         /// attached to its <see cref="E:xyLOGIX.EasyTabs.TitleBarTab.Closing" /> or
         /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTab.TextChanged" /> events.
         /// </summary>
@@ -137,14 +149,15 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Called from <see cref="T:xyLOGIX.EasyTabs.TornTabForm" /> when we need to generate a
-        /// thumbnail for a tab when it is torn out of its parent window.  We simply call
+        /// Called from <see cref="T:xyLOGIX.EasyTabs.TornTabForm" /> when we need to
+        /// generate a
+        /// thumbnail for a <c>Tab</c> when it is torn out of its parent window.  We simply call
         /// <see
         ///     cref="M:System.Drawing.Graphics.CopyFromScreen(System.Drawing.Point,System.Drawing.Point,System.Drawing.Size)" />
         /// to copy the screen contents to a
         /// <see cref="T:System.Drawing.Bitmap" />.
         /// </summary>
-        /// <returns>An image of the tab's contents.</returns>
+        /// <returns>An image of the <c>Tab</c>'s contents.</returns>
         public virtual Bitmap GetImage()
             => TabbedThumbnailScreenCapture.GrabWindowBitmap(
                 Content.Handle, Content.Size
