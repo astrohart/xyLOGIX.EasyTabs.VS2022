@@ -1,6 +1,10 @@
 ﻿# xyLOGIX.EasyTabs `class library`
 
-Originally developed by [lstratman](https://github.com/lstratman) but his not a virtuoso coder artiste such as Dr. Brian Hart, and his library, while innovative, also leaves much to be desired in the way of functionality, especially in the way of interoperability.  Thus, we present `xyLOGIX.EasyTabs`, which is a xyLOGIX port of the library with our own goodies added.
+Originally developed by [lstratman](https://github.com/lstratman).
+
+Library to enable .NET WinForms apps to easily render a set of tabs in their titlebar space, similar to Chrome, Firefox, Edge, etc.  
+
+xyLOGIX is Extending the library to allow more interoperability with hoted content so that other thick-client applications can be embedded, we can have a `TitleBarTabsPanel`, etc.
 
 EasyTabs is a library that you can add to your .NET WinForms applications (WPF support coming eventually) in order to render a list of tabs in the title bar of the application, similar to Chrome, Firefox, Edge, etc.  Instead of inheriting from `System.Windows.Forms.Form`, you inherit from `EasyTabs.TitleBarTabs` and set the tab renderer that you wish to use:
 
