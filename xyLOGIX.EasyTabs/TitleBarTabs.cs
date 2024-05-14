@@ -66,7 +66,7 @@ namespace xyLOGIX.EasyTabs
         /// Borderless window that is rendered over top of the non-client area of
         /// this window.
         /// </summary>
-        protected internal TitleBarTabsOverlay _overlay;
+        public TitleBarTabsOverlay Overlay { get; protected set; }
 
         /// <summary>
         /// The preview images for each tab used to display each tab when Aero
@@ -240,9 +240,9 @@ namespace xyLOGIX.EasyTabs
                     );
                 }
 
-                if (_overlay == null)
+                if (Overlay == null)
                     return;
-                _overlay.Render();
+                Overlay.Render();
             }
         }
 
@@ -254,7 +254,7 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>Area of the screen in which tabs can be dropped for this window.</summary>
         public Rectangle TabDropArea
-            => _overlay.TabDropArea;
+            => Overlay.TabDropArea;
 
         /// <summary>The renderer to use when drawing the tabs.</summary>
         public TabRendererBase TabRenderer
@@ -323,9 +323,9 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         public void RedrawTabs()
         {
-            if (_overlay == null)
+            if (Overlay == null)
                 return;
-            _overlay.Render(true);
+            Overlay.Render(true);
         }
 
         /// <summary>
@@ -508,12 +508,12 @@ namespace xyLOGIX.EasyTabs
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            _overlay = TitleBarTabsOverlay.GetInstance(this);
+            Overlay = TitleBarTabsOverlay.GetInstance(this);
             if (TabRenderer == null)
                 return;
-            _overlay.MouseMove += TabRenderer.OnOverlayMouseMove;
-            _overlay.MouseUp += TabRenderer.OnOverlayMouseUp;
-            _overlay.MouseDown += TabRenderer.OnOverlayMouseDown;
+            Overlay.MouseMove += TabRenderer.OnOverlayMouseMove;
+            Overlay.MouseUp += TabRenderer.OnOverlayMouseUp;
+            Overlay.MouseDown += TabRenderer.OnOverlayMouseDown;
         }
 
         /// <summary>
@@ -686,13 +686,13 @@ namespace xyLOGIX.EasyTabs
                     ? TabRenderer.TabHeight - TabRenderer.TopPadding -
                       SystemInformation.CaptionHeight
                     : TabRenderer.TabHeight - SystemInformation.CaptionHeight;
-            if (!TabRenderer.IsWindows10 &&
+            if (!OperatingSystem.IsWindows10 &&
                 WindowState == FormWindowState.Maximized)
                 ++num;
             Padding = new Padding(
                 Padding.Left, num > 0 ? num : 0, Padding.Right, Padding.Bottom
             );
-            if (!TabRenderer.IsWindows10)
+            if (!OperatingSystem.IsWindows10)
             {
                 var margins = new MARGINS
                 {
@@ -829,9 +829,9 @@ namespace xyLOGIX.EasyTabs
                     thumbnailPreview.Title = (sender as Form).Text;
             }
 
-            if (_overlay == null)
+            if (Overlay == null)
                 return;
-            _overlay.Render(true);
+            Overlay.Render(true);
         }
 
         private HT HitTest(Message m)
@@ -946,9 +946,9 @@ namespace xyLOGIX.EasyTabs
                         );
                 }
 
-            if (_overlay == null)
+            if (Overlay == null)
                 return;
-            _overlay.Render(true);
+            Overlay.Render(true);
         }
 
         /// <summary>
@@ -1023,9 +1023,9 @@ namespace xyLOGIX.EasyTabs
                 TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(
                     closingTab.Content
                 );
-            if (_overlay == null)
+            if (Overlay == null)
                 return;
-            _overlay.Render(true);
+            Overlay.Render(true);
         }
     }
 }

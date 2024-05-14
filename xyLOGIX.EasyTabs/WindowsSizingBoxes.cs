@@ -1,10 +1,11 @@
-﻿using xyLOGIX.EasyTabs.Properties;
-using Svg;
+﻿using Svg;
+using System;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Win32Interop.Enums;
+using xyLOGIX.EasyTabs.Properties;
 
 namespace xyLOGIX.EasyTabs
 {
@@ -112,12 +113,66 @@ namespace xyLOGIX.EasyTabs
             );
         }
 
+        /// <summary>
+        /// Called to parse the provided <paramref name="svgXml" /> and, if successful,
+        /// render it as a <see cref="T:System.Drawing.Image" /> of the specified
+        /// <paramref name="width" /> and <paramref name="height" />, in pixels.
+        /// </summary>
+        /// <param name="svgXml">
+        /// (Required.) A <see cref="T:System.String" /> containing
+        /// the XML that is to be parsed.
+        /// </param>
+        /// <param name="width">
+        /// (Required.) An <see cref="T:System.Int32" /> that is
+        /// greater than zero, indicating the number of pixels of width that the resulting
+        /// <see cref="T:System.Drawing.Image" /> is to have.
+        /// </param>
+        /// <param name="height">
+        /// (Required.) An <see cref="T:System.Int32" /> that is
+        /// greater than zero, indicating the number of pixels of height that the resulting
+        /// <see cref="T:System.Drawing.Image" /> is to have.
+        /// </param>
+        /// <remarks>
+        /// If a blank value is passed for the <paramref name="svgXml" /> parameter, or if
+        /// the XML it contains is not parsable, then a <see langword="null" /> reference
+        /// is returned.
+        /// <para />
+        /// If either or both of <paramref name="width" /> and <paramref name="height" />
+        /// are set to zero or a negative quantity, then this method returns a
+        /// <see langword="null" /> reference.
+        /// <para />
+        /// If a <see cref="T:System.Exception" /> is caught during the execution of this
+        /// method, a <see langword="null" /> reference is returned.
+        /// </remarks>
+        /// <returns>
+        /// If successful, a <see cref="T:System.Drawing.Image" /> containing the
+        /// rendered content; otherwise, a <see langword="null" /> reference is returned.
+        /// </returns>
         protected Image LoadSvg(string svgXml, int width, int height)
         {
-            var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(svgXml);
-            return SvgDocument.Open(xmlDocument)
-                              .Draw(width, height);
+            Image result = default;
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(svgXml)) return result;
+                if (width <= 0 || height <= 0) return result;
+
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(svgXml);
+
+                var svgDocument = SvgDocument.Open(xmlDocument);
+                if (svgDocument == null) return result;
+
+                result = svgDocument.Draw(width, height);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+
+                result = default;
+            }
+
+            return result;
         }
     }
 }

@@ -945,7 +945,7 @@ namespace xyLOGIX.EasyTabs
                     {
                         num1 = systemMetrics;
                     }
-                    else if (!_parentForm.TabRenderer.IsWindows10)
+                    else if (!OperatingSystem.IsWindows10)
                     {
                         num1 = 0;
                     }
@@ -970,7 +970,7 @@ namespace xyLOGIX.EasyTabs
             var num2 = _parentForm.Left +
                        SystemInformation.HorizontalResizeBorderThickness;
             int num3;
-            if (!_parentForm.TabRenderer.IsWindows10)
+            if (!OperatingSystem.IsWindows10)
             {
                 size = SystemInformation.BorderSize;
                 num3 = size.Width;
@@ -985,7 +985,7 @@ namespace xyLOGIX.EasyTabs
                        (SystemInformation.VerticalResizeBorderThickness +
                         systemMetrics) * 2;
             int num5;
-            if (!_parentForm.TabRenderer.IsWindows10)
+            if (!OperatingSystem.IsWindows10)
             {
                 size = SystemInformation.BorderSize;
                 num5 = size.Width * 2;
@@ -1002,7 +1002,7 @@ namespace xyLOGIX.EasyTabs
                 _parentForm.WindowState == FormWindowState.Maximized ||
                 _parentForm.TabRenderer.RendersEntireTitleBar)
             {
-                if (!_parentForm.TabRenderer.IsWindows10)
+                if (!OperatingSystem.IsWindows10)
                 {
                     num6 = _parentForm.WindowState != FormWindowState.Maximized
                         ? systemMetrics

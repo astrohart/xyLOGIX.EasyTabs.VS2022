@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,238 +8,353 @@ using Win32Interop.Enums;
 namespace xyLOGIX.EasyTabs
 {
     /// <summary>
-    /// Provides the base functionality for any tab renderer, taking care of actually
-    /// rendering and detecting whether the cursor is over a tab.  Any custom
-    /// tab renderer needs to inherit from this class, just as
+    /// Provides the base functionality for any <c>TabRenderer</c>, taking
+    /// care of actually rendering and detecting whether the cursor is over a tab.  Any
+    /// custom tab renderer needs to inherit from this class, just as
     /// <see cref="T:xyLOGIX.EasyTabs.ChromeTabRenderer" /> does.
     /// </summary>
     public abstract class TabRendererBase
     {
         /// <summary>
-        /// Background of the content area for the tab when the tab is active; its width
-        /// also determines how wide the default content area for the tab
-        /// is.
+        /// Flag indicating whether the <b>Add</b> button is to be shown.
         /// </summary>
-        protected Image _activeCenterImage;
-
-        /// <summary>Image to display on the left side of an active tab.</summary>
-        protected Image _activeLeftSideImage;
-
-        /// <summary>Image to display on the right side of an active tab.</summary>
-        protected Image _activeRightSideImage;
-
-        /// <summary>Area on the screen where the add button is located.</summary>
-        protected Rectangle _addButtonArea;
-
-        /// <summary>Image to display when the user hovers over the add button.</summary>
-        protected Bitmap _addButtonHoverImage;
+        /// <remarks>The default value of this flag is <see langword="true" />.</remarks>
+        private bool _addButtonShown = true;
 
         /// <summary>
-        /// Image to display for the add button when the user is not hovering over
-        /// it.
+        /// A <see cref="T:System.Drawing.Color" /> value that is to be used for the text
+        /// of the tabs.
         /// </summary>
-        protected Bitmap _addButtonImage;
-
-        /// <summary>
-        /// The background, if any, that should be displayed in the non-client
-        /// area behind the actual tabs.
-        /// </summary>
-        protected Image _background;
-
-        /// <summary>
-        /// The hover-over image that should be displayed on each tab to close
-        /// that tab.
-        /// </summary>
-        protected Image _closeButtonHoverImage;
-
-        /// <summary>The image that should be displayed on each tab to close that tab.</summary>
-        protected Image _closeButtonImage;
-
-        /// <summary>
-        /// When the user is dragging a tab, this represents the point where the
-        /// user first clicked to start the drag operation.
-        /// </summary>
-        protected Point? _dragStart;
-
-        /// <summary>
-        /// Background of the content area for the tab when the tab is inactive; its width
-        /// also determines how wide the default content area for the tab
-        /// is.
-        /// </summary>
-        protected Image _inactiveCenterImage;
-
-        /// <summary>Image to display on the left side of an inactive tab.</summary>
-        protected Image _inactiveLeftSideImage;
-
-        /// <summary>Image to display on the right side of an inactive tab.</summary>
-        protected Image _inactiveRightSideImage;
+        /// <remarks>
+        /// The default value of this field is
+        /// <see cref="F:System.Drawing.Color.White" />.
+        /// </remarks>
+        private Color _foreColor = Color.White;
 
         /// <summary>Flag indicating whether a tab is being repositioned.</summary>
+        /// <remarks>
+        /// This flag is used by the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> property
+        /// to detect whether its value has been updated.
+        /// </remarks>
         protected bool _isTabRepositioning;
 
-        private bool? _isWindows10;
-
-        /// <summary>Maximum area on the screen that tabs may take up for this application.</summary>
-        protected Rectangle _maxTabArea;
-
-        /// <summary>The parent window that this renderer instance belongs to.</summary>
-        protected TitleBarTabs _parentWindow;
+        /// <summary>
+        /// A <see cref="T:System.Drawing.Rectangle" /> value that demarcates the maximum
+        /// area on the screen that a given tabs, as a set, may occupy, excluding the
+        /// <b>Add</b> button.
+        /// </summary>
+        /// <remarks>
+        /// This flag is used by the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.MaxTabWellArea" /> property to
+        /// tell when the value of the property has been updated.
+        /// </remarks>
+        private Rectangle _maxTabWellWellArea;
 
         /// <summary>
-        /// The number of tabs that were present when we last rendered; used to
-        /// determine whether we need to redraw tab instances.
+        /// Count of tabs that were present when we last rendered.
         /// </summary>
-        protected int _previousTabCount;
+        /// <remarks>
+        /// Used to determine whether we need to redraw the tabs.
+        /// <para />
+        /// This field is used by the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.PreviousTabCount" /> property to
+        /// determine when its value has been altered.
+        /// </remarks>
+        private int _previousTabCount;
 
         /// <summary>
-        /// Flag indicating whether rendering has been suspended while we
-        /// perform some operation.
+        /// Flag indicating whether rendering has been suspended while we perform some
+        /// operation.
         /// </summary>
+        /// <remarks>
+        /// The field is used by the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.RenderingSuspended" /> property
+        /// in order to determine whether its value has been altered.
+        /// </remarks>
         protected bool _suspendRendering;
 
         /// <summary>
-        /// When the user is dragging a tab, this represents the horizontal offset
-        /// within the tab where the user clicked to start the drag operation.
+        /// A <see cref="T:System.Drawing.Color" /> value that is to be used for the
+        /// background color of each of the tabs.
         /// </summary>
-        protected int? _tabClickOffset;
+        private Color _tabBackColor;
 
-        /// <summary>The width of the content area that we should use for each tab.</summary>
+        /// <summary>
+        /// Value indicating the horizontal offset within the tab where the user clicked to
+        /// start a <c>Drag</c> operation.
+        /// </summary>
+        /// <remarks>
+        /// The default value of this field is <c>-1</c>, for
+        /// <c>not applicable</c>.
+        /// <para />
+        /// This field is used by the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabClickOffset" /> property to
+        /// determine whether its value has been altered.
+        /// </remarks>
+        private int _tabClickOffset = -1;
+
+        /// <summary>
+        /// The width, in pixels, of the <c>Content Area</c> that we should use
+        /// for each tab.
+        /// </summary>
         protected int _tabContentWidth;
 
         /// <summary>Flag indicating whether a tab was being repositioned.</summary>
         protected bool _wasTabRepositioning;
 
-        protected Color ForeColor = Color.White;
-
         /// <summary>
-        /// Default constructor that initializes the
-        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" /> and
-        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.ShowAddButton" /> properties.
+        /// Constructs a new instance of <see cref="T:xyLOGIX.EasyTabs.TabRendererBase" />
+        /// and returns a reference to it.
         /// </summary>
-        /// <param name="parentWindow">
-        /// The parent window that this renderer instance
-        /// belongs to.
+        /// <param name="parent">
+        /// Reference to an instance of
+        /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> that represents the parent
+        /// (containing the tabs) window that this renderer is responsible for drawing.
         /// </param>
-        protected TabRendererBase(TitleBarTabs parentWindow)
+        /// <remarks>
+        /// The argument of the <paramref name="parent" /> parameter must be a
+        /// valid object reference.
+        /// <para />
+        /// Otherwise, this constructor throws
+        /// <see cref="T:System.ArgumentNullException" />.
+        /// </remarks>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// Thrown if the required
+        /// parameter, <paramref name="parent" />, is passed a <see langword="null" />
+        /// value.
+        /// </exception>
+        protected TabRendererBase(TitleBarTabs parent)
         {
-            _parentWindow = parentWindow;
-            ShowAddButton = true;
-            TabRepositionDragDistance = 10;
-            TabTearDragDistance = 10;
-            parentWindow.Tabs.CollectionModified += Tabs_CollectionModified;
-            if (parentWindow._overlay == null)
-                return;
-            parentWindow._overlay.MouseMove += OnOverlayMouseMove;
-            parentWindow._overlay.MouseUp += OnOverlayMouseUp;
-            parentWindow._overlay.MouseDown += OnOverlayMouseDown;
+            Parent = parent ?? throw new ArgumentNullException(nameof(parent));
+
+            InitializeTabWell(parent);
         }
 
         /// <summary>
-        /// Amount of space that we should put to the left of the add tab button
-        /// when rendering the content area of the tab.
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
+        /// used as the background of the content area for the tab when the tab is active;
+        /// its width also determines how wide the default content area for the tab is.
         /// </summary>
-        public virtual int AddButtonMarginLeft { get; set; }
+        public abstract Image ActiveCenterImage { get; set; }
 
         /// <summary>
-        /// Amount of space that we should leave to the right of the add tab
-        /// button when rendering the content area of the tab.
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
+        /// displayed the left side of an active tab.
         /// </summary>
-        public virtual int AddButtonMarginRight { get; set; }
+        public abstract Image ActiveLeftSideImage { get; set; }
 
         /// <summary>
-        /// Amount of space that we should leave between the top of the content
-        /// area and the top of the add tab button.
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
+        /// displayed on the right side of an active tab.
         /// </summary>
-        public virtual int AddButtonMarginTop { get; set; }
+        public abstract Image ActiveRightSideImage { get; set; }
 
-        public virtual Font CaptionFont
-            => SystemFonts.CaptionFont;
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Bitmap" /> that is to be
+        /// displayed when the user hovers over the <b>Add</b> button.
+        /// </summary>
+        public abstract Bitmap AddButtonHoverImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Bitmap" /> that is to be displayed
+        /// for the <c>Add</c> button when the user is not hovering the mouse over it.
+        /// it.
+        /// </summary>
+        public abstract Bitmap AddButtonImage { get; set; }
+
+        /// <summary>
+        /// Gets the amount of space, in pixels, that we should put to the left of
+        /// the add tab button when rendering the content area of the tab.
+        /// </summary>
+        /// <remarks>Child classes must override this property and specify its value.</remarks>
+        public abstract int AddButtonMarginLeft { get; }
+
+        /// <summary>
+        /// Gets the amount of space, in pixels, that we should leave to the right
+        /// of the add tab button when rendering the content area of the tab.
+        /// </summary>
+        /// <remarks>Child classes must override this property and specify its value.</remarks>
+        public abstract int AddButtonMarginRight { get; }
+
+        /// <summary>
+        /// Gets the amount of space, in pixels, that we should leave between the
+        /// top of the content area and the top of the add tab button.
+        /// </summary>
+        /// <remarks>Child classes must override this property and specify its value.</remarks>
+        public abstract int AddButtonMarginTop { get; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Rectangle" /> value that
+        /// demarcates the area on the screen where the <b>Add</b>, or <b>+</b> button is
+        /// located.
+        /// </summary>
+        public Rectangle AddButtonRectangle { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
+        /// used for the background, if any, that should be displayed in the non-client
+        /// area behind the actual tabs.
+        /// </summary>
+        public abstract Image BackgroundImage { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="T:System.Drawing.Font" /> that is to be used to render the
+        /// caption text of the tab(s).
+        /// </summary>
+        /// <remarks>
+        /// The default value of this property is
+        /// <see cref="T:System.Drawing.SystemFonts.CaptionFont" />.
+        /// <para />
+        /// Child classes may override this property to specify their own caption font.
+        /// </remarks>
+        public abstract Font CaptionFont { get; set; }
 
         /// <summary>
         /// Amount of space we should put to the left of the caption when
         /// rendering the content area of the tab.
         /// </summary>
-        public virtual int CaptionMarginLeft { get; set; }
+        public abstract int CaptionMarginLeft { get; set; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the caption when
         /// rendering the content area of the tab.
         /// </summary>
-        public virtual int CaptionMarginRight { get; set; }
+        public abstract int CaptionMarginRight { get; set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the caption text.
         /// </summary>
-        public virtual int CaptionMarginTop { get; set; }
+        public abstract int CaptionMarginTop { get; set; }
 
         /// <summary>
-        /// Amount of space that we should put to the left of the close button
-        /// when rendering the content area of the tab.
+        /// Gets the amount of space, in pixels, that we should put to the left of
+        /// the close button when rendering the content area of the tab.
         /// </summary>
-        public virtual int CloseButtonMarginLeft { get; set; }
+        /// <remarks>Child classes must override this property and specify its value.</remarks>
+        public abstract int CloseButtonMarginLeft { get; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the close button
         /// when rendering the content area of the tab.
         /// </summary>
-        public virtual int CloseButtonMarginRight { get; set; }
+        public abstract int CloseButtonMarginRight { get; set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the close button.
         /// </summary>
-        public virtual int CloseButtonMarginTop { get; set; }
+        public abstract int CloseButtonMarginTop { get; set; }
+
+        /// <summary>
+        /// Gets a <see cref="T:System.Drawing.Point" /> that represents the mouse
+        /// coordinates where the user first clicked and held the mouse in order to begin
+        /// the operation of dragging a <c>Tab</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default value of this property is
+        /// <see cref="F:System.Drawing.Point.Empty" />.
+        /// </remarks>
+        public Point DragStart { get; protected set; } = Point.Empty;
+
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Color" /> value that is to be used
+        /// for the text of the tabs.
+        /// </summary>
+        /// <remarks>
+        /// The default value of this property is
+        /// <see cref="F:System.Drawing.Color.White" /> for the <c>Dark Theme</c>.
+        /// </remarks>
+        public Color ForeColor
+        {
+            get => _foreColor;
+            set
+            {
+                var changed = value != _foreColor;
+                _foreColor = value;
+                if (changed) OnForeColorChanged();
+            }
+        }
 
         /// <summary>
         /// Amount of space we should put to the left of the tab icon when
         /// rendering the content area of the tab.
         /// </summary>
-        public virtual int IconMarginLeft { get; set; }
+        public abstract int IconMarginLeft { get; set; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the icon when
         /// rendering the content area of the tab.
         /// </summary>
-        public virtual int IconMarginRight { get; set; }
+        public abstract int IconMarginRight { get; set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the icon.
         /// </summary>
-        public virtual int IconMarginTop { get; set; }
+        public abstract int IconMarginTop { get; set; }
 
-        /// <summary>Flag indicating whether a tab is being repositioned.</summary>
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be used to
+        /// display the right side of an inactive tab.
+        /// </summary>
+        public abstract Image InactiveRightSideImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
+        /// displayed to represent the background of the content area of a tab when that
+        /// tab is inactive.
+        /// </summary>
+        /// <remarks>
+        /// The width of this <see cref="T:System.Drawing.Image" /> is also used
+        /// to determine the default width of the tab content area.
+        /// </remarks>
+        public abstract Image InactiveTabContentAreaImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be used to
+        /// display the left side of an inactive tab.
+        /// </summary>
+        public Image InactiveTabLeftSideImage { get; set; }
+
+        /// <summary>Gets a value that indicates whether a tab is being repositioned.</summary>
+        /// <remarks>
+        /// If the value of this property is updated, then the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.TabRepositioningChanged" /> event
+        /// is raised.
+        /// </remarks>
         public bool IsTabRepositioning
         {
             get => _isTabRepositioning;
-            internal set
+            set
             {
+                var changed = _isTabRepositioning != value;
                 _isTabRepositioning = value;
-                if (_isTabRepositioning)
-                    return;
-                _dragStart = new Point?();
+                if (changed) OnTabRepositioningChanged();
             }
         }
 
-        public bool IsWindows10
+        /// <summary>
+        /// Gets the <see cref="T:System.Drawing.Rectangle" /> value that demarcates the
+        /// maximum area on the screen that a given tabs, as a set, may occupy, excluding
+        /// the <b>Add</b> button.
+        /// </summary>
+        /// <remarks>
+        /// If the value of this property is updated, then the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.MaxTabWellAreaChanged" /> event
+        /// is raised.
+        /// </remarks>
+        public Rectangle MaxTabWellArea
         {
-            get
+            get => _maxTabWellWellArea;
+            protected set
             {
-                if (!_isWindows10.HasValue)
-                    _isWindows10 = ((string)Registry
-                                            .LocalMachine.OpenSubKey(
-                                                "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"
-                                            )
-                                            .GetValue("ProductName"))
-                        .StartsWith("Windows 10");
-                return _isWindows10.Value;
+                var changed = _maxTabWellWellArea != value;
+                _maxTabWellWellArea = value;
+                if (changed) OnMaxTabWellAreaChanged();
             }
         }
-
-        /// <summary>Maximum area that the tabs can occupy.  Excludes the add button.</summary>
-        public Rectangle MaxTabArea
-            => _maxTabArea;
 
         /// <summary>
         /// If the renderer overlaps the tabs (like Chrome), this is the width that the
@@ -250,37 +364,228 @@ namespace xyLOGIX.EasyTabs
         public virtual int OverlapWidth
             => 0;
 
-        public virtual bool RendersEntireTitleBar
-            => false;
+        /// <summary>
+        /// Gets a reference to an instance of
+        /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> that represents the parent
+        /// container that this renderer instance is associated with.
+        /// </summary>
+        public TitleBarTabs Parent { get; }
 
-        /// <summary>Flag indicating whether we should display the add button.</summary>
-        public virtual bool ShowAddButton { get; set; }
+        /// <summary>
+        /// Gets the count of tabs that were present when we last rendered.
+        /// </summary>
+        /// <remarks>Used to determine whether we need to redraw the tabs.</remarks>
+        public int PreviousTabCount
+        {
+            get => _previousTabCount;
+            protected set
+            {
+                var changed = value != _previousTabCount;
+                _previousTabCount = value;
+                if (changed) OnPreviousTabCountChanged();
+            }
+        }
 
-        /// <summary>Width of the content area of the tabs.</summary>
+        /// <summary>
+        /// Gets a value indicating whether rendering has been suspended while we perform
+        /// some operation.
+        /// </summary>
+        /// <remarks>
+        /// If the value of this property is updated, then the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.RenderingSuspendedChanged" />
+        /// event is raised.
+        /// </remarks>
+        public bool RenderingSuspended
+        {
+            get => _suspendRendering;
+            protected set
+            {
+                var changed = value != _suspendRendering;
+                _suspendRendering = value;
+                if (changed) OnRenderingSuspendedChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the entire title bar is to be rendered.
+        /// </summary>
+        /// <remarks>
+        /// Child classes must implement this property to affect the rendering for
+        /// each concrete renderer type.
+        /// </remarks>
+        public abstract bool RendersEntireTitleBar { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the <b>Add</b> button is to be
+        /// shown.
+        /// </summary>
+        /// <remarks>The default value of this property is <see langword="true" />.</remarks>
+        public bool ShowAddButton
+        {
+            get => _addButtonShown;
+            set
+            {
+                var changed = _addButtonShown != value;
+                _addButtonShown = value;
+                if (changed) OnAddButtonShownChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="T:System.Drawing.Color" /> value that is to be used
+        /// to paint the background of the tabs and tab well.
+        /// </summary>
+        public Color TabBackColor
+        {
+            get => _tabBackColor;
+            set
+            {
+                var changed = value != _tabBackColor;
+                _tabBackColor = value;
+                if (changed) OnTabBackColorChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets a value that indicates the horizontal offset within the tab where the user
+        /// clicked to start a <c>Drag</c> operation.
+        /// </summary>
+        /// <remarks>
+        /// The default value of this property is <c>-1</c>, which means
+        /// <c>not applicable</c>.
+        /// </remarks>
+        public int TabClickOffset
+        {
+            get => _tabClickOffset;
+            protected set
+            {
+                var changed = value != _tabClickOffset;
+                _tabClickOffset = value;
+                if (changed) OnTabClickOffsetChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="T:System.Drawing.Image" /> that is to be displayed
+        /// each tab to close that tab when the user is hovering the mouse over the tab's
+        /// <b>Close</b> button.
+        /// </summary>
+        public abstract Image TabCloseButtonHoverImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="T:System.Drawing.Image" /> that is to be
+        /// displayed on each tab to represent its <b>Close</b> button.
+        /// </summary>
+        /// <remarks>
+        /// Typically, the <b>Close</b> button is rendered as a <c>x</c> that the
+        /// user can click to close the tab that it is located on.
+        /// <para />
+        /// This property allows clients of this class to customize that image.
+        /// </remarks>
+        public abstract Image TabCloseButtonImage { get; set; }
+
+        /// <summary>Gets the width, in pixels, of the content area of the tabs.</summary>
         public int TabContentWidth
-            => _tabContentWidth;
+        {
+            get => _tabContentWidth;
+            protected set
+            {
+                var changed = value != _tabContentWidth;
+                _tabContentWidth = value;
+                if (changed) OnTabContentWidthChanged();
+            }
+        }
 
         /// <summary>
         /// Height of the tab content area; derived from the height of
         /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._activeCenterImage" />.
         /// </summary>
         public virtual int TabHeight
-            => _activeCenterImage.Height;
+            => ActiveCenterImage.Height;
 
         /// <summary>
         /// Horizontal distance that a tab must be dragged before it starts to be
         /// repositioned.
         /// </summary>
-        public virtual int TabRepositionDragDistance { get; set; }
+        public virtual int TabRepositionDragDistance { get; set; } = 10;
 
         /// <summary>
         /// Distance that a user must drag a tab outside the tab area before it
         /// shows up as "torn" from its parent window.
         /// </summary>
-        public virtual int TabTearDragDistance { get; set; }
+        public virtual int TabTearDragDistance { get; set; } = 10;
 
-        public virtual int TopPadding
-            => 0;
+        /// <summary>
+        /// Gets a value indicating how many pixels of padding should be above the tabs.
+        /// </summary>
+        /// <remarks>
+        /// Child classes should override this property to specify their own
+        /// values.
+        /// </remarks>
+        public abstract int TopPadding { get; }
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.ShowAddButton" /> property is
+        /// updated.
+        /// </summary>
+        public event EventHandler AddButtonShownChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.ForeColor" /> property is
+        /// updated.
+        /// </summary>
+        public event EventHandler ForeColorChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.MaxTabWellArea" /> property has
+        /// been updated.
+        /// </summary>
+        public event EventHandler MaxTabWellAreaChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.PreviousTabCount" /> property is
+        /// updated.
+        /// </summary>
+        public event EventHandler PreviousTabCountChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.RenderingSuspended" /> property
+        /// is updated.
+        /// </summary>
+        public event EventHandler RenderingSuspendedChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabBackColor" /> property is
+        /// updated.
+        /// </summary>
+        public event EventHandler TabBackColorChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabClickOffset" /> property has
+        /// been updated.
+        /// </summary>
+        public event EventHandler TabClickOffsetChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabContentWidth" /> property has
+        /// been updated.
+        /// </summary>
+        public event EventHandler TabContentWidthChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> property
+        /// has been updated.
+        /// </summary>
+        public event EventHandler TabRepositioningChanged;
 
         /// <summary>
         /// Tests whether the <paramref name="cursor" /> is hovering over the add
@@ -296,7 +601,7 @@ namespace xyLOGIX.EasyTabs
         /// </returns>
         public virtual bool IsOverAddButton(Point cursor)
             => !_wasTabRepositioning && IsOverNonTransparentArea(
-                _addButtonArea, _addButtonHoverImage, cursor
+                AddButtonRectangle, AddButtonHoverImage, cursor
             );
 
         /// <summary>
@@ -306,7 +611,8 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="tab">
         /// The tab whose
-        /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.CloseButtonArea" /> we are to check to see if
+        /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.CloseButtonArea" /> we are to check
+        /// to see if
         /// it contains <paramref name="cursor" />.
         /// </param>
         /// <param name="cursor">Current position of the cursor.</param>
@@ -329,7 +635,8 @@ namespace xyLOGIX.EasyTabs
             => (HT)2;
 
         /// <summary>
-        /// Called from the <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" /> to
+        /// Called from the <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />
+        /// to
         /// determine which, if any, of the <paramref name="tabs" /> the
         /// <paramref name="cursor" /> is
         /// over.
@@ -389,20 +696,19 @@ namespace xyLOGIX.EasyTabs
         {
             if (_suspendRendering || tabs == null || tabs.Count == 0)
                 return;
-            var screen =
-                _parentWindow.PointToScreen(
-                    _parentWindow.ClientRectangle.Location
-                );
-            _maxTabArea.Location = new Point(
+            var screen = Parent.PointToScreen(Parent.ClientRectangle.Location);
+            _maxTabWellWellArea.Location = new Point(
                 SystemInformation.BorderSize.Width + offset.X + screen.X,
                 offset.Y + screen.Y
             );
-            _maxTabArea.Width = GetMaxTabAreaWidth(tabs, offset);
-            _maxTabArea.Height = TabHeight;
+            _maxTabWellWellArea.Width = GetMaxTabAreaWidth(tabs, offset);
+            _maxTabWellWellArea.Height = TabHeight;
             var num1 = Math.Min(
-                _activeCenterImage.Width,
+                ActiveCenterImage.Width,
                 Convert.ToInt32(
-                    Math.Floor(Convert.ToDouble(_maxTabArea.Width / tabs.Count))
+                    Math.Floor(
+                        Convert.ToDouble(MaxTabWellArea.Width / tabs.Count)
+                    )
                 )
             );
             var flag1 = (num1 != _tabContentWidth) | forceRedraw;
@@ -410,10 +716,9 @@ namespace xyLOGIX.EasyTabs
                 _tabContentWidth = num1;
             var index1 = tabs.Count - 1;
             var tupleList = new List<Tuple<TitleBarTab, int, Rectangle>>();
-            if (_background != null)
+            if (BackgroundImage != null)
                 graphicsContext.DrawImage(
-                    _background, offset.X, offset.Y, _parentWindow.Width,
-                    TabHeight
+                    BackgroundImage, offset.X, offset.Y, Parent.Width, TabHeight
                 );
             var index2 = tabs.FindIndex(t => t.Active);
             Image tabCenterImage = null;
@@ -434,9 +739,9 @@ namespace xyLOGIX.EasyTabs
                 var width1 = num1 + tabLeftImage.Width + tabRightImage.Width;
                 var height = tabCenterImage.Height;
                 local1 = new Rectangle(x1, y, width1, height);
-                if (IsTabRepositioning && _tabClickOffset.HasValue)
+                if (IsTabRepositioning && TabClickOffset >= 0)
                 {
-                    rectangle.X = cursor.X - _tabClickOffset.Value;
+                    rectangle.X = cursor.X - TabClickOffset;
                     ref var local2 = ref rectangle;
                     size = SystemInformation.BorderSize;
                     var num2 = Math.Max(size.Width + offset.X, rectangle.X);
@@ -445,15 +750,15 @@ namespace xyLOGIX.EasyTabs
                     size = SystemInformation.BorderSize;
                     var width2 = size.Width;
                     int num3;
-                    if (_parentWindow.WindowState != FormWindowState.Maximized)
+                    if (Parent.WindowState != FormWindowState.Maximized)
                     {
-                        num3 = _parentWindow.ClientRectangle.Width;
+                        num3 = Parent.ClientRectangle.Width;
                     }
                     else
                     {
-                        var width3 = _parentWindow.ClientRectangle.Width;
+                        var width3 = Parent.ClientRectangle.Width;
                         int num4;
-                        if (!_parentWindow.ControlBox)
+                        if (!Parent.ControlBox)
                         {
                             num4 = 0;
                         }
@@ -465,7 +770,7 @@ namespace xyLOGIX.EasyTabs
 
                         var num5 = width3 - num4;
                         int num6;
-                        if (!_parentWindow.MinimizeBox)
+                        if (!Parent.MinimizeBox)
                         {
                             num6 = 0;
                         }
@@ -477,7 +782,7 @@ namespace xyLOGIX.EasyTabs
 
                         var num7 = num5 - num6;
                         int num8;
-                        if (!_parentWindow.MaximizeBox)
+                        if (!Parent.MaximizeBox)
                         {
                             num8 = 0;
                         }
@@ -520,10 +825,10 @@ namespace xyLOGIX.EasyTabs
                     if (index3 != index2)
                     {
                         var tab2 = tabs[index2];
-                        _parentWindow.Tabs.SuppressEvents();
-                        _parentWindow.Tabs.Remove(tab2);
-                        _parentWindow.Tabs.Insert(index3, tab2);
-                        _parentWindow.Tabs.ResumeEvents();
+                        Parent.Tabs.SuppressEvents();
+                        Parent.Tabs.Remove(tab2);
+                        Parent.Tabs.Insert(index3, tab2);
+                        Parent.Tabs.ResumeEvents();
                     }
                 }
 
@@ -569,23 +874,23 @@ namespace xyLOGIX.EasyTabs
                 );
             }
 
-            _previousTabCount = tabs.Count;
+            PreviousTabCount = tabs.Count;
             if (!ShowAddButton || IsTabRepositioning)
                 return;
-            _addButtonArea = new Rectangle(
-                _previousTabCount * (num1 + _activeLeftSideImage.Width +
-                    _activeRightSideImage.Width - OverlapWidth) +
-                _activeRightSideImage.Width + AddButtonMarginLeft + offset.X,
+            AddButtonRectangle = new Rectangle(
+                PreviousTabCount * (num1 + ActiveLeftSideImage.Width +
+                    ActiveRightSideImage.Width - OverlapWidth) +
+                ActiveRightSideImage.Width + AddButtonMarginLeft + offset.X,
                 AddButtonMarginTop + offset.Y +
-                (TabHeight - tabCenterImage.Height), _addButtonImage.Width,
-                _addButtonImage.Height
+                (TabHeight - tabCenterImage.Height), AddButtonImage.Width,
+                AddButtonImage.Height
             );
             var flag2 = IsOverAddButton(cursor);
             graphicsContext.DrawImage(
-                flag2 ? _addButtonHoverImage : (Image)_addButtonImage,
-                _addButtonArea, 0, 0,
-                flag2 ? _addButtonHoverImage.Width : _addButtonImage.Width,
-                flag2 ? _addButtonHoverImage.Height : _addButtonImage.Height,
+                flag2 ? AddButtonHoverImage : (Image)AddButtonImage,
+                AddButtonRectangle, 0, 0,
+                flag2 ? AddButtonHoverImage.Width : AddButtonImage.Width,
+                flag2 ? AddButtonHoverImage.Height : AddButtonImage.Height,
                 GraphicsUnit.Pixel
             );
         }
@@ -593,9 +898,11 @@ namespace xyLOGIX.EasyTabs
         /// <summary>
         /// Called when a torn tab is dragged into the
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTabs.TabDropArea" /> of
-        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />.  Places the tab in the
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />.  Places the
+        /// tab in the
         /// list and
-        /// sets <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> to true to
+        /// sets <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> to
+        /// true to
         /// simulate the user continuing to drag the tab around in the window.
         /// </summary>
         /// <param name="tab">Tab that was dragged into this window.</param>
@@ -603,34 +910,35 @@ namespace xyLOGIX.EasyTabs
         internal virtual void CombineTab(TitleBarTab tab, Point cursorLocation)
         {
             _suspendRendering = true;
-            var index = _parentWindow.Tabs.FindIndex(
+            var index = Parent.Tabs.FindIndex(
                 t => t.Area.Left <= cursorLocation.X &&
                      t.Area.Right >= cursorLocation.X
             );
-            _tabClickOffset = _parentWindow.Tabs.Count <= 0
+            TabClickOffset = Parent.Tabs.Count <= 0
                 ? 0
-                : _parentWindow.Tabs.First()
-                               .Area.Width / 2;
+                : Parent.Tabs.First()
+                        .Area.Width / 2;
             IsTabRepositioning = true;
-            tab.Parent = _parentWindow;
+            tab.Parent = Parent;
             if (index == -1)
             {
-                _parentWindow.Tabs.Add(tab);
-                index = _parentWindow.Tabs.Count - 1;
+                Parent.Tabs.Add(tab);
+                index = Parent.Tabs.Count - 1;
             }
             else
             {
-                _parentWindow.Tabs.Insert(index, tab);
+                Parent.Tabs.Insert(index, tab);
             }
 
             _suspendRendering = false;
-            _parentWindow.SelectedTabIndex = index;
-            _parentWindow.ResizeTabContents();
+            Parent.SelectedTabIndex = index;
+            Parent.ResizeTabContents();
         }
 
         /// <summary>
-        /// Initialize the <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._dragStart" />
-        /// and <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._tabClickOffset" /> fields in case
+        /// Initialize the <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.DragStart" />
+        /// and <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._tabClickOffset" /> fields in
+        /// case
         /// the user starts dragging a tab.
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
@@ -641,20 +949,18 @@ namespace xyLOGIX.EasyTabs
         )
         {
             _wasTabRepositioning = false;
-            _dragStart = e.Location;
-            var point =
-                _parentWindow._overlay.GetRelativeCursorPosition(e.Location);
+            DragStart = e.Location;
+            var point = Parent.Overlay.GetRelativeCursorPosition(e.Location);
             var x1 = point.X;
-            point = _parentWindow.SelectedTab.Area.Location;
+            point = Parent.SelectedTab.Area.Location;
             var x2 = point.X;
-            _tabClickOffset = x1 - x2;
+            TabClickOffset = x1 - x2;
         }
 
         /// <summary>
         /// If the user is dragging the mouse, see if they have passed the
-        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabRepositionDragDistance" /> threshold
-        /// and, if so, officially begin the
-        /// tab drag operation.
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabRepositionDragDistance" />
+        /// threshold; and, if so, officially begin the tab drag operation.
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
@@ -663,16 +969,14 @@ namespace xyLOGIX.EasyTabs
             MouseEventArgs e
         )
         {
-            if (!_dragStart.HasValue || IsTabRepositioning)
+            if (!DragStart.IsEmpty || IsTabRepositioning)
                 return;
             var x1 = e.X;
-            var point = _dragStart.Value;
-            var x2 = point.X;
+            var x2 = DragStart.X;
             if (Math.Abs(x1 - x2) <= TabRepositionDragDistance)
             {
                 var y1 = e.Y;
-                point = _dragStart.Value;
-                var y2 = point.Y;
+                var y2 = DragStart.Y;
                 if (Math.Abs(y1 - y2) <= TabRepositionDragDistance)
                     return;
             }
@@ -682,8 +986,9 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// End the drag operation by resetting the
-        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._dragStart" /> and
-        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._tabClickOffset" /> fields and setting
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.DragStart" /> and
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._tabClickOffset" /> fields and
+        /// setting
         /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> to false.
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
@@ -693,29 +998,29 @@ namespace xyLOGIX.EasyTabs
             MouseEventArgs e
         )
         {
-            _dragStart = new Point?();
-            _tabClickOffset = new int?();
+            DragStart = Point.Empty;
+            TabClickOffset = -1;
             _wasTabRepositioning = IsTabRepositioning;
             IsTabRepositioning = false;
             if (!_wasTabRepositioning)
                 return;
-            _parentWindow._overlay.Render(true);
+            Parent.Overlay.Render(true);
         }
 
         protected virtual int GetMaxTabAreaWidth(
             List<TitleBarTab> tabs,
             Point offset
         )
-            => _parentWindow.ClientRectangle.Width - offset.X -
+            => Parent.ClientRectangle.Width - offset.X -
                (ShowAddButton
-                   ? _addButtonImage.Width + AddButtonMarginLeft +
+                   ? AddButtonImage.Width + AddButtonMarginLeft +
                      AddButtonMarginRight
                    : 0) - tabs.Count * OverlapWidth -
-               (_parentWindow.ControlBox
+               (Parent.ControlBox
                    ? SystemInformation.CaptionButtonSize.Width
-                   : 0) - (_parentWindow.MinimizeBox
+                   : 0) - (Parent.MinimizeBox
                    ? SystemInformation.CaptionButtonSize.Width
-                   : 0) - (_parentWindow.MaximizeBox
+                   : 0) - (Parent.MaximizeBox
                    ? SystemInformation.CaptionButtonSize.Width
                    : 0);
 
@@ -725,7 +1030,7 @@ namespace xyLOGIX.EasyTabs
         /// <param name="tab">Tab that we are retrieving the image for.</param>
         /// <returns>The image for the center of <paramref name="tab" />.</returns>
         protected virtual Image GetTabCenterImage(TitleBarTab tab)
-            => !tab.Active ? _inactiveCenterImage : _activeCenterImage;
+            => !tab.Active ? InactiveTabContentAreaImage : ActiveCenterImage;
 
         /// <summary>
         /// Gets the image to use for the left side of the <paramref name="tab" />.
@@ -733,7 +1038,7 @@ namespace xyLOGIX.EasyTabs
         /// <param name="tab">Tab that we are retrieving the image for.</param>
         /// <returns>The image for the left side of <paramref name="tab" />.</returns>
         protected virtual Image GetTabLeftImage(TitleBarTab tab)
-            => !tab.Active ? _inactiveLeftSideImage : _activeLeftSideImage;
+            => !tab.Active ? InactiveTabLeftSideImage : ActiveLeftSideImage;
 
         /// <summary>
         /// Gets the image to use for the right side of the <paramref name="tab" />.
@@ -741,7 +1046,7 @@ namespace xyLOGIX.EasyTabs
         /// <param name="tab">Tab that we are retrieving the image for.</param>
         /// <returns>The image for the right side of <paramref name="tab" />.</returns>
         protected virtual Image GetTabRightImage(TitleBarTab tab)
-            => !tab.Active ? _inactiveRightSideImage : _activeRightSideImage;
+            => !tab.Active ? InactiveRightSideImage : ActiveRightSideImage;
 
         /// <summary>
         /// Helper method to detect whether the <paramref name="cursor" /> is within the
@@ -792,12 +1097,133 @@ namespace xyLOGIX.EasyTabs
         /// <param name="cursor">Current location of the cursor.</param>
         /// <returns>
         /// True if the <paramref name="cursor" /> is within the
-        /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Area" /> of the <paramref name="tab" /> and
+        /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Area" /> of the
+        /// <paramref name="tab" /> and
         /// is over a non-transparent
-        /// pixel of <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.TabImage" />, false otherwise.
+        /// pixel of <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.TabImage" />, false
+        /// otherwise.
         /// </returns>
         protected virtual bool IsOverTab(TitleBarTab tab, Point cursor)
             => IsOverNonTransparentArea(tab.Area, tab.TabImage, cursor);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.AddButtonShownChanged" /> event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.ShowAddButton" /> property is
+        /// updated.
+        /// </remarks>
+        protected virtual void OnAddButtonShownChanged()
+            => AddButtonShownChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.ForeColorChanged" />
+        /// event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.ForeColor" /> property is
+        /// updated.
+        /// </remarks>
+        protected virtual void OnForeColorChanged()
+            => ForeColorChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.MaxTabWellAreaChanged" /> event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.MaxTabWellArea" /> property is
+        /// updated.
+        /// </remarks>
+        protected virtual void OnMaxTabWellAreaChanged()
+            => MaxTabWellAreaChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.PreviousTabCountChanged" />
+        /// event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.PreviousTabCount" /> property is
+        /// updated.
+        /// </remarks>
+        protected virtual void OnPreviousTabCountChanged()
+            => PreviousTabCountChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.RenderingSuspendedChanged" />
+        /// event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.RenderingSuspended" /> property
+        /// is updated.
+        /// </remarks>
+        protected virtual void OnRenderingSuspendedChanged()
+            => RenderingSuspendedChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.TabBackColorChanged" />
+        /// event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabBackColor" /> property is
+        /// updated.
+        /// </remarks>
+        protected virtual void OnTabBackColorChanged()
+            => TabBackColorChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.TabClickOffsetChanged" /> event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabClickOffset" /> property is
+        /// updated.
+        /// </remarks>
+        protected virtual void OnTabClickOffsetChanged()
+            => TabClickOffsetChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.TabContentWidthChanged" /> event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabContentWidth" /> property has
+        /// been updated.
+        /// </remarks>
+        protected virtual void OnTabContentWidthChanged()
+            => TabContentWidthChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.TabRendererBase.TabRepositioningChanged" />
+        /// event.
+        /// </summary>
+        /// <remarks>
+        /// Child classes that override this method must call the base class
+        /// before beginning their own logic.
+        /// </remarks>
+        protected virtual void OnTabRepositioningChanged()
+        {
+            TabRepositioningChanged?.Invoke(this, EventArgs.Empty);
+
+            if (_isTabRepositioning)
+                return;
+
+            // If the _isTabRepositioning flag is FALSE, then reset the value of the DragStart property
+            DragStart = Point.Empty;
+        }
 
         /// <summary>
         /// Internal method for rendering an individual <paramref name="tab" /> to
@@ -857,8 +1283,8 @@ namespace xyLOGIX.EasyTabs
                     if (tab.ShowCloseButton)
                     {
                         var image = IsOverCloseButton(tab, cursor)
-                            ? _closeButtonHoverImage
-                            : _closeButtonImage;
+                            ? TabCloseButtonHoverImage
+                            : TabCloseButtonImage;
                         tab.CloseButtonArea = new Rectangle(
                             area.Width - tabRightImage.Width -
                             CloseButtonMarginRight - image.Width,
@@ -910,7 +1336,7 @@ namespace xyLOGIX.EasyTabs
                     (tab.Content.ShowIcon
                         ? IconMarginLeft + 16 + IconMarginRight
                         : 0) - (tab.ShowCloseButton
-                        ? _closeButtonImage.Width + CloseButtonMarginRight +
+                        ? TabCloseButtonImage.Width + CloseButtonMarginRight +
                           CloseButtonMarginLeft
                         : 0), tab.TabImage.Height
                 ),
@@ -922,8 +1348,22 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
+        /// </summary>
+        /// <param name="parent"></param>
+        private void InitializeTabWell(TitleBarTabs parent)
+        {
+            Parent.Tabs.CollectionModified += Tabs_CollectionModified;
+            if (parent.Overlay == null)
+                return;
+            Parent.Overlay.MouseMove += OnOverlayMouseMove;
+            Parent.Overlay.MouseUp += OnOverlayMouseUp;
+            Parent.Overlay.MouseDown += OnOverlayMouseDown;
+        }
+
+        /// <summary>
         /// When items are added to the tabs collection, we need to ensure that the
-        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />'s minimum width is set
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />'s minimum width
+        /// is set
         /// so that we can display at
         /// least each tab and its close buttons.
         /// </summary>
@@ -950,7 +1390,7 @@ namespace xyLOGIX.EasyTabs
             ) + OverlapWidth;
             Size captionButtonSize;
             int num2;
-            if (!_parentWindow.ControlBox)
+            if (!Parent.ControlBox)
             {
                 num2 = 0;
             }
@@ -961,7 +1401,7 @@ namespace xyLOGIX.EasyTabs
             }
 
             int num3;
-            if (!_parentWindow.MinimizeBox)
+            if (!Parent.MinimizeBox)
             {
                 num3 = 0;
             }
@@ -973,7 +1413,7 @@ namespace xyLOGIX.EasyTabs
 
             var num4 = num2 - num3;
             int num5;
-            if (!_parentWindow.MaximizeBox)
+            if (!Parent.MaximizeBox)
             {
                 num5 = 0;
             }
@@ -984,10 +1424,10 @@ namespace xyLOGIX.EasyTabs
             }
 
             var num6 = num4 - num5 + (ShowAddButton
-                ? _addButtonImage.Width + AddButtonMarginLeft +
+                ? AddButtonImage.Width + AddButtonMarginLeft +
                   AddButtonMarginRight
                 : 0);
-            _parentWindow.MinimumSize = new Size(num1 + num6, 0);
+            Parent.MinimumSize = new Size(num1 + num6, 0);
         }
     }
 }
