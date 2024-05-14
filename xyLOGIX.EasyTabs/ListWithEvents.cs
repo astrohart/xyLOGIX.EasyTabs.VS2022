@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace xyLOGIX.EasyTabs
     /// <summary>Represents a strongly typed list of objects with events.</summary>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     [DebuggerDisplay("Count = {Count}"), Serializable]
-    public class ListWithEvents<T> : List<T>, IList
+    public class ListWithEvents<T> : List<T>, IListWithEvents<T>
     {
         /// <summary>Synchronization root for thread safety.</summary>
         public readonly object SyncRoot = new object();
@@ -22,13 +21,15 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Initializes a new instance of the
-        /// <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" /> class that is empty and has the
+        /// <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" /> class that is empty and has
+        /// the
         /// default initial capacity.
         /// </summary>
         public ListWithEvents() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" />
+        /// Initializes a new instance of the
+        /// <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" />
         /// class that contains elements copied from the specified collection and has
         /// sufficient capacity to accommodate the number of elements copied.
         /// </summary>
@@ -41,7 +42,8 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Initializes a new instance of the
-        /// <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" /> class that is empty and has the
+        /// <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" /> class that is empty and has
+        /// the
         /// specified initial capacity.
         /// </summary>
         /// <param name="capacity">
@@ -89,44 +91,6 @@ namespace xyLOGIX.EasyTabs
                     OnItemModified(new ListItemEventArgs(index));
                 }
             }
-        }
-
-        /// <summary>Adds an item to the end of the list.</summary>
-        /// <param name="value">Item to add to the list.</param>
-        /// <returns>Index of the new item in the list.</returns>
-        int IList.Add(object value)
-        {
-            if (!(value is T obj))
-                return -1;
-            Add(obj);
-            return Count - 1;
-        }
-
-        /// <summary>Overloads <see cref="M:System.Collections.Generic.List`1.Clear" />.</summary>
-        /// <remarks>This operation is thread-safe.</remarks>
-        public new virtual void Clear()
-        {
-            lock (SyncRoot)
-            {
-                base.Clear();
-            }
-
-            OnCleared(EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Overloads
-        /// <see cref="M:System.Collections.Generic.List`1.RemoveAt(System.Int32)" />.
-        /// </summary>
-        /// <remarks>This operation is thread-safe.</remarks>
-        public new virtual void RemoveAt(int index)
-        {
-            lock (SyncRoot)
-            {
-                base.RemoveAt(index);
-            }
-
-            OnItemRemoved(EventArgs.Empty);
         }
 
         /// <summary>Occurs whenever the list is cleared.</summary>
@@ -184,6 +148,18 @@ namespace xyLOGIX.EasyTabs
             {
                 InsertRange(Count, collection);
             }
+        }
+
+        /// <summary>Overloads <see cref="M:System.Collections.Generic.List`1.Clear" />.</summary>
+        /// <remarks>This operation is thread-safe.</remarks>
+        public new virtual void Clear()
+        {
+            lock (SyncRoot)
+            {
+                base.Clear();
+            }
+
+            OnCleared(EventArgs.Empty);
         }
 
         /// <summary>
@@ -262,6 +238,21 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Overloads
+        /// <see cref="M:System.Collections.Generic.List`1.RemoveAt(System.Int32)" />.
+        /// </summary>
+        /// <remarks>This operation is thread-safe.</remarks>
+        public new virtual void RemoveAt(int index)
+        {
+            lock (SyncRoot)
+            {
+                base.RemoveAt(index);
+            }
+
+            OnItemRemoved(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Overloads
         /// <see
         ///     cref="M:System.Collections.Generic.List`1.RemoveRange(System.Int32,System.Int32)" />
         /// .
@@ -286,7 +277,8 @@ namespace xyLOGIX.EasyTabs
         /// <summary>Removes the specified list of entries from the collection.</summary>
         /// <param name="collection">Collection to be removed from the list.</param>
         /// <remarks>
-        /// This operation employs <see cref="M:xyLOGIX.EasyTabs.ListWithEvents`1.Remove(`0)" />
+        /// This operation employs
+        /// <see cref="M:xyLOGIX.EasyTabs.ListWithEvents`1.Remove(`0)" />
         /// method for removing each individual item which is thread-safe.  However,
         /// overall
         /// operation isn't atomic, and hence does not guarantee thread-safety.
@@ -305,14 +297,14 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="M:xyLOGIX.EasyTabs.ListWithEvents`1.SuppressEvents" /> call.
         /// </summary>
         public void ResumeEvents()
-            => _suppressEvents = false;
+            => SetEventsSuppressed(false);
 
         /// <summary>
         /// Stops raising events until
         /// <see cref="M:xyLOGIX.EasyTabs.ListWithEvents`1.ResumeEvents" /> is called.
         /// </summary>
         public void SuppressEvents()
-            => _suppressEvents = true;
+            => SetEventsSuppressed();
 
         /// <summary>
         /// Raises <see cref="E:xyLOGIX.EasyTabs.ListWithEvents`1.CollectionModified" />
@@ -349,7 +341,8 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Raises the <see cref="E:xyLOGIX.EasyTabs.ListWithEvents`1.EventsSuppressedChanged" />
+        /// Raises the
+        /// <see cref="E:xyLOGIX.EasyTabs.ListWithEvents`1.EventsSuppressedChanged" />
         /// event.
         /// </summary>
         protected virtual void OnEventsSuppressedChanged()
@@ -457,7 +450,8 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Updates the value of the
-        /// <see cref="P:xyLOGIX.EasyTabs.ListWithEvents`1.EventsSuppressed" /> property to match
+        /// <see cref="P:xyLOGIX.EasyTabs.ListWithEvents`1.EventsSuppressed" /> property to
+        /// match
         /// the specified <paramref name="eventsSuppressed" /> setting.s
         /// </summary>
         /// <param name="eventsSuppressed">

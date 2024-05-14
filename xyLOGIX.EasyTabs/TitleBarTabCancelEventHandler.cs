@@ -5,7 +5,7 @@ namespace xyLOGIX.EasyTabs
     /// <summary>
     /// Event delegate for
     /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselecting" /> and
-    /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabSelecting" /> that allows
+    /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTabIndexChanging" /> that allows
     /// subscribers to
     /// cancel the
     /// event and keep it from proceeding.

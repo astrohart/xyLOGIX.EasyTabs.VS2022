@@ -124,6 +124,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IListWithEvents.cs" />
     <Compile Include="OperatingSystem.cs" />
     <Compile Include="TabClosingEventHandler.cs" />
     <Compile Include="TabRendererBase.cs" />
