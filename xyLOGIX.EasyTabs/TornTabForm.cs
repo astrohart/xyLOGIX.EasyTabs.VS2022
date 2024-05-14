@@ -62,7 +62,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="tab">Tab that was torn out of its parent window.</param>
         /// <param name="tabRenderer">Renderer instance to use when drawing the actual tab.</param>
-        public TornTabForm(TitleBarTab tab, BaseTabRenderer tabRenderer)
+        public TornTabForm(TitleBarTab tab, TabRendererBase tabRenderer)
         {
             _layeredWindow = new LayeredWindow();
             _initialized = false;

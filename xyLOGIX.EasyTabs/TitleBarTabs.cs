@@ -93,7 +93,7 @@ namespace xyLOGIX.EasyTabs
         /// Class responsible for actually rendering the tabs in
         /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabs._overlay" />.
         /// </summary>
-        protected BaseTabRenderer _tabRenderer;
+        protected TabRendererBase _tabRenderer;
 
         /// <summary>List of tabs to display for this window.</summary>
         protected ListWithEvents<TitleBarTab> _tabs =
@@ -257,7 +257,7 @@ namespace xyLOGIX.EasyTabs
             => _overlay.TabDropArea;
 
         /// <summary>The renderer to use when drawing the tabs.</summary>
-        public BaseTabRenderer TabRenderer
+        public TabRendererBase TabRenderer
         {
             get => _tabRenderer;
             set

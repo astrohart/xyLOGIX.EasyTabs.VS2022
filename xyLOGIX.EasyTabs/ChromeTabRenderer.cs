@@ -10,7 +10,7 @@ namespace xyLOGIX.EasyTabs
     /// Renderer that produces tabs that mimic the appearance of the Chrome
     /// browser.
     /// </summary>
-    public class ChromeTabRenderer : BaseTabRenderer
+    public class ChromeTabRenderer : TabRendererBase
     {
         private readonly Font _captionFont;
         private readonly WindowsSizingBoxes _windowsSizingBoxes;

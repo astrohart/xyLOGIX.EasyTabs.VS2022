@@ -14,7 +14,7 @@ namespace xyLOGIX.EasyTabs
     /// tab renderer needs to inherit from this class, just as
     /// <see cref="T:xyLOGIX.EasyTabs.ChromeTabRenderer" /> does.
     /// </summary>
-    public abstract class BaseTabRenderer
+    public abstract class TabRendererBase
     {
         /// <summary>
         /// Background of the content area for the tab when the tab is active; its width
@@ -114,14 +114,14 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Default constructor that initializes the
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._parentWindow" /> and
-        /// <see cref="P:xyLOGIX.EasyTabs.BaseTabRenderer.ShowAddButton" /> properties.
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" /> and
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.ShowAddButton" /> properties.
         /// </summary>
         /// <param name="parentWindow">
         /// The parent window that this renderer instance
         /// belongs to.
         /// </param>
-        protected BaseTabRenderer(TitleBarTabs parentWindow)
+        protected TabRendererBase(TitleBarTabs parentWindow)
         {
             _parentWindow = parentWindow;
             ShowAddButton = true;
@@ -262,7 +262,7 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Height of the tab content area; derived from the height of
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._activeCenterImage" />.
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._activeCenterImage" />.
         /// </summary>
         public virtual int TabHeight
             => _activeCenterImage.Height;
@@ -289,9 +289,9 @@ namespace xyLOGIX.EasyTabs
         /// <param name="cursor">Current location of the cursor.</param>
         /// <returns>
         /// True if the <paramref name="cursor" /> is within
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._addButtonArea" /> and is over a
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._addButtonArea" /> and is over a
         /// non-transparent pixel of
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._addButtonHoverImage" />, false
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._addButtonHoverImage" />, false
         /// otherwise.
         /// </returns>
         public virtual bool IsOverAddButton(Point cursor)
@@ -329,7 +329,7 @@ namespace xyLOGIX.EasyTabs
             => (HT)2;
 
         /// <summary>
-        /// Called from the <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._parentWindow" /> to
+        /// Called from the <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" /> to
         /// determine which, if any, of the <paramref name="tabs" /> the
         /// <paramref name="cursor" /> is
         /// over.
@@ -593,9 +593,9 @@ namespace xyLOGIX.EasyTabs
         /// <summary>
         /// Called when a torn tab is dragged into the
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTabs.TabDropArea" /> of
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._parentWindow" />.  Places the tab in the
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />.  Places the tab in the
         /// list and
-        /// sets <see cref="P:xyLOGIX.EasyTabs.BaseTabRenderer.IsTabRepositioning" /> to true to
+        /// sets <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> to true to
         /// simulate the user continuing to drag the tab around in the window.
         /// </summary>
         /// <param name="tab">Tab that was dragged into this window.</param>
@@ -629,8 +629,8 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Initialize the <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._dragStart" />
-        /// and <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._tabClickOffset" /> fields in case
+        /// Initialize the <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._dragStart" />
+        /// and <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._tabClickOffset" /> fields in case
         /// the user starts dragging a tab.
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
@@ -652,7 +652,7 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// If the user is dragging the mouse, see if they have passed the
-        /// <see cref="P:xyLOGIX.EasyTabs.BaseTabRenderer.TabRepositionDragDistance" /> threshold
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.TabRepositionDragDistance" /> threshold
         /// and, if so, officially begin the
         /// tab drag operation.
         /// </summary>
@@ -682,9 +682,9 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// End the drag operation by resetting the
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._dragStart" /> and
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._tabClickOffset" /> fields and setting
-        /// <see cref="P:xyLOGIX.EasyTabs.BaseTabRenderer.IsTabRepositioning" /> to false.
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._dragStart" /> and
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._tabClickOffset" /> fields and setting
+        /// <see cref="P:xyLOGIX.EasyTabs.TabRendererBase.IsTabRepositioning" /> to false.
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
@@ -923,13 +923,13 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// When items are added to the tabs collection, we need to ensure that the
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._parentWindow" />'s minimum width is set
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />'s minimum width is set
         /// so that we can display at
         /// least each tab and its close buttons.
         /// </summary>
         /// <param name="sender">
         /// List of tabs in the
-        /// <see cref="F:xyLOGIX.EasyTabs.BaseTabRenderer._parentWindow" />.
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />.
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
         private void Tabs_CollectionModified(
