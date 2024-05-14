@@ -1,18 +1,17 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DemoApp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Demonstration app for the xyLOGIX.EasyTabs class library.  Intended to exercise the code and to be used as a debugging aid.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("xyLOGIX, LLC")]
-[assembly: AssemblyProduct("DemoApp")]
-[assembly: AssemblyCopyright("Copyright © xyLOGIX, LLC 2024")]
+[assembly: AssemblyProduct("xyLOGIX EasyTabs Demonstration App")]
+[assembly: AssemblyCopyright("Copyright © 2024 by xyLOGIX, LLC.  All rights reserved.")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyCulture("en-US")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
