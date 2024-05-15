@@ -8,7 +8,6 @@ namespace xyLOGIX.EasyTabs
     /// collection of <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" />s.
     /// </summary>
     public class TitleBarTabCancelEventArgs : CancelEventArgs
-        where TContent : Form
     {
         /// <summary>Action that is being performed.</summary>
         public TabControlAction Action { get; set; }

@@ -20,5 +20,5 @@ namespace xyLOGIX.EasyTabs
     public delegate void TabClosingEventHandler(
         TitleBarTab sender,
         FormClosingEventArgs e
-    ) where TContent : Form;
+    );
 }

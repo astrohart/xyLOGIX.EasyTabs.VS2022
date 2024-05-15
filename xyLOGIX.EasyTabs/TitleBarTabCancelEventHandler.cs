@@ -15,5 +15,5 @@ namespace xyLOGIX.EasyTabs
     public delegate void TitleBarTabCancelEventHandler(
         object sender,
         TitleBarTabCancelEventArgs e
-    ) where TContent : Form;
+    );
 }

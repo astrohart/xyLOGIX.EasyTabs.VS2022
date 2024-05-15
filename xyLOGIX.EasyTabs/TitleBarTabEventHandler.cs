@@ -11,5 +11,5 @@ namespace xyLOGIX.EasyTabs
     public delegate void TitleBarTabEventHandler(
         object sender,
         TitleBarTabEventArgs e
-    ) where TContent : Form;
+    );
 }
