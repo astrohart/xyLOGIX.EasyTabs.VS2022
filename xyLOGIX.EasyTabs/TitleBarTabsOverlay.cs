@@ -710,58 +710,57 @@ namespace xyLOGIX.EasyTabs
                                     );
 
                                     // If the cursor is outside the tear area, tear it away from the current window
-                                    if (!dragArea.Contains(cursorPosition) &&
-                                        _tornTab == null)
+                                    if (dragArea.Contains(cursorPosition) ||
+                                        _tornTab != null) return;
+                                    
+                                    lock (_tornTabLock)
                                     {
-                                        lock (_tornTabLock)
+                                        if (_tornTab == null)
                                         {
-                                            if (_tornTab == null)
-                                            {
-                                                _parentForm.TabRenderer
-                                                    .IsTabRepositioning = false;
+                                            _parentForm.TabRenderer
+                                                .IsTabRepositioning = false;
 
-                                                // Clear the event handler subscriptions from the tab and then create a thumbnail representation of it to use when dragging
-                                                _tornTab = _parentForm
-                                                    .SelectedTab;
-                                                _tornTab.ClearSubscriptions();
-                                                _tornTabForm = new TornTabForm(
-                                                    _tornTab,
-                                                    _parentForm.TabRenderer
-                                                );
-                                            }
+                                            // Clear the event handler subscriptions from the tab and then create a thumbnail representation of it to use when dragging
+                                            _tornTab = _parentForm
+                                                .SelectedTab;
                                         }
+                                    }
 
-                                        if (_tornTab != null)
-                                        {
-                                            _parentForm.SelectedTabIndex =
-                                                _parentForm.SelectedTabIndex ==
-                                                _parentForm.Tabs.Count - 1
-                                                    ? _parentForm
-                                                        .SelectedTabIndex - 1
-                                                    : _parentForm
-                                                        .SelectedTabIndex + 1;
-                                            _parentForm.Tabs.Remove(_tornTab);
+                                    if (_tornTab != null)
+                                    {
+                                        _tornTab.ClearSubscriptions();
+                                        _tornTabForm = new TornTabForm(
+                                            _tornTab,
+                                            _parentForm.TabRenderer
+                                        );
+                                        _parentForm.SelectedTabIndex =
+                                            _parentForm.SelectedTabIndex ==
+                                            _parentForm.Tabs.Count - 1
+                                                ? _parentForm
+                                                    .SelectedTabIndex - 1
+                                                : _parentForm
+                                                    .SelectedTabIndex + 1;
+                                        _parentForm.Tabs.Remove(_tornTab);
 
-                                            // If this tab was the only tab in the window, hide the parent window
-                                            if (_parentForm.Tabs.Count == 0)
-                                                _parentForm.Hide();
+                                        // If this tab was the only tab in the window, hide the parent window
+                                        if (_parentForm.Tabs.Count == 0)
+                                            _parentForm.Hide();
 
-                                            _tornTabForm.Show();
-                                            _dropAreas =
-                                                (from window in _parentForm
-                                                        .ApplicationContext
-                                                        .OpenWindows
-                                                        .Where(
-                                                            w => w.Tabs.Count >
-                                                                0
-                                                        )
-                                                    select new
-                                                        Tuple<TitleBarTabs,
-                                                            Rectangle>(
-                                                            window,
-                                                            window.TabDropArea
-                                                        )).ToArray();
-                                        }
+                                        _tornTabForm.Show();
+                                        _dropAreas =
+                                            (from window in _parentForm
+                                                    .ApplicationContext
+                                                    .OpenWindows
+                                                    .Where(
+                                                        w => w.Tabs.Count >
+                                                            0
+                                                    )
+                                                select new
+                                                    Tuple<TitleBarTabs,
+                                                        Rectangle>(
+                                                        window,
+                                                        window.TabDropArea
+                                                    )).ToArray();
                                     }
                                 }
                             )

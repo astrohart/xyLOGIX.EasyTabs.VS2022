@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Extensions.Providers.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Assemblies.Info", "..\Core.Assemblies.Info\Core.Assemblies.Info\Core.Assemblies.Info.csproj", "{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Win32.Interact", "..\Core.Win32.Interact\Core.Win32.Interact\Core.Win32.Interact.csproj", "{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

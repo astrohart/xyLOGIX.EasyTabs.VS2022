@@ -129,6 +129,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core.Assemblies.Info\Core.Assemblies.Info\Core.Assemblies.Info.csproj">
+      <Project>{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}</Project>
+      <Name>Core.Assemblies.Info</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core.Logging\Core.Logging.Constants\Core.Logging.Constants.csproj">
+      <Project>{E8D0AF54-D988-44D8-8B33-5C034F188014}</Project>
+      <Name>Core.Logging.Constants</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core.Logging\Core.Logging\Core.Logging.csproj">
+      <Project>{0D198925-B01C-4DDE-A062-ED7D7BFD0FAA}</Project>
+      <Name>Core.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core.Win32.Interact\Core.Win32.Interact\Core.Win32.Interact.csproj">
+      <Project>{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}</Project>
+      <Name>Core.Win32.Interact</Name>
+    </ProjectReference>
     <ProjectReference Include="..\xyLOGIX.EasyTabs\xyLOGIX.EasyTabs.csproj">
       <Project>{71AB81E7-3907-4E09-BFD5-B3102D51586F}</Project>
       <Name>xyLOGIX.EasyTabs</Name>
