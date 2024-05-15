@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Core.Logging;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Win32Interop.Enums;
@@ -36,6 +38,12 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         private const int ChromeCloseButtonMarginLeft = 2;
 
+        /// <summary>
+        /// Reference to an instance of
+        /// <see cref="T:xyLOGIX.EasyTabs.WindowsSizingBoxes" /> that controls the
+        /// rendering of window chrome elements such as the <b>Minimize</b>,
+        /// <b>Maximize</b>, and <b>Close</b> buttons etc.
+        /// </summary>
         private readonly WindowsSizingBoxes _windowsSizingBoxes;
 
         /// <summary>
@@ -259,27 +267,102 @@ namespace xyLOGIX.EasyTabs
         public override Image TabCloseButtonImage { get; set; } =
             Resources.ChromeClose;
 
+        /// <summary>
+        /// Height of the tab content area; derived from the height of
+        /// <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._activeCenterImage" />.
+        /// </summary>
         public override int TabHeight
             => Parent.WindowState != FormWindowState.Maximized
                 ? base.TabHeight + TopPadding
                 : base.TabHeight;
 
+        /// <summary>
+        /// Gets a value indicating how many pixels of padding should be above the tabs.
+        /// </summary>
+        /// <remarks>
+        /// Child classes should override this property to specify their own
+        /// values.
+        /// </remarks>
         public override int TopPadding
             => Parent.WindowState != FormWindowState.Maximized ? 8 : 0;
 
-        public override bool IsOverSizingBox(Point cursor)
-            => _windowsSizingBoxes.Contains(cursor);
+        /// <summary>
+        /// Determines whether the mouse mousePointerCoords is currently hovering over
+        /// element(s) of the window chrome, such as the <b>Minimize</b>, <b>Maximize</b>,
+        /// or <b>Close</b> boxes.
+        /// </summary>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A
+        /// <see cref="T:System.Drawing.Point" /> value that gives the current coordinates
+        /// of the mouse pointer.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the user is hovering the mouse pointer over
+        /// the sizing box elements of the parent form; <see langword="false" /> otherwise.
+        /// </returns>
+        public override bool IsOverSizingBox(Point mousePointerCoords)
+            => _windowsSizingBoxes.Contains(mousePointerCoords);
 
-        public override HT NonClientHitTest(Message message, Point cursor)
+        /// <summary>
+        /// Attempts to determine, on what part of the nonclient area, the
+        /// <paramref name="mousePointerCoords" /> is located, if at all.
+        /// </summary>
+        /// <param name="message">
+        /// (Required.) One of the <see cref="T:System.Windows.Forms.Message" /> values
+        /// that identifies the Windows message that is being handled.
+        /// </param>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A <see cref="T:System.Drawing.Point" /> value
+        /// that gives the current mouse pointer location.
+        /// </param>
+        /// <returns>One of the <see cref="T:Win32Interop.Enums.HT" /> enumeration values.</returns>
+        public override HT NonClientHitTest(
+            Message message,
+            Point mousePointerCoords
+        )
         {
-            var result = _windowsSizingBoxes.NonClientHitTest(cursor);
-            if (result == HT.HTNOWHERE)
+            var result = HT.HTCAPTION;
+
+            try
+            {
+                if (_windowsSizingBoxes == null) return result;
+                if (Point.Empty.Equals(mousePointerCoords)) return result;
+
+                result =
+                    _windowsSizingBoxes.NonClientHitTest(mousePointerCoords);
+                if (HT.HTNOWHERE.Equals(result)) result = HT.HTCAPTION;
+            }
+            catch (Exception ex)
+            {
+                // dump all the exception info to the log
+                DebugUtils.LogException(ex);
+
                 result = HT.HTCAPTION;
+            }
+
             return result;
         }
 
+        /// <summary>
+        /// Renders the list of <paramref name="tabs" /> to the screen using the
+        /// given <paramref name="graphicsContext" />.
+        /// </summary>
+        /// <param name="tabs">List of tabs that we are to render.</param>
+        /// <param name="graphicsContext">
+        /// Graphics context that we should use while
+        /// rendering.
+        /// </param>
+        /// <param name="cursor">Current location of the cursor on the screen.</param>
+        /// <param name="forceRedraw">
+        /// Flag indicating whether the redraw should be
+        /// forced.
+        /// </param>
+        /// <param name="offset">
+        /// Offset within <paramref name="graphicsContext" /> that the
+        /// tabs should be rendered.
+        /// </param>
         public override void Render(
-            List<TitleBarTab> tabs,
+            IList<TitleBarTab> tabs,
             Graphics graphicsContext,
             Point offset,
             Point cursor,
@@ -292,8 +375,24 @@ namespace xyLOGIX.EasyTabs
             _windowsSizingBoxes.Render(graphicsContext, cursor);
         }
 
-        protected override int GetMaxTabAreaWidth(
-            List<TitleBarTab> tabs,
+        /// <summary>
+        /// Gets the maximum width to utilize for the <c>Tab Well</c>.  This area is the
+        /// entire area of the form's nonclient area that is available for displaying tabs,
+        /// minus window chrome elements, such as the <b>Minimize</b>, <b>Maximize</b>, and
+        /// <b>Close</b> boxes etc.
+        /// </summary>
+        /// <param name="tabs">
+        /// (Required.) Reference to an instance of a collection of
+        /// instances of <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> that represents the
+        /// collection of tabs currently present in the <c>Tab Well</c>.
+        /// </param>
+        /// <param name="offset">(Required.) A horizontal offset for the tabs.</param>
+        /// <returns>
+        /// Integer specifying the maximum available width for the <c>Tab Well</c>
+        /// .
+        /// </returns>
+        protected override int GetMaxTabWellWidth(
+            IList<TitleBarTab> tabs,
             Point offset
         )
             => Parent.ClientRectangle.Width - offset.X -
@@ -302,6 +401,21 @@ namespace xyLOGIX.EasyTabs
                      AddButtonMarginRight
                    : 0) - tabs.Count * OverlapWidth - _windowsSizingBoxes.Width;
 
+        /// <summary>
+        /// Internal method for rendering an individual <paramref name="tab" /> to
+        /// the screen.
+        /// </summary>
+        /// <param name="graphicsContext">Graphics context to use when rendering the tab.</param>
+        /// <param name="tab">Individual tab that we are to render.</param>
+        /// <param name="index">
+        /// Index of the current <paramref name="tab" /> in the
+        /// collection of currently open tabs.
+        /// </param>
+        /// <param name="area">Area of the screen that the tab should be rendered to.</param>
+        /// <param name="cursor">Current position of the cursor.</param>
+        /// <param name="tabLeftImage">Image to use for the left side of the tab.</param>
+        /// <param name="tabCenterImage">Image to use for the center of the tab.</param>
+        /// <param name="tabRightImage">Image to use for the right side of the tab.</param>
         protected override void Render(
             Graphics graphicsContext,
             TitleBarTab tab,
