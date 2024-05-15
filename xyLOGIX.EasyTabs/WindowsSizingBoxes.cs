@@ -12,7 +12,7 @@ namespace xyLOGIX.EasyTabs
 {
     /// <summary>
     /// Controls the rendering of the window chrome elements, such as the
-    /// <b>Minimize</b>, <b>Maximize</b>, and <b>Close</b> boxes.
+    /// <b>Minimize</b>, <b>Maximize</b>, and <b>Close</b> button(s).
     /// </summary>
     public class WindowsSizingBoxes
     {
@@ -24,17 +24,25 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// A <see cref="T:System.Drawing.Color" /> that is to be used for the highlight
-        /// color of the <b>Close</b> box.
+        /// color of the <b>Close</b> button.
         /// </summary>
         /// <remarks>
         /// The highlight color is painted when the use hovers the mouse pointer
-        /// over the <b>Close</b> box or clicks the <b>Close</b> box.
+        /// over the <b>Close</b> box or clicks the <b>Close</b> button.
         /// </remarks>
         private Color _closeButtonHighlightColor = Color.FromArgb(232, 17, 35);
 
+        /// <summary>
+        /// A <see cref="T:System.Drawing.Rectangle" /> value specifying the bounds of the
+        /// <b>Maximize/Restore</b> button.
+        /// </summary>
         protected Rectangle _maximizeRestoreButtonArea =
             new Rectangle(45, 0, 45, 29);
 
+        /// <summary>
+        /// A <see cref="T:System.Drawing.Rectangle" /> value specifying the bounds of the
+        /// <b>Minimize</b> button.
+        /// </summary>
         protected Rectangle _minimizeButtonArea = new Rectangle(0, 0, 45, 29);
 
         /// <summary>
@@ -45,8 +53,22 @@ namespace xyLOGIX.EasyTabs
         private Color _minimizeMaximizeButtonHighlightColor =
             Color.FromArgb(27, Color.Black);
 
+        /// <summary>
+        /// Reference to an instance of <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> that
+        /// refers to the parent window of the overlay form.
+        /// </summary>
         protected TitleBarTabs _parentWindow;
 
+        /// <summary>
+        /// Constructs a new instance of
+        /// <see cref="T:xyLOGIX.EasyTabs.WindowsSizingBoxes" /> and returns a reference to
+        /// it.
+        /// </summary>
+        /// <param name="parentWindow">
+        /// (Required.) Reference to an instance of
+        /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> that refers to the parent window
+        /// of the overlay form.
+        /// </param>
         public WindowsSizingBoxes(TitleBarTabs parentWindow)
             => _parentWindow = parentWindow;
 
@@ -96,6 +118,10 @@ namespace xyLOGIX.EasyTabs
             }
         }
 
+        /// <summary>
+        /// Gets the total width, in pixels, of the area containing the <b>Minimize</b>,
+        /// <b>Maximize/Restore</b>, and <b>Close</b> button(s).
+        /// </summary>
         public int Width
             => _minimizeButtonArea.Width + _maximizeRestoreButtonArea.Width +
                _closeButtonArea.Width;
@@ -115,26 +141,116 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         public event EventHandler MinimizeMaximizeButtonHighlightColorChanged;
 
-        public bool Contains(Point cursor)
-            => _minimizeButtonArea.Contains(cursor) ||
-               _maximizeRestoreButtonArea.Contains(cursor) ||
-               _closeButtonArea.Contains(cursor);
-
-        public HT NonClientHitTest(Point cursor)
+        /// <summary>
+        /// Determines whether the area of the <b>Minimize</b>, <b>Maximize</b>, and
+        /// <b>Close</b> button(s) contains the specified
+        /// <paramref name="mousePointerCoords" />.
+        /// </summary>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A <see cref="T:System.Drawing.Point" /> that contains the current
+        /// mouse pointer coordinates.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the area of the <b>Minimize</b>,
+        /// <b>Maximize</b>, and <b>Close</b> button(s) contains the specified
+        /// <paramref name="mousePointerCoords" />; <see langword="false" /> otherwise.
+        /// </returns>
+        public bool Contains(Point mousePointerCoords)
         {
-            if (_minimizeButtonArea.Contains(cursor))
-                return HT.HTMINBUTTON;
-            if (_maximizeRestoreButtonArea.Contains(cursor))
-                return HT.HTMAXBUTTON;
-            if (_closeButtonArea.Contains(cursor)) return HT.HTCLOSE;
+            var result = false;
 
-            return HT.HTNOWHERE;
+            try
+            {
+                if (mousePointerCoords.IsEmpty) return result;
+                if (_minimizeButtonArea.IsEmpty) return result;
+                if (_maximizeRestoreButtonArea.IsEmpty) return result;
+                if (_closeButtonArea.IsEmpty) return result;
+
+                result = _minimizeButtonArea.Contains(mousePointerCoords) ||
+                         _maximizeRestoreButtonArea.Contains(
+                             mousePointerCoords
+                         ) || _closeButtonArea.Contains(mousePointerCoords);
+            }
+            catch (Exception ex)
+            {
+                // dump all the exception info to the log
+                DebugUtils.LogException(ex);
+
+                result = false;
+            }
+
+            return result;
         }
 
-        public void Render(Graphics graphicsContext, Point mousePointerCoords)
+        /// <summary>
+        /// Determines whether the specified <paramref name="mousePointerCoords" /> are
+        /// within the bounds of the <b>Minimize</b>, <b>Maximize/Restore</b>, or
+        /// <b>Close</b> button(s) and returns the corresponding hit-test code(s), if
+        /// applicable.
+        /// </summary>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A <see cref="T:System.Drawing.Point" /> that contains the current
+        /// mouse pointer coordinates.
+        /// </param>
+        /// <returns>
+        /// One of the <see cref="T:Win32Interop.Enums.HT" /> enumeration value(s)
+        /// that describes which key region of the nonclient area of the parent from
+        /// contains the specified <paramref name="mousePointerCoords" />, or the
+        /// <see cref="F:Win32Interop.Enums.HT.HTNOWHERE" /> value if this cannot be
+        /// determined.
+        /// </returns>
+        public HT NonClientHitTest(Point mousePointerCoords)
+        {
+            var result = HT.HTNOWHERE;
+
+            try
+            {
+                if (mousePointerCoords.IsEmpty) return result;
+                if (!Contains(mousePointerCoords)) return result;
+
+                if (!_minimizeButtonArea.IsEmpty &&
+                    _minimizeButtonArea.Contains(mousePointerCoords))
+                    return HT.HTMINBUTTON;
+                if (_maximizeRestoreButtonArea.Contains(mousePointerCoords))
+                    return HT.HTMAXBUTTON;
+                if (_closeButtonArea.Contains(mousePointerCoords))
+                    return HT.HTCLOSE;
+            }
+            catch (Exception ex)
+            {
+                // dump all the exception info to the log
+                DebugUtils.LogException(ex);
+
+                result = HT.HTNOWHERE;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Call this method to render the <b>Minimize</b>, <b>Maximize</b>, and
+        /// <b>Close</b> button(s) on the parent form.
+        /// </summary>
+        /// <param name="g">
+        /// (Required.) Reference to an instance of
+        /// <see cref="T:System.Drawing.Graphics" /> that describes the drawing surface.
+        /// </param>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A <see cref="T:System.Drawing.Point" /> that contains the current
+        /// mouse pointer coordinates.
+        /// </param>
+        /// <remarks>
+        /// This method takes no action if the <paramref name="g" /> parameter is
+        /// set to a <see langword="null" /> reference, if the
+        /// <paramref name="mousePointerCoords" /> is set to
+        /// <see cref="F:System.Drawing.Point.Empty" />, or if the parent window is in the
+        /// process of being closed or disposed.
+        /// </remarks>
+        public void Render(Graphics g, Point mousePointerCoords)
         {
             try
             {
+                if (g == null) return;
                 if (_closeButtonArea.IsEmpty) return;
                 if (_maximizeRestoreButtonArea.IsEmpty) return;
                 if (_minimizeButtonArea.IsEmpty) return;
@@ -143,14 +259,14 @@ namespace xyLOGIX.EasyTabs
                 if (_parentWindow.IsDisposed) return;
                 if (_parentWindow.ClientRectangle.IsEmpty) return;
 
-                // Get the coordinates of the right edge of the 
+                // Get the coordinates of the right edge of the
                 // parent window using the width of its Client
                 // Rectangle as a reference.  Then, use this value
                 // to set the X coordinates of the Minimize, Maximize/Restore,
                 // and Close button(s), respectively.
                 var right = _parentWindow.ClientRectangle.Width;
                 if (right <= 0) return;
-                
+
                 var closeButtonHighlighted = false;
 
                 _minimizeButtonArea.X = right - 135;
@@ -164,9 +280,7 @@ namespace xyLOGIX.EasyTabs
                                _minimizeMaximizeButtonHighlightColor
                            ))
                     {
-                        graphicsContext.FillRectangle(
-                            brush, _minimizeButtonArea
-                        );
+                        g.FillRectangle(brush, _minimizeButtonArea);
                     }
                 else if (_maximizeRestoreButtonArea.Contains(
                              mousePointerCoords
@@ -175,15 +289,13 @@ namespace xyLOGIX.EasyTabs
                                _minimizeMaximizeButtonHighlightColor
                            ))
                     {
-                        graphicsContext.FillRectangle(
-                            brush, _maximizeRestoreButtonArea
-                        );
+                        g.FillRectangle(brush, _maximizeRestoreButtonArea);
                     }
                 else if (_closeButtonArea.Contains(mousePointerCoords))
                     using (var brush =
                            new SolidBrush(_closeButtonHighlightColor))
                     {
-                        graphicsContext.FillRectangle(brush, _closeButtonArea);
+                        g.FillRectangle(brush, _closeButtonArea);
                         closeButtonHighlighted = true;
                     }
 
@@ -197,7 +309,7 @@ namespace xyLOGIX.EasyTabs
                                Encoding.UTF8.GetString(Resources.Close), 10, 10
                            ))
                 {
-                    graphicsContext.DrawImage(
+                    g.DrawImage(
                         image, _closeButtonArea.X + 17, _closeButtonArea.Y + 9
                     );
                 }
@@ -205,7 +317,7 @@ namespace xyLOGIX.EasyTabs
                 using (var image = GetMaximizeOrRestoreBoxImage())
                 {
                     if (image != null)
-                        graphicsContext.DrawImage(
+                        g.DrawImage(
                             image, _maximizeRestoreButtonArea.X + 17,
                             _maximizeRestoreButtonArea.Y + 9
                         );
@@ -215,7 +327,7 @@ namespace xyLOGIX.EasyTabs
                            Encoding.UTF8.GetString(Resources.Minimize), 10, 10
                        ))
                 {
-                    graphicsContext.DrawImage(
+                    g.DrawImage(
                         image, _minimizeButtonArea.X + 17,
                         _minimizeButtonArea.Y + 9
                     );
