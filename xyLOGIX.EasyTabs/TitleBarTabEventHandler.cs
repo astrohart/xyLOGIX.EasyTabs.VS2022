@@ -8,8 +8,8 @@ namespace xyLOGIX.EasyTabs
     /// </summary>
     /// <param name="sender">Object for which this event was raised.</param>
     /// <param name="e">Data associated with the event.</param>
-    public delegate void TitleBarTabEventHandler<TContent>(
+    public delegate void TitleBarTabEventHandler(
         object sender,
-        TitleBarTabEventArgs<TContent> e
+        TitleBarTabEventArgs e
     ) where TContent : Form;
 }

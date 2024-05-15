@@ -101,5 +101,11 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="M:xyLOGIX.EasyTabs.ListWithEvents`1.ResumeEvents" /> is called.
         /// </summary>
         void SuppressEvents();
+
+        /// <summary>
+        /// Removes the extra capacity of the collection after, e.g., items have been
+        /// removed or added.
+        /// </summary>
+        void TrimExcess();
     }
 }

@@ -12,16 +12,16 @@ namespace xyLOGIX.EasyTabs
     /// content
     /// that should be displayed within a <c>Tab</c> instance.
     /// </summary>
-    public class TitleBarTab<TContent> where TContent : Form
+    public class TitleBarTab
     {
         /// <summary>Flag indicating whether this <c>Tab</c> is active.</summary>
         protected bool _active;
 
         /// <summary>Content that should be displayed within the <c>Tab</c>.</summary>
-        protected TContent _content;
+        protected Form _content;
 
         /// <summary>Parent window that contains this <c>Tab</c>.</summary>
-        protected TitleBarTabs<TContent> _parent;
+        protected TitleBarTabs _parent;
 
         /// <summary>Default constructor that initializes the various properties.</summary>
         /// <param name="parent">Parent window that contains this <c>Tab</c>.</param>
@@ -30,7 +30,7 @@ namespace xyLOGIX.EasyTabs
         /// parameter, <paramref name="parent" />, is passed a <see langword="null" />
         /// value.
         /// </exception>
-        public TitleBarTab(TitleBarTabs<TContent> parent)
+        public TitleBarTab(TitleBarTabs parent)
         {
             ShowCloseButton = true;
             Parent = parent ?? throw new ArgumentNullException(nameof(parent));
@@ -66,7 +66,7 @@ namespace xyLOGIX.EasyTabs
         internal Rectangle CloseButtonArea { get; set; }
 
         /// <summary>The content that should be displayed for this <c>Tab</c>.</summary>
-        public TContent Content
+        public Form Content
         {
             get => _content;
             set
@@ -98,13 +98,14 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Gets a value indicating whether the content of the <c>Tab</c> has been disposed.
+        /// Gets a value indicating whether the content of the <c>Tab</c> has been
+        /// disposed.
         /// </summary>
         public bool IsDisposed
-            => _content != null && _content.IsDisposed;
+            => _content == null || _content.IsDisposed;
 
         /// <summary>Parent window that contains this <c>Tab</c>.</summary>
-        public TitleBarTabs<TContent> Parent
+        public TitleBarTabs Parent
         {
             get => _parent;
             internal set
@@ -117,13 +118,19 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Flag indicating whether or not we should display the close button for
+        /// Flag indicating whether we should display the close button for
         /// this <c>Tab</c>.
         /// </summary>
         public bool ShowCloseButton { get; set; }
 
         /// <summary>Pre-rendered image of the <c>Tab</c>'s background.</summary>
         internal Bitmap TabImage { get; set; }
+
+        /// <summary>
+        /// Gets a unique identifier that refers to this
+        /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> instance.
+        /// </summary>
+        public Guid TitleBarTabId { get; } = Guid.NewGuid();
 
         /// <summary>
         /// Event that is fired when <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" />
@@ -149,9 +156,22 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
+        /// Closes this <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> by telling its
+        /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" /> to close.
+        /// </summary>
+        public void Close()
+        {
+            if (Content == null) return;
+            if (Content.IsDisposed) return;
+
+            Content.Close();
+        }
+
+        /// <summary>
         /// Called from <see cref="T:xyLOGIX.EasyTabs.TornTabForm" /> when we need to
         /// generate a
-        /// thumbnail for a <c>Tab</c> when it is torn out of its parent window.  We simply call
+        /// thumbnail for a <c>Tab</c> when it is torn out of its parent window.  We simply
+        /// call
         /// <see
         ///     cref="M:System.Drawing.Graphics.CopyFromScreen(System.Drawing.Point,System.Drawing.Point,System.Drawing.Size)" />
         /// to copy the screen contents to a

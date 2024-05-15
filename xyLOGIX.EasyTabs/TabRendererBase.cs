@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Core.Extensions;
+using Core.Logging;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -605,7 +607,7 @@ namespace xyLOGIX.EasyTabs
             );
 
         /// <summary>
-        /// Checks to see if the <paramref name="cursor" /> is over the
+        /// Checks to see if the <paramref name="mousePointerCoords" /> is over the
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.CloseButtonArea" /> of the given
         /// <paramref name="tab" />.
         /// </summary>
@@ -613,26 +615,64 @@ namespace xyLOGIX.EasyTabs
         /// The tab whose
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.CloseButtonArea" /> we are to check
         /// to see if
-        /// it contains <paramref name="cursor" />.
+        /// it contains <paramref name="mousePointerCoords" />.
         /// </param>
-        /// <param name="cursor">Current position of the cursor.</param>
+        /// <param name="mousePointerCoords">Current position of the mousePointerCoords.</param>
         /// <returns>
         /// True if the <paramref name="tab" />'s
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.CloseButtonArea" /> contains
-        /// <paramref name="cursor" />, false otherwise.
+        /// <paramref name="mousePointerCoords" />, false otherwise.
         /// </returns>
-        public virtual bool IsOverCloseButton(TitleBarTab tab, Point cursor)
+        public virtual bool IsOverCloseButton(
+            TitleBarTab tab,
+            Point mousePointerCoords
+        )
             => tab.ShowCloseButton && !_wasTabRepositioning && new Rectangle(
                 tab.Area.X + tab.CloseButtonArea.X,
                 tab.Area.Y + tab.CloseButtonArea.Y, tab.CloseButtonArea.Width,
                 tab.CloseButtonArea.Height
-            ).Contains(cursor);
+            ).Contains(mousePointerCoords);
 
-        public virtual bool IsOverSizingBox(Point cursor)
-            => false;
+        /// <summary>
+        /// Determines whether the mouse mousePointerCoords is currently hovering over
+        /// element(s) of the window chrome, such as the <b>Minimize</b>, <b>Maximize</b>,
+        /// or <b>Close</b> boxes.
+        /// </summary>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A
+        /// <see cref="T:System.Drawing.Point" /> value that gives the current coordinates
+        /// of the mouse pointer.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the user is hovering the mouse pointer over
+        /// the sizing box elements of the parent form; <see langword="false" /> otherwise.
+        /// </returns>
+        public abstract bool IsOverSizingBox(Point mousePointerCoords);
 
-        public virtual HT NonClientHitTest(Message message, Point cursor)
-            => (HT)2;
+        /// <summary>
+        /// Attempts to determine whether the user has clicked the left mouse button in the
+        /// nonclient area of the form.
+        /// </summary>
+        /// <param name="message">
+        /// (Required.) A
+        /// <see cref="T:System.Windows.Forms.Message" /> value that indicates which
+        /// <c>Windows Message</c> is currently being processed by the window procedure.
+        /// </param>
+        /// <param name="mousePointerCoords">
+        /// (Required.) A
+        /// <see cref="T:System.Drawing.Point" /> value that gives the current coordinates
+        /// of the mouse pointer.
+        /// </param>
+        /// <remarks>Children of this class must provide an implementation for this method.</remarks>
+        /// <returns>
+        /// If successful, one of the <see cref="T:Win32Interop.Enums.HT" />
+        /// enumeration values that indicates where the user has clicked the left mouse
+        /// button; otherwise, the <see cref="F:HTCAPTION" /> value is returned by default.
+        /// </returns>
+        public abstract HT NonClientHitTest(
+            Message message,
+            Point mousePointerCoords
+        );
 
         /// <summary>
         /// Called from the <see cref="F:xyLOGIX.EasyTabs.TabRendererBase._parentWindow" />
@@ -687,7 +727,7 @@ namespace xyLOGIX.EasyTabs
         /// tabs should be rendered.
         /// </param>
         public virtual void Render(
-            List<TitleBarTab> tabs,
+            IList<TitleBarTab> tabs,
             Graphics graphicsContext,
             Point offset,
             Point cursor,
@@ -701,7 +741,7 @@ namespace xyLOGIX.EasyTabs
                 SystemInformation.BorderSize.Width + offset.X + screen.X,
                 offset.Y + screen.Y
             );
-            _maxTabWellWellArea.Width = GetMaxTabAreaWidth(tabs, offset);
+            _maxTabWellWellArea.Width = GetMaxTabWellWidth(tabs, offset);
             _maxTabWellWellArea.Height = TabHeight;
             var num1 = Math.Min(
                 ActiveCenterImage.Width,
@@ -839,7 +879,7 @@ namespace xyLOGIX.EasyTabs
                 );
             }
 
-            foreach (var tab in tabs.Reverse<TitleBarTab>())
+            foreach (var tab in tabs.Reverse())
             {
                 var tabLeftImage = GetTabLeftImage(tab);
                 tabCenterImage = GetTabCenterImage(tab);
@@ -1007,22 +1047,62 @@ namespace xyLOGIX.EasyTabs
             Parent.Overlay.Render(true);
         }
 
-        protected virtual int GetMaxTabAreaWidth(
-            List<TitleBarTab> tabs,
+        /// <summary>
+        /// Gets the maximum width to utilize for the <c>Tab Well</c>.  This area is the
+        /// entire area of the form's nonclient area that is available for displaying tabs,
+        /// minus window chrome elements, such as the <b>Minimize</b>, <b>Maximize</b>, and
+        /// <b>Close</b> boxes etc.
+        /// </summary>
+        /// <param name="tabs">
+        /// (Required.) Reference to an instance of a collection of
+        /// instances of <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> that represents the
+        /// collection of tabs currently present in the <c>Tab Well</c>.
+        /// </param>
+        /// <param name="offset">(Required.) A horizontal offset for the tabs.</param>
+        /// <returns>
+        /// Integer specifying the maximum available width for the <c>Tab Well</c>
+        /// .
+        /// </returns>
+        protected virtual int GetMaxTabWellWidth(
+            IList<TitleBarTab> tabs,
             Point offset
         )
-            => Parent.ClientRectangle.Width - offset.X -
-               (ShowAddButton
-                   ? AddButtonImage.Width + AddButtonMarginLeft +
-                     AddButtonMarginRight
-                   : 0) - tabs.Count * OverlapWidth -
-               (Parent.ControlBox
-                   ? SystemInformation.CaptionButtonSize.Width
-                   : 0) - (Parent.MinimizeBox
-                   ? SystemInformation.CaptionButtonSize.Width
-                   : 0) - (Parent.MaximizeBox
-                   ? SystemInformation.CaptionButtonSize.Width
-                   : 0);
+        {
+            var result = 0;
+
+            try
+            {
+                if (tabs == null) return result;
+                if (AddButtonImage == null) return result;
+                if (AddButtonMarginLeft < 0) return result;
+                if (AddButtonMarginRight < 0) return result;
+                if (OverlapWidth < 0) return result;
+                if (Parent == null) return result;
+                if (Parent.IsDisposed) return result;
+
+                result = Parent.ClientRectangle.Width - offset.X -
+                         (ShowAddButton
+                             ? AddButtonImage.Width + AddButtonMarginLeft +
+                               AddButtonMarginRight
+                             : 0) - tabs.Count * OverlapWidth -
+                         (Parent.ControlBox
+                             ? SystemInformation.CaptionButtonSize.Width
+                             : 0) - (Parent.MinimizeBox
+                             ? SystemInformation.CaptionButtonSize.Width
+                             : 0) - (Parent.MaximizeBox
+                             ? SystemInformation.CaptionButtonSize.Width
+                             : 0);
+            }
+            catch (Exception ex)
+            {
+                // dump all the exception info to the log
+                DebugUtils.LogException(ex);
+
+                result = 0;
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Gets the image to use for the center of the <paramref name="tab" />.
@@ -1231,6 +1311,10 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="graphicsContext">Graphics context to use when rendering the tab.</param>
         /// <param name="tab">Individual tab that we are to render.</param>
+        /// <param name="index">
+        /// Index of the current <paramref name="tab" /> in the
+        /// collection of currently open tabs.
+        /// </param>
         /// <param name="area">Area of the screen that the tab should be rendered to.</param>
         /// <param name="cursor">Current position of the cursor.</param>
         /// <param name="tabLeftImage">Image to use for the left side of the tab.</param>

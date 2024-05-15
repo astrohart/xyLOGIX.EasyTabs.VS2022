@@ -17,8 +17,8 @@ namespace xyLOGIX.EasyTabs
     /// This delegate merely specifies the signature of all methods that handle the
     /// <c>TabClosing</c> event.
     /// </remarks>
-    public delegate void TabClosingEventHandler<TContent>(
-        TitleBarTab<TContent> sender,
+    public delegate void TabClosingEventHandler(
+        TitleBarTab sender,
         FormClosingEventArgs e
     ) where TContent : Form;
 }

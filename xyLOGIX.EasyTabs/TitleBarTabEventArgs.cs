@@ -7,7 +7,7 @@ namespace xyLOGIX.EasyTabs
     /// Event arguments class for an event that occurs on a collection of
     ///  <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" />s.
     /// </summary>
-    public class TitleBarTabEventArgs<TContent> : EventArgs where TContent : Form
+    public class TitleBarTabEventArgs : EventArgs where TContent : Form
     {
         /// <summary>Action that is being performed.</summary>
         public TabControlAction? Action { get; set; }
@@ -16,7 +16,7 @@ namespace xyLOGIX.EasyTabs
         /// The tab that the <see cref="P:xyLOGIX.EasyTabs.TitleBarTabEventArgs.Action" />
         /// is being performed on.
         /// </summary>
-        public TitleBarTab<TContent> Tab { get; set; }
+        public TitleBarTab Tab { get; set; }
 
         /// <summary>Index of the tab within the collection.</summary>
         public int TabIndex { get; set; }

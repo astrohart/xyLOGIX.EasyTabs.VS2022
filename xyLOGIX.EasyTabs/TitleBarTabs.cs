@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Win32Interop.Enums;
 using Win32Interop.Methods;
 using Win32Interop.Structs;
+using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
 
@@ -27,7 +28,7 @@ namespace xyLOGIX.EasyTabs
     /// begin
     /// adding tabs to <see cref="P:xyLOGIX.EasyTabs.TitleBarTabs.Tabs" />.
     /// </summary>
-    public abstract class TitleBarTabs<TContent> : Form where TContent : Form
+    public abstract class TitleBarTabs : Form
     {
         /// <summary>Required designer variable.</summary>
         public readonly IContainer components;
@@ -53,7 +54,7 @@ namespace xyLOGIX.EasyTabs
         /// active so that, when it is switched away from, we can generate a fresh
         /// Aero Peek preview image for it.
         /// </summary>
-        protected TitleBarTab<TContent> _previousSelectedTab;
+        protected TitleBarTab _previousSelectedTab;
 
         /// <summary>
         /// Maintains the previous window state so that we can respond properly to
@@ -69,8 +70,8 @@ namespace xyLOGIX.EasyTabs
         protected TabRendererBase _tabRenderer;
 
         /// <summary>List of tabs to display for this window.</summary>
-        protected IListWithEvents<TitleBarTab<TContent>> _tabs =
-            new ListWithEvents<TitleBarTab<TContent>>();
+        protected IListWithEvents<TitleBarTab> _tabs =
+            new ListWithEvents<TitleBarTab>();
 
         /// <summary>
         /// Constructs a new instance of <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> and
@@ -154,11 +155,11 @@ namespace xyLOGIX.EasyTabs
         public TitleBarTabsOverlay Overlay { get; protected set; }
 
         /// <summary>The tab that is currently selected by the user.</summary>
-        public TitleBarTab<TContent> SelectedTab
+        public TitleBarTab SelectedTab
         {
             get
             {
-                TitleBarTab<TContent> result = default;
+                TitleBarTab result = default;
 
                 try
                 {
@@ -250,12 +251,12 @@ namespace xyLOGIX.EasyTabs
             set
             {
                 if (value < 0) return;
-                
+
                 var selectedTab = SelectedTab;
                 var selectedTabIndex = SelectedTabIndex;
                 if (selectedTab != null && selectedTabIndex != value)
                 {
-                    var e = new TitleBarTabCancelEventArgs<TContent>
+                    var e = new TitleBarTabCancelEventArgs
                     {
                         Action = TabControlAction.Deselecting,
                         Tab = selectedTab,
@@ -266,7 +267,7 @@ namespace xyLOGIX.EasyTabs
                         return;
                     selectedTab.Active = false;
                     OnTabDeselected(
-                        new TitleBarTabEventArgs<TContent>
+                        new TitleBarTabEventArgs
                         {
                             Tab = selectedTab,
                             TabIndex = selectedTabIndex,
@@ -277,7 +278,7 @@ namespace xyLOGIX.EasyTabs
 
                 if (value != -1)
                 {
-                    var e = new TitleBarTabCancelEventArgs<TContent>
+                    var e = new TitleBarTabCancelEventArgs
                     {
                         Action = TabControlAction.Selecting,
                         Tab = Tabs[value],
@@ -288,7 +289,7 @@ namespace xyLOGIX.EasyTabs
                         return;
                     Tabs[value].Active = true;
                     OnSelectedTabIndexChanged(
-                        new TitleBarTabEventArgs<TContent>
+                        new TitleBarTabEventArgs
                         {
                             Tab = Tabs[value],
                             TabIndex = value,
@@ -325,37 +326,32 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>Gets the collection of tabs to display for this window.</summary>
-        public IListWithEvents<TitleBarTab<TContent>> Tabs
+        public IListWithEvents<TitleBarTab> Tabs
             => _tabs;
 
         /// <summary>Tooltip UI element to show when hovering over a tab.</summary>
         public ToolTip Tooltip { get; set; }
 
-        /// <summary>Event that is raised after a tab has been clicked.</summary>
-        public event TitleBarTabEventHandler<TContent> TabClicked;
-
-        /// <summary>
-        /// Occurs when a tab is about to be closed.
-        /// </summary>
-        public event TabClosingEventHandler<TContent> TabClosing;
-
-        /// <summary>Event that is raised after a tab has been deselected.</summary>
-        public event TitleBarTabEventHandler<TContent> TabDeselected;
-
-        /// <summary>
-        /// Event that is raised immediately prior to a tab being deselected (
-        /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselected" />).
-        /// </summary>
-        public event TitleBarTabCancelEventHandler<TContent> TabDeselecting;
-
         /// <summary>Event that is raised after a tab has been selected.</summary>
-        public event TitleBarTabEventHandler<TContent> SelectedTabIndexChanged;
+        public event TitleBarTabEventHandler SelectedTabIndexChanged;
 
         /// <summary>
         /// Event that is raised immediately prior to a tab being selected (
         /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTabIndexChanged" />).
         /// </summary>
-        public event TitleBarTabCancelEventHandler<TContent> SelectedTabIndexChanging;
+        public event TitleBarTabCancelEventHandler SelectedTabIndexChanging;
+
+        /// <summary>Event that is raised after a tab has been clicked.</summary>
+        public event TitleBarTabEventHandler TabClicked;
+
+        /// <summary>Event that is raised after a tab has been deselected.</summary>
+        public event TitleBarTabEventHandler TabDeselected;
+
+        /// <summary>
+        /// Event that is raised immediately prior to a tab being deselected (
+        /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselected" />).
+        /// </summary>
+        public event TitleBarTabCancelEventHandler TabDeselecting;
 
         /// <summary>
         /// Calls <see cref="M:xyLOGIX.EasyTabs.TitleBarTabs.CreateTab" />, adds the
@@ -377,7 +373,7 @@ namespace xyLOGIX.EasyTabs
         /// clicked.
         /// </summary>
         /// <returns>A newly created tab.</returns>
-        public abstract TitleBarTab<TContent> CreateTab();
+        public abstract TitleBarTab CreateTab();
 
         /// <summary>
         /// Calls
@@ -403,7 +399,7 @@ namespace xyLOGIX.EasyTabs
         /// if not specified, we default to
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTab" />.
         /// </param>
-        public void ResizeTabContents(TitleBarTab<TContent> tab = null)
+        public void ResizeTabContents(TitleBarTab tab = null)
         {
             if (tab == null)
                 tab = SelectedTab;
@@ -434,7 +430,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="P:System.Windows.Forms.Form.Icon" /> on <paramref name="tab" />.
         /// </param>
         public virtual void UpdateThumbnailPreviewIcon(
-            TitleBarTab<TContent> tab,
+            TitleBarTab tab,
             Icon icon = null
         )
         {
@@ -467,7 +463,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected internal void OnTabClicked(TitleBarTabEventArgs<TContent> e)
+        protected internal void OnTabClicked(TitleBarTabEventArgs e)
         {
             if (TabClicked == null)
                 return;
@@ -481,7 +477,7 @@ namespace xyLOGIX.EasyTabs
         /// in the list.
         /// </summary>
         /// <param name="closingTab">Tab that is being closed.</param>
-        protected virtual void CloseTab(TitleBarTab<TContent> closingTab)
+        protected virtual void CloseTab(TitleBarTab closingTab)
         {
             if (closingTab == null || closingTab.IsDisposed) return;
 
@@ -516,7 +512,7 @@ namespace xyLOGIX.EasyTabs
         /// <param name="tab">Tab that we are to create the thumbnail for.</param>
         /// <returns>Thumbnail created for <paramref name="tab" />.</returns>
         protected virtual TabbedThumbnail CreateThumbnailPreview(
-            TitleBarTab<TContent> tab
+            TitleBarTab tab
         )
         {
             if (TaskbarManager.Instance.TabbedThumbnail.GetThumbnailPreview(
@@ -580,8 +576,19 @@ namespace xyLOGIX.EasyTabs
         {
             base.OnFormClosing(e);
 
-            if (Tabs == null) return;
-            if (Tabs.Count == 0) return;
+            foreach (var tab in Tabs.ToArray())
+            {
+                if (tab == null) continue;
+                if (tab.IsDisposed) continue;
+
+                var formClosed = false;
+                tab.Content.FormClosed += (_, __) => formClosed = true;
+                BeginInvoke(new Action(() => tab.Close()));
+                if (formClosed) continue;
+                e.Cancel =
+                    true; // just one of the tabs not closing is enough to abort the operation
+                break;
+            }
         }
 
         /// <summary>
@@ -712,50 +719,8 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Overrides the <see cref="E:System.Windows.Forms.Control.SizeChanged" /> handler
-        /// so that we can detect when the user has maximized or restored the window and
-        /// adjust the size
-        /// of the non-client area accordingly.
-        /// </summary>
-        /// <param name="e">Arguments associated with the event.</param>
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            if (!WindowState.Equals(_previousWindowState))
-                SetFrameSize();
-            
-            _previousWindowState = WindowState;
-            base.OnSizeChanged(e);
-        }
-
-        /// <summary>
-        /// Callback for the <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselected" />
-        /// event.
-        /// </summary>
-        /// <param name="e">Arguments associated with the event.</param>
-        protected void OnTabDeselected(TitleBarTabEventArgs<TContent> e)
-        {
-            TabDeselected?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// Callback for the <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselecting" />
-        /// event.
-        /// Called when a <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> is in the process
-        /// of losing
-        /// focus.  Grabs an image of
-        /// the tab's content to be used when Aero Peek is activated.
-        /// </summary>
-        /// <param name="e">Arguments associated with the event.</param>
-        protected void OnTabDeselecting(TitleBarTabCancelEventArgs<TContent> e)
-        {
-            if (_previousSelectedTab != null && AeroPeekEnabled)
-                UpdateTabThumbnail(_previousSelectedTab);
-            
-            TabDeselecting?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// Callback for the <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTabIndexChanged" />
+        /// Callback for the
+        /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTabIndexChanged" />
         /// event.
         /// Called when a <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> gains focus.  Sets
         /// the
@@ -766,30 +731,72 @@ namespace xyLOGIX.EasyTabs
         /// .
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnSelectedTabIndexChanged(TitleBarTabEventArgs<TContent> e)
+        protected void OnSelectedTabIndexChanged(TitleBarTabEventArgs e)
         {
             if (SelectedTabIndex != -1 &&
                 _previews.ContainsKey(SelectedTab.Content) && AeroPeekEnabled)
                 TaskbarManager.Instance.TabbedThumbnail.SetActiveTab(
                     SelectedTab.Content
                 );
-            
+
             _previousSelectedTab = SelectedTab;
 
             SelectedTabIndexChanged?.Invoke(this, e);
         }
 
         /// <summary>
-        /// Callback for the <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTabIndexChanging" />
+        /// Callback for the
+        /// <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.SelectedTabIndexChanging" />
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnSelectedTabIndexChanging(TitleBarTabCancelEventArgs<TContent> e)
+        protected void OnSelectedTabIndexChanging(TitleBarTabCancelEventArgs e)
         {
             ResizeTabContents(e.Tab);
             if (SelectedTabIndexChanging == null)
                 return;
             SelectedTabIndexChanging(this, e);
+        }
+
+        /// <summary>
+        /// Overrides the <see cref="E:System.Windows.Forms.Control.SizeChanged" /> handler
+        /// so that we can detect when the user has maximized or restored the window and
+        /// adjust the size
+        /// of the non-client area accordingly.
+        /// </summary>
+        /// <param name="e">Arguments associated with the event.</param>
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            if (!WindowState.Equals(_previousWindowState))
+                SetFrameSize();
+
+            _previousWindowState = WindowState;
+            base.OnSizeChanged(e);
+        }
+
+        /// <summary>
+        /// Callback for the <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselected" />
+        /// event.
+        /// </summary>
+        /// <param name="e">Arguments associated with the event.</param>
+        protected void OnTabDeselected(TitleBarTabEventArgs e)
+            => TabDeselected?.Invoke(this, e);
+
+        /// <summary>
+        /// Callback for the <see cref="E:xyLOGIX.EasyTabs.TitleBarTabs.TabDeselecting" />
+        /// event.
+        /// Called when a <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> is in the process
+        /// of losing
+        /// focus.  Grabs an image of
+        /// the tab's content to be used when Aero Peek is activated.
+        /// </summary>
+        /// <param name="e">Arguments associated with the event.</param>
+        protected void OnTabDeselecting(TitleBarTabCancelEventArgs e)
+        {
+            if (_previousSelectedTab != null && AeroPeekEnabled)
+                UpdateTabThumbnail(_previousSelectedTab);
+
+            TabDeselecting?.Invoke(this, e);
         }
 
         /// <summary>
@@ -852,7 +859,7 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>Generate a new thumbnail image for <paramref name="tab" />.</summary>
         /// <param name="tab">Tab that we need to generate a thumbnail for.</param>
-        protected void UpdateTabThumbnail(TitleBarTab<TContent> tab)
+        protected void UpdateTabThumbnail(TitleBarTab tab)
         {
             var thumbnailPreview =
                 TaskbarManager.Instance.TabbedThumbnail.GetThumbnailPreview(
@@ -1110,7 +1117,7 @@ namespace xyLOGIX.EasyTabs
         {
             if (e.Cancel)
                 return;
-            var closingTab = (TitleBarTab<TContent>)sender;
+            var closingTab = (TitleBarTab)sender;
             CloseTab(closingTab);
             if (!closingTab.Content.IsDisposed && AeroPeekEnabled)
                 TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(

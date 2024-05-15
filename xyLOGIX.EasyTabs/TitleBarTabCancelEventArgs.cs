@@ -7,7 +7,7 @@ namespace xyLOGIX.EasyTabs
     /// Event arguments class for a cancelable event that occurs on a
     /// collection of <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" />s.
     /// </summary>
-    public class TitleBarTabCancelEventArgs<TContent> : CancelEventArgs
+    public class TitleBarTabCancelEventArgs : CancelEventArgs
         where TContent : Form
     {
         /// <summary>Action that is being performed.</summary>
@@ -19,7 +19,7 @@ namespace xyLOGIX.EasyTabs
         /// performed
         /// on.
         /// </summary>
-        public TitleBarTab<TContent> Tab { get; set; }
+        public TitleBarTab Tab { get; set; }
 
         /// <summary>Index of the tab within the collection.</summary>
         public int TabIndex { get; set; }
