@@ -37,8 +37,13 @@ namespace xyLOGIX.EasyTabs
 
         protected Rectangle _minimizeButtonArea = new Rectangle(0, 0, 45, 29);
 
-        protected Brush _minimizeMaximizeButtonHighlight =
-            new SolidBrush(Color.FromArgb(27, Color.Black));
+        /// <summary>
+        /// A <see cref="T:System.Drawing.Color" /> value that describes the color to be
+        /// used when the mouse pointer hovers over, or clicks, the <b>Minimize</b> or
+        /// <b>Maximize</b> button.
+        /// </summary>
+        private Color _minimizeMaximizeButtonHighlightColor =
+            Color.FromArgb(27, Color.Black);
 
         protected TitleBarTabs _parentWindow;
 
@@ -69,6 +74,28 @@ namespace xyLOGIX.EasyTabs
             }
         }
 
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Drawing.Color" /> value that describes the
+        /// color to be used when the mouse pointer hovers over, or clicks, the
+        /// <b>Minimize</b> or <b>Maximize</b> button.
+        /// </summary>
+        /// <remarks>
+        /// This property raises the
+        /// <see
+        ///     cref="E:xyLOGIX.EasyTabs.WindowsSizingBoxes.MinimizeMaximizeButtonHighlightColorChanged" />
+        /// event when its value is updated.
+        /// </remarks>
+        public Color MinimizeMaximizeButtonHighlightColor
+        {
+            get => _minimizeMaximizeButtonHighlightColor;
+            set
+            {
+                var changed = _minimizeMaximizeButtonHighlightColor != value;
+                _minimizeMaximizeButtonHighlightColor = value;
+                if (changed) OnMinimizeMaximizeButtonHighlightColorChanged();
+            }
+        }
+
         public int Width
             => _minimizeButtonArea.Width + _maximizeRestoreButtonArea.Width +
                _closeButtonArea.Width;
@@ -79,6 +106,14 @@ namespace xyLOGIX.EasyTabs
         /// property is updated.
         /// </summary>
         public event EventHandler CloseButtonHighlightColorChanged;
+
+        /// <summary>
+        /// Occurs when the value of the
+        /// <see
+        ///     cref="P:xyLOGIX.EasyTabs.WindowsSizingBoxes.MinimizeMaximizeButtonHighlightColor" />
+        /// property is updated.
+        /// </summary>
+        public event EventHandler MinimizeMaximizeButtonHighlightColorChanged;
 
         public bool Contains(Point cursor)
             => _minimizeButtonArea.Contains(cursor) ||
@@ -98,58 +133,98 @@ namespace xyLOGIX.EasyTabs
 
         public void Render(Graphics graphicsContext, Point mousePointerCoords)
         {
-            var right = _parentWindow.ClientRectangle.Width;
-            var closeButtonHighlighted = false;
+            try
+            {
+                if (_closeButtonArea.IsEmpty) return;
+                if (_maximizeRestoreButtonArea.IsEmpty) return;
+                if (_minimizeButtonArea.IsEmpty) return;
+                if (_parentWindow == null) return;
+                if (_parentWindow.IsClosing) return;
+                if (_parentWindow.IsDisposed) return;
+                if (_parentWindow.ClientRectangle.IsEmpty) return;
 
-            _minimizeButtonArea.X = right - 135;
-            _maximizeRestoreButtonArea.X = right - 90;
-            _closeButtonArea.X = right - 45;
+                // Get the coordinates of the right edge of the 
+                // parent window using the width of its Client
+                // Rectangle as a reference.  Then, use this value
+                // to set the X coordinates of the Minimize, Maximize/Restore,
+                // and Close button(s), respectively.
+                var right = _parentWindow.ClientRectangle.Width;
+                if (right <= 0) return;
+                
+                var closeButtonHighlighted = false;
 
-            if (_minimizeButtonArea.Contains(mousePointerCoords))
-                graphicsContext.FillRectangle(
-                    _minimizeMaximizeButtonHighlight, _minimizeButtonArea
-                );
-            else if (_maximizeRestoreButtonArea.Contains(mousePointerCoords))
-                graphicsContext.FillRectangle(
-                    _minimizeMaximizeButtonHighlight, _maximizeRestoreButtonArea
-                );
-            else if (_closeButtonArea.Contains(mousePointerCoords))
-                using (var brush = new SolidBrush(_closeButtonHighlightColor))
+                _minimizeButtonArea.X = right - 135;
+                _maximizeRestoreButtonArea.X = right - 90;
+                _closeButtonArea.X = right - 45;
+
+                // Draw/paint the Minimize, Maximize/Restore, and Close button(s),
+                // respectively.
+                if (_minimizeButtonArea.Contains(mousePointerCoords))
+                    using (var brush = new SolidBrush(
+                               _minimizeMaximizeButtonHighlightColor
+                           ))
+                    {
+                        graphicsContext.FillRectangle(
+                            brush, _minimizeButtonArea
+                        );
+                    }
+                else if (_maximizeRestoreButtonArea.Contains(
+                             mousePointerCoords
+                         ))
+                    using (var brush = new SolidBrush(
+                               _minimizeMaximizeButtonHighlightColor
+                           ))
+                    {
+                        graphicsContext.FillRectangle(
+                            brush, _maximizeRestoreButtonArea
+                        );
+                    }
+                else if (_closeButtonArea.Contains(mousePointerCoords))
+                    using (var brush =
+                           new SolidBrush(_closeButtonHighlightColor))
+                    {
+                        graphicsContext.FillRectangle(brush, _closeButtonArea);
+                        closeButtonHighlighted = true;
+                    }
+
+                using (var image = closeButtonHighlighted
+                           ? LoadSvg(
+                               Encoding.UTF8.GetString(
+                                   Resources.CloseHighlight
+                               ), 10, 10
+                           )
+                           : LoadSvg(
+                               Encoding.UTF8.GetString(Resources.Close), 10, 10
+                           ))
                 {
-                    graphicsContext.FillRectangle(brush, _closeButtonArea);
-                    closeButtonHighlighted = true;
+                    graphicsContext.DrawImage(
+                        image, _closeButtonArea.X + 17, _closeButtonArea.Y + 9
+                    );
                 }
 
-            using (var image = closeButtonHighlighted
-                       ? LoadSvg(
-                           Encoding.UTF8.GetString(Resources.CloseHighlight),
-                           10, 10
-                       )
-                       : LoadSvg(
-                           Encoding.UTF8.GetString(Resources.Close), 10, 10
+                using (var image = GetMaximizeOrRestoreBoxImage())
+                {
+                    if (image != null)
+                        graphicsContext.DrawImage(
+                            image, _maximizeRestoreButtonArea.X + 17,
+                            _maximizeRestoreButtonArea.Y + 9
+                        );
+                }
+
+                using (var image = LoadSvg(
+                           Encoding.UTF8.GetString(Resources.Minimize), 10, 10
                        ))
-            {
-                graphicsContext.DrawImage(
-                    image, _closeButtonArea.X + 17, _closeButtonArea.Y + 9
-                );
-            }
-
-            using (var image = GetMaximizeOrRestoreBoxImage())
-            {
-                if (image != null)
+                {
                     graphicsContext.DrawImage(
-                        image, _maximizeRestoreButtonArea.X + 17,
-                        _maximizeRestoreButtonArea.Y + 9
+                        image, _minimizeButtonArea.X + 17,
+                        _minimizeButtonArea.Y + 9
                     );
+                }
             }
-
-            using (var image = LoadSvg(
-                       Encoding.UTF8.GetString(Resources.Minimize), 10, 10
-                   ))
+            catch (Exception ex)
             {
-                graphicsContext.DrawImage(
-                    image, _minimizeButtonArea.X + 17, _minimizeButtonArea.Y + 9
-                );
+                // dump all the exception info to the log
+                DebugUtils.LogException(ex);
             }
         }
 
@@ -218,6 +293,23 @@ namespace xyLOGIX.EasyTabs
         /// </remarks>
         protected virtual void OnCloseButtonHighlightColorChanged()
             => CloseButtonHighlightColorChanged?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
+        /// Raises the
+        /// <see
+        ///     cref="E:xyLOGIX.EasyTabs.WindowsSizingBoxes.MinimizeMaximizeButtonHighlightColorChanged" />
+        /// event.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when the value of the
+        /// <see
+        ///     cref="P:xyLOGIX.EasyTabs.WindowsSizingBoxes.MinimizeMaximizeButtonHighlightColor" />
+        /// property is updated.
+        /// </remarks>
+        protected virtual void OnMinimizeMaximizeButtonHighlightColorChanged()
+            => MinimizeMaximizeButtonHighlightColorChanged?.Invoke(
+                this, EventArgs.Empty
+            );
 
         /// <summary>
         /// Attempts to obtain a suitable <see cref="T:System.Drawing.Image" /> that is to
