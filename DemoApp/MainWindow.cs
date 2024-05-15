@@ -1,5 +1,4 @@
-﻿using System;
-using xyLOGIX.EasyTabs;
+﻿using xyLOGIX.EasyTabs;
 
 namespace DemoApp
 {
@@ -30,6 +29,6 @@ namespace DemoApp
         /// </summary>
         /// <returns>A newly created tab.</returns>
         public override TitleBarTab CreateTab()
-            => throw new NotImplementedException();
+            => new TitleBarTab(this) { Content = new MyTabContent() };
     }
 }

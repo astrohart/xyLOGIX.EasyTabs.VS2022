@@ -20,33 +20,23 @@ namespace xyLOGIX.EasyTabs
 {
     /// <summary>
     /// Borderless overlay window that is moved with and rendered on top of the
-    /// non-client area of a  <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> instance
-    /// that's
-    /// responsible
+    /// non-client area of a  <see cref="TitleBarTabs" /> instance that's responsible
     /// for rendering the actual tab content and responding to click events for those
     /// tabs.
     /// </summary>
     public class TitleBarTabsOverlay : Form
     {
-        /// <summary>
-        /// The current double-click time, im milliseconds, for the mouse. A double-click
-        /// is a series of two clicks of the mouse button, the second occurring within a
-        /// specified time after the first. The double-click time is the maximum number of
-        /// milliseconds that may occur between the first and second click of a
-        /// double-click. The maximum double-click time is 5000 milliseconds.
-        /// </summary>
         protected static uint
             _doubleClickInterval = User32.GetDoubleClickTime();
 
         /// <summary>
-        /// Flag indicating whether
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc" />
-        /// has been installed as a hook.
+        /// Flag indicating whether or not <see cref="_hookproc" /> has been
+        /// installed as a hook.
         /// </summary>
         protected static bool _hookProcInstalled;
 
         /// <summary>
-        /// All the parent forms and their overlays so that we don't create
+        /// All of the parent forms and their overlays so that we don't create
         /// duplicate overlays across the application domain.
         /// </summary>
         protected static Dictionary<TitleBarTabs, TitleBarTabsOverlay>
@@ -56,31 +46,22 @@ namespace xyLOGIX.EasyTabs
         protected static TitleBarTab _tornTab;
 
         /// <summary>
-        /// Thumbnail representation of
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._tornTab" /> used when
+        /// Thumbnail representation of <see cref="_tornTab" /> used when
         /// dragging.
         /// </summary>
         protected static TornTabForm _tornTabForm;
 
-        /// <summary>
-        /// Semaphore to control access to
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._tornTab" />.
-        /// </summary>
+        /// <summary>Semaphore to control access to <see cref="_tornTab" />.</summary>
         protected static object _tornTabLock = new object();
 
         /// <summary>
-        /// Flag used in
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.WndProc(System.Windows.Forms.Message@)" />
-        /// and
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)" />
-        /// to track whether the user was click/dragging when a particular event
+        /// Flag used in <see cref="WndProc" /> and <see cref="MouseHookCallback" /> to
+        /// track whether the user was click/dragging when a particular event
         /// occurred.
         /// </summary>
         protected static bool _wasDragging;
 
-        /// <summary>Flag indicating whether the underlying window is active.</summary>
+        /// <summary>Flag indicating whether or not the underlying window is active.</summary>
         protected bool _active;
 
         /// <summary>
@@ -96,88 +77,48 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         protected Tuple<TitleBarTabs, Rectangle>[] _dropAreas;
 
-        /// <summary>
-        /// Value indicating whether the mouse click is the first one experienced by this
-        /// window.
-        /// </summary>
         protected bool _firstClick = true;
 
         /// <summary>
         /// Pointer to the low-level mouse hook callback (
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)" />
-        /// ).
+        /// <see cref="MouseHookCallback" />).
         /// </summary>
         protected IntPtr _hookId;
 
         /// <summary>
-        /// Delegate of
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)" />
-        /// ; declared as a member variable to keep it from being garbage collected.
+        /// Delegate of <see cref="MouseHookCallback" />; declared as a member
+        /// variable to keep it from being garbage collected.
         /// </summary>
         protected HOOKPROC _hookproc;
 
-        /// <summary>
-        /// Value indicating whether the user is hovering the mouse over the <b>Add</b>
-        /// button.
-        /// </summary>
         protected bool _isOverAddButton = true;
 
         /// <summary>Index of the tab, if any, whose close button is being hovered over.</summary>
         protected int _isOverCloseButtonForTab = -1;
 
-        /// <summary>
-        /// Value that indicates whether the user is hovering the mouse over the sizing
-        /// box.
-        /// </summary>
         protected bool _isOverSizingBox;
-
-        /// <summary>
-        /// Time interval between the last two clicks of the mouse that have been
-        /// registered.
-        /// </summary>
         protected long _lastLeftButtonClickTicks;
-
-        /// <summary>
-        /// Array of <see cref="T:System.Drawing.Point" /> that contains the coordinates of
-        /// the last two clicks of the left mouse button.
-        /// </summary>
         protected Point[] _lastTwoClickCoordinates = new Point[2];
 
         /// <summary>
-        /// Queue of mouse events reported by
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc" /> that need to be
-        /// processed.
+        /// Queue of mouse events reported by <see cref="_hookproc" /> that need
+        /// to be processed.
         /// </summary>
         protected BlockingCollection<MouseEvent> _mouseEvents =
             new BlockingCollection<MouseEvent>();
 
-        /// <summary>
-        /// Consumer thread for processing events in
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._mouseEvents" />.
-        /// </summary>
+        /// <summary>Consumer thread for processing events in <see cref="_mouseEvents" />.</summary>
         protected Thread _mouseEventsThread;
 
         /// <summary>Parent form for the overlay.</summary>
         protected TitleBarTabs _parentForm;
 
-        /// <summary>
-        /// Value to indicate whether the parent form is in the <c>Closing</c> state.
-        /// </summary>
         protected bool _parentFormClosing;
-
-        /// <summary>
-        /// A <see cref="T:System.Timers.Timer" /> for showing tab timer(s).
-        /// </summary>
         protected Timer showTooltipTimer;
 
         /// <summary>
         /// Blank default constructor to ensure that the overlays are only
-        /// initialized through
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.GetInstance(xyLOGIX.EasyTabs.TitleBarTabs)" />
-        /// .
+        /// initialized through <see cref="GetInstance" />.
         /// </summary>
         protected TitleBarTabsOverlay() { }
 
@@ -192,31 +133,36 @@ namespace xyLOGIX.EasyTabs
         protected TitleBarTabsOverlay(TitleBarTabs parentForm)
         {
             _parentForm = parentForm;
+
+            // We don't want this window visible in the taskbar
             ShowInTaskbar = false;
-            FormBorderStyle = FormBorderStyle.None;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MinimizeBox = false;
             MaximizeBox = false;
             _aeroEnabled = _parentForm.IsCompositionEnabled;
+
             Show(_parentForm);
             AttachHandlers();
+
             showTooltipTimer = new Timer { AutoReset = false };
+
             showTooltipTimer.Elapsed += ShowTooltipTimer_Elapsed;
         }
 
         /// <summary>
         /// Makes sure that the window is created with an
-        /// <see cref="F:Win32Interop.Enums.WS_EX.WS_EX_LAYERED" /> flag set so that it can
-        /// be alpha-blended properly with the content (
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />) underneath
-        /// the
-        /// overlay.
+        /// <see cref="WS_EX.WS_EX_LAYERED" /> flag set so that it can be alpha-blended
+        /// properly with the content (
+        /// <see cref="_parentForm" />) underneath the overlay.
         /// </summary>
         protected override CreateParams CreateParams
         {
             get
             {
                 var createParams = base.CreateParams;
-                createParams.ExStyle |= 134742016;
+                createParams.ExStyle |=
+                    (int)(WS_EX.WS_EX_LAYERED | WS_EX.WS_EX_NOACTIVATE);
+
                 return createParams;
             }
         }
@@ -226,12 +172,13 @@ namespace xyLOGIX.EasyTabs
         {
             get
             {
-                if (_aeroEnabled)
-                    return DisplayType.Aero;
-                return Application.RenderWithVisualStyles &&
-                       Environment.OSVersion.Version.Major >= 6
-                    ? DisplayType.Basic
-                    : DisplayType.Classic;
+                if (_aeroEnabled) return DisplayType.Aero;
+
+                if (Application.RenderWithVisualStyles &&
+                    Environment.OSVersion.Version.Major >= 6)
+                    return DisplayType.Basic;
+
+                return DisplayType.Classic;
             }
         }
 
@@ -243,12 +190,14 @@ namespace xyLOGIX.EasyTabs
         {
             get
             {
-                User32.GetWindowRect(_parentForm.Handle, out var rect);
+                RECT windowRectangle;
+                User32.GetWindowRect(_parentForm.Handle, out windowRectangle);
+
                 return new Rectangle(
-                    rect.left + SystemInformation
+                    windowRectangle.left + SystemInformation
                         .HorizontalResizeBorderThickness,
-                    rect.top + SystemInformation.VerticalResizeBorderThickness,
-                    ClientRectangle.Width,
+                    windowRectangle.top + SystemInformation
+                        .VerticalResizeBorderThickness, ClientRectangle.Width,
                     _parentForm.NonClientAreaHeight - SystemInformation
                         .VerticalResizeBorderThickness
                 );
@@ -257,26 +206,31 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>Primary color for the titlebar background.</summary>
         protected Color TitleBarColor
-            => Application.RenderWithVisualStyles &&
-               Environment.OSVersion.Version.Major >= 6
-                ?
-                !_active
-                    ? SystemColors.GradientInactiveCaption
-                    : SystemColors.GradientActiveCaption
-                : !_active
-                    ? SystemColors.InactiveCaption
-                    : SystemColors.ActiveCaption;
+        {
+            get
+            {
+                if (Application.RenderWithVisualStyles &&
+                    Environment.OSVersion.Version.Major >= 6)
+                    return _active
+                        ? SystemColors.GradientActiveCaption
+                        : SystemColors.GradientInactiveCaption;
+
+                return _active
+                    ? SystemColors.ActiveCaption
+                    : SystemColors.InactiveCaption;
+            }
+        }
 
         /// <summary>Gradient color for the titlebar background.</summary>
         protected Color TitleBarGradientColor
-            => !_active
+            => _active
                 ?
-                !SystemInformation.IsTitleBarGradientEnabled
-                    ? SystemColors.InactiveCaption
-                    : SystemColors.GradientInactiveCaption
-                : !SystemInformation.IsTitleBarGradientEnabled
-                    ? SystemColors.ActiveCaption
-                    : SystemColors.GradientActiveCaption;
+                SystemInformation.IsTitleBarGradientEnabled
+                    ? SystemColors.GradientActiveCaption
+                    : SystemColors.ActiveCaption
+                : SystemInformation.IsTitleBarGradientEnabled
+                    ? SystemColors.GradientInactiveCaption
+                    : SystemColors.InactiveCaption;
 
         /// <summary>Retrieves or creates the overlay for <paramref name="parentForm" />.</summary>
         /// <param name="parentForm">Parent form that we are to create the overlay for.</param>
@@ -288,6 +242,7 @@ namespace xyLOGIX.EasyTabs
         {
             if (!_parents.ContainsKey(parentForm))
                 _parents.Add(parentForm, new TitleBarTabsOverlay(parentForm));
+
             return _parents[parentForm];
         }
 
@@ -303,11 +258,9 @@ namespace xyLOGIX.EasyTabs
             );
 
         /// <summary>
-        /// Renders the tabs and then calls
-        /// <see
-        ///     cref="M:Win32Interop.Methods.User32.UpdateLayeredWindow(System.IntPtr,System.IntPtr,Win32Interop.Structs.POINT@,Win32Interop.Structs.SIZE@,System.IntPtr,Win32Interop.Structs.POINT@,System.UInt32,Win32Interop.Structs.BLENDFUNCTION@,Win32Interop.Enums.ULW)" />
-        /// to blend the tab content with the underlying window (
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />).
+        /// Renders the tabs and then calls <see cref="User32.UpdateLayeredWindow" /> to
+        /// blend the tab content with the underlying window (
+        /// <see cref="_parentForm" />).
         /// </summary>
         /// <param name="forceRedraw">
         /// Flag indicating whether a full render should be
@@ -317,11 +270,9 @@ namespace xyLOGIX.EasyTabs
             => Render(Cursor.Position, forceRedraw);
 
         /// <summary>
-        /// Renders the tabs and then calls
-        /// <see
-        ///     cref="M:Win32Interop.Methods.User32.UpdateLayeredWindow(System.IntPtr,System.IntPtr,Win32Interop.Structs.POINT@,Win32Interop.Structs.SIZE@,System.IntPtr,Win32Interop.Structs.POINT@,System.UInt32,Win32Interop.Structs.BLENDFUNCTION@,Win32Interop.Enums.ULW)" />
-        /// to blend the tab content with the underlying window (
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />).
+        /// Renders the tabs and then calls <see cref="User32.UpdateLayeredWindow" /> to
+        /// blend the tab content with the underlying window (
+        /// <see cref="_parentForm" />).
         /// </summary>
         /// <param name="cursorPosition">Current position of the cursor.</param>
         /// <param name="forceRedraw">
@@ -330,181 +281,187 @@ namespace xyLOGIX.EasyTabs
         /// </param>
         public void Render(Point cursorPosition, bool forceRedraw = false)
         {
-            if (IsDisposed || _parentForm.TabRenderer == null ||
-                _parentForm.WindowState == FormWindowState.Minimized ||
-                _parentForm.ClientRectangle.Width <= 0) return;
-
-            cursorPosition = GetRelativeCursorPosition(cursorPosition);
-
-            using (var bitmap = new Bitmap(
-                       Width, Height, PixelFormat.Format32bppArgb
-                   ))
+            if (!IsDisposed && _parentForm.TabRenderer != null &&
+                _parentForm.WindowState != FormWindowState.Minimized &&
+                _parentForm.ClientRectangle.Width > 0)
             {
-                using (var graphics = Graphics.FromImage(bitmap))
+                cursorPosition = GetRelativeCursorPosition(cursorPosition);
+
+                using (var bitmap = new Bitmap(
+                           Width, Height, PixelFormat.Format32bppArgb
+                       ))
                 {
-                    DrawTitleBarBackground(graphics);
+                    using (var graphics = Graphics.FromImage(bitmap))
+                    {
+                        DrawTitleBarBackground(graphics);
 
-                    // Since classic mode themes draw over the *entire* titlebar, not just the area immediately behind the tabs, we have to offset the tabs
-                    // when rendering in the window
-                    var offset =
-                        _parentForm.WindowState != FormWindowState.Maximized &&
-                        DisplayType == DisplayType.Classic &&
-                        !_parentForm.TabRenderer.RendersEntireTitleBar
-                            ?
-                            new Point(
-                                0, SystemInformation.CaptionButtonSize.Height
-                            )
-                            : _parentForm.WindowState !=
-                              FormWindowState.Maximized &&
-                              !_parentForm.TabRenderer.RendersEntireTitleBar
-                                ? new Point(
+                        // Since classic mode themes draw over the *entire* titlebar, not just the area immediately behind the tabs, we have to offset the tabs
+                        // when rendering in the window
+                        var offset =
+                            _parentForm.WindowState !=
+                            FormWindowState.Maximized &&
+                            DisplayType == DisplayType.Classic &&
+                            !_parentForm.TabRenderer.RendersEntireTitleBar
+                                ?
+                                new Point(
                                     0,
-                                    SystemInformation
-                                        .VerticalResizeBorderThickness -
-                                    SystemInformation.BorderSize.Height
+                                    SystemInformation.CaptionButtonSize.Height
                                 )
-                                : new Point(0, 0);
+                                : _parentForm.WindowState !=
+                                  FormWindowState.Maximized &&
+                                  !_parentForm.TabRenderer.RendersEntireTitleBar
+                                    ? new Point(
+                                        0,
+                                        SystemInformation
+                                            .VerticalResizeBorderThickness -
+                                        SystemInformation.BorderSize.Height
+                                    )
+                                    : new Point(0, 0);
 
-                    // Render the tabs into the bitmap
-                    _parentForm.TabRenderer.Render(
-                        _parentForm.Tabs, graphics, offset, cursorPosition,
-                        forceRedraw
-                    );
-
-                    // Cut out a hole in the background so that the control box on the underlying window can be shown
-                    if (DisplayType == DisplayType.Classic &&
-                        (_parentForm.ControlBox || _parentForm.MaximizeBox ||
-                         _parentForm.MinimizeBox))
-                    {
-                        var boxWidth = 0;
-
-                        if (_parentForm.ControlBox)
-                            boxWidth += SystemInformation.CaptionButtonSize
-                                .Width;
-
-                        if (_parentForm.MinimizeBox)
-                            boxWidth += SystemInformation.CaptionButtonSize
-                                .Width;
-
-                        if (_parentForm.MaximizeBox)
-                            boxWidth += SystemInformation.CaptionButtonSize
-                                .Width;
-
-                        var oldCompositingMode = graphics.CompositingMode;
-
-                        graphics.CompositingMode = CompositingMode.SourceCopy;
-                        graphics.FillRectangle(
-                            new SolidBrush(Color.Transparent), Width - boxWidth,
-                            0, boxWidth,
-                            SystemInformation.CaptionButtonSize.Height
+                        // Render the tabs into the bitmap
+                        _parentForm.TabRenderer.Render(
+                            _parentForm.Tabs, graphics, offset, cursorPosition,
+                            forceRedraw
                         );
-                        graphics.CompositingMode = oldCompositingMode;
-                    }
 
-                    var screenDc = User32.GetDC(IntPtr.Zero);
-                    var memDc = Gdi32.CreateCompatibleDC(screenDc);
-                    var oldBitmap = IntPtr.Zero;
-                    var bitmapHandle = IntPtr.Zero;
-
-                    try
-                    {
-                        // Copy the contents of the bitmap into memDc
-                        bitmapHandle = bitmap.GetHbitmap(Color.FromArgb(0));
-                        oldBitmap = Gdi32.SelectObject(memDc, bitmapHandle);
-
-                        var size = new SIZE
+                        // Cut out a hole in the background so that the control box on the underlying window can be shown
+                        if (DisplayType == DisplayType.Classic &&
+                            (_parentForm.ControlBox ||
+                             _parentForm.MaximizeBox ||
+                             _parentForm.MinimizeBox))
                         {
-                            cx = bitmap.Width, cy = bitmap.Height
-                        };
+                            var boxWidth = 0;
 
-                        var pointSource = new POINT { x = 0, y = 0 };
-                        var topPos = new POINT { x = Left, y = Top };
-                        var blend = new BLENDFUNCTION
-                        {
-                            // We want to blend the bitmap content with the screen content under it
-                            BlendOp = Convert.ToByte((int)AC.AC_SRC_OVER),
-                            BlendFlags = 0,
+                            if (_parentForm.ControlBox)
+                                boxWidth += SystemInformation.CaptionButtonSize
+                                    .Width;
 
-                            // Follow the parent forms' opacity level
-                            SourceConstantAlpha =
-                                (byte)(_parentForm.Opacity * 255),
+                            if (_parentForm.MinimizeBox)
+                                boxWidth += SystemInformation.CaptionButtonSize
+                                    .Width;
 
-                            // We use the bitmap alpha channel for blending instead of a pre-defined transparency key
-                            AlphaFormat = Convert.ToByte((int)AC.AC_SRC_ALPHA)
-                        };
+                            if (_parentForm.MaximizeBox)
+                                boxWidth += SystemInformation.CaptionButtonSize
+                                    .Width;
 
-                        // Blend the tab content with the underlying content
-                        if (!User32.UpdateLayeredWindow(
-                                Handle, screenDc, ref topPos, ref size, memDc,
-                                ref pointSource, 0, ref blend, ULW.ULW_ALPHA
-                            ))
-                        {
-                            var error = Marshal.GetLastWin32Error();
-                            throw new Win32Exception(
-                                error,
-                                "Error while calling UpdateLayeredWindow()."
+                            var oldCompositingMode = graphics.CompositingMode;
+
+                            graphics.CompositingMode =
+                                CompositingMode.SourceCopy;
+                            graphics.FillRectangle(
+                                new SolidBrush(Color.Transparent),
+                                Width - boxWidth, 0, boxWidth,
+                                SystemInformation.CaptionButtonSize.Height
                             );
+                            graphics.CompositingMode = oldCompositingMode;
                         }
-                    }
 
-                    // Clean up after ourselves
-                    finally
-                    {
-                        User32.ReleaseDC(IntPtr.Zero, screenDc);
+                        var screenDc = User32.GetDC(IntPtr.Zero);
+                        var memDc = Gdi32.CreateCompatibleDC(screenDc);
+                        var oldBitmap = IntPtr.Zero;
+                        var bitmapHandle = IntPtr.Zero;
 
-                        if (bitmapHandle != IntPtr.Zero)
+                        try
                         {
-                            Gdi32.SelectObject(memDc, oldBitmap);
-                            Gdi32.DeleteObject(bitmapHandle);
+                            // Copy the contents of the bitmap into memDc
+                            bitmapHandle = bitmap.GetHbitmap(Color.FromArgb(0));
+                            oldBitmap = Gdi32.SelectObject(memDc, bitmapHandle);
+
+                            var size = new SIZE
+                            {
+                                cx = bitmap.Width, cy = bitmap.Height
+                            };
+
+                            var pointSource = new POINT { x = 0, y = 0 };
+                            var topPos = new POINT { x = Left, y = Top };
+                            var blend = new BLENDFUNCTION
+                            {
+                                // We want to blend the bitmap's content with the screen content under it
+                                BlendOp = Convert.ToByte((int)AC.AC_SRC_OVER),
+                                BlendFlags = 0,
+
+                                // Follow the parent forms' opacity level
+                                SourceConstantAlpha =
+                                    (byte)(_parentForm.Opacity * 255),
+
+                                // We use the bitmap's alpha channel for blending instead of a pre-defined transparency key
+                                AlphaFormat =
+                                    Convert.ToByte((int)AC.AC_SRC_ALPHA)
+                            };
+
+                            // Blend the tab content with the underlying content
+                            if (!User32.UpdateLayeredWindow(
+                                    Handle, screenDc, ref topPos, ref size,
+                                    memDc, ref pointSource, 0, ref blend,
+                                    ULW.ULW_ALPHA
+                                ))
+                            {
+                                var error = Marshal.GetLastWin32Error();
+                                throw new Win32Exception(
+                                    error,
+                                    "Error while calling UpdateLayeredWindow()."
+                                );
+                            }
                         }
 
-                        Gdi32.DeleteDC(memDc);
+                        // Clean up after ourselves
+                        finally
+                        {
+                            User32.ReleaseDC(IntPtr.Zero, screenDc);
+
+                            if (bitmapHandle != IntPtr.Zero)
+                            {
+                                Gdi32.SelectObject(memDc, oldBitmap);
+                                Gdi32.DeleteObject(bitmapHandle);
+                            }
+
+                            Gdi32.DeleteDC(memDc);
+                        }
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Attaches the various event handlers to
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" /> so that the
-        /// overlay
-        /// is moved in synchronization to
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />.
+        /// Attaches the various event handlers to <see cref="_parentForm" /> so that the
+        /// overlay is moved in synchronization to
+        /// <see cref="_parentForm" />.
         /// </summary>
         protected void AttachHandlers()
         {
             FormClosing += TitleBarTabsOverlay_FormClosing;
 
-            _parentForm.FormClosing += OnParentFormClosing;
-            _parentForm.Disposed += OnDisposedParentForm;
-            _parentForm.Deactivate += OnDeactivateParentForm;
-            _parentForm.Activated += OnParentFormActivated;
-            _parentForm.SizeChanged += OnParentFormRefresh;
-            _parentForm.Shown += OnParentFormRefresh;
-            _parentForm.VisibleChanged += OnParentFormRefresh;
-            _parentForm.Move += OnParentFormRefresh;
-            _parentForm.SystemColorsChanged += OnSystemColorsChangedParentForm;
+            _parentForm.FormClosing += _parentForm_FormClosing;
+            _parentForm.Disposed += _parentForm_Disposed;
+            _parentForm.Deactivate += _parentForm_Deactivate;
+            _parentForm.Activated += _parentForm_Activated;
+            _parentForm.SizeChanged += _parentForm_Refresh;
+            _parentForm.Shown += _parentForm_Refresh;
+            _parentForm.VisibleChanged += _parentForm_Refresh;
+            _parentForm.Move += _parentForm_Refresh;
+            _parentForm.SystemColorsChanged += _parentForm_SystemColorsChanged;
 
-            if (_hookproc != null) return;
-
-            // Spin up a consumer thread to process mouse events from _mouseEvents
-            _mouseEventsThread = new Thread(InterpretMouseEvents)
+            if (_hookproc == null)
             {
-                Name = "Low level mouse hooks processing thread",
-                Priority = ThreadPriority.Highest
-            };
-            _mouseEventsThread.Start();
-
-            using (var curProcess = Process.GetCurrentProcess())
-            {
-                using (var curModule = curProcess.MainModule)
+                // Spin up a consumer thread to process mouse events from _mouseEvents
+                _mouseEventsThread = new Thread(InterpretMouseEvents)
                 {
-                    // Install the low level mouse hook that will put events into _mouseEvents
-                    _hookproc = MouseHookCallback;
-                    _hookId = User32.SetWindowsHookEx(
-                        WH.WH_MOUSE_LL, _hookproc,
-                        Kernel32.GetModuleHandle(curModule.ModuleName), 0
-                    );
+                    Name = "Low level mouse hooks processing thread"
+                };
+                _mouseEventsThread.Priority = ThreadPriority.Highest;
+                _mouseEventsThread.Start();
+
+                using (var curProcess = Process.GetCurrentProcess())
+                {
+                    using (var curModule = curProcess.MainModule)
+                    {
+                        // Install the low level mouse hook that will put events into _mouseEvents
+                        _hookproc = MouseHookCallback;
+                        _hookId = User32.SetWindowsHookEx(
+                            WH.WH_MOUSE_LL, _hookproc,
+                            Kernel32.GetModuleHandle(curModule.ModuleName), 0
+                        );
+                    }
                 }
             }
         }
@@ -516,13 +473,12 @@ namespace xyLOGIX.EasyTabs
         /// <param name="graphics">Graphics context with which to draw the background.</param>
         protected virtual void DrawTitleBarBackground(Graphics graphics)
         {
-            if (DisplayType == DisplayType.Aero)
-                return;
-            var rectangle = DisplayType != DisplayType.Basic
-                ? new Rectangle(
-                    new Point(1, 0), new Size(Width - 2, Height - 1)
-                )
-                : new Rectangle(
+            if (DisplayType == DisplayType.Aero) return;
+
+            Rectangle fillArea;
+
+            if (DisplayType == DisplayType.Basic)
+                fillArea = new Rectangle(
                     new Point(
                         1,
                         Top == 0
@@ -532,103 +488,101 @@ namespace xyLOGIX.EasyTabs
                               (Top - _parentForm.Top) - 1
                     ), new Size(Width - 2, _parentForm.Padding.Top)
                 );
-            if (rectangle.Height <= 0)
-                return;
-            var width1 = 3;
-            Size captionButtonSize;
+            else
+                fillArea = new Rectangle(
+                    new Point(1, 0), new Size(Width - 2, Height - 1)
+                );
+
+            if (fillArea.Height <= 0) return;
+
+            // Adjust the margin so that the gradient stops immediately prior to the control box in the titlebar
+            var rightMargin = 3;
+
             if (_parentForm.ControlBox && _parentForm.MinimizeBox)
-            {
-                var num = width1;
-                captionButtonSize = SystemInformation.CaptionButtonSize;
-                var width2 = captionButtonSize.Width;
-                width1 = num + width2;
-            }
+                rightMargin += SystemInformation.CaptionButtonSize.Width;
 
             if (_parentForm.ControlBox && _parentForm.MaximizeBox)
-            {
-                var num = width1;
-                captionButtonSize = SystemInformation.CaptionButtonSize;
-                var width3 = captionButtonSize.Width;
-                width1 = num + width3;
-            }
+                rightMargin += SystemInformation.CaptionButtonSize.Width;
 
             if (_parentForm.ControlBox)
-            {
-                var num = width1;
-                captionButtonSize = SystemInformation.CaptionButtonSize;
-                var width4 = captionButtonSize.Width;
-                width1 = num + width4;
-            }
+                rightMargin += SystemInformation.CaptionButtonSize.Width;
 
-            var linearGradientBrush = new LinearGradientBrush(
-                new Point(24, 0), new Point(rectangle.Width - width1 + 1, 0),
-                TitleBarColor, TitleBarGradientColor
+            var gradient = new LinearGradientBrush(
+                new Point(24, 0),
+                new Point(fillArea.Width - rightMargin + 1, 0), TitleBarColor,
+                TitleBarGradientColor
             );
+
             using (var bufferedGraphics =
-                   BufferedGraphicsManager.Current.Allocate(
-                       graphics, rectangle
-                   ))
+                   BufferedGraphicsManager.Current.Allocate(graphics, fillArea))
             {
                 bufferedGraphics.Graphics.FillRectangle(
-                    new SolidBrush(TitleBarColor), rectangle
+                    new SolidBrush(TitleBarColor), fillArea
                 );
                 bufferedGraphics.Graphics.FillRectangle(
                     new SolidBrush(TitleBarGradientColor),
                     new Rectangle(
                         new Point(
-                            rectangle.Location.X + rectangle.Width - width1,
-                            rectangle.Location.Y
-                        ), new Size(width1, rectangle.Height)
+                            fillArea.Location.X + fillArea.Width - rightMargin,
+                            fillArea.Location.Y
+                        ), new Size(rightMargin, fillArea.Height)
                     )
                 );
                 bufferedGraphics.Graphics.FillRectangle(
-                    linearGradientBrush,
+                    gradient,
                     new Rectangle(
-                        rectangle.Location,
-                        new Size(rectangle.Width - width1, rectangle.Height)
+                        fillArea.Location,
+                        new Size(fillArea.Width - rightMargin, fillArea.Height)
                     )
                 );
                 bufferedGraphics.Graphics.FillRectangle(
                     new SolidBrush(TitleBarColor),
                     new Rectangle(
-                        rectangle.Location, new Size(24, rectangle.Height)
+                        fillArea.Location, new Size(24, fillArea.Height)
                     )
                 );
+
                 bufferedGraphics.Render(graphics);
             }
         }
 
         /// <summary>
         /// Consumer method that processes mouse events in
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._mouseEvents" /> that are
-        /// recorded by
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)" />
-        /// .
+        /// <see cref="_mouseEvents" /> that are recorded by
+        /// <see cref="MouseHookCallback" />.
         /// </summary>
         protected void InterpretMouseEvents()
         {
-            foreach (var consuming in _mouseEvents.GetConsumingEnumerable())
+            foreach (var mouseEvent in _mouseEvents.GetConsumingEnumerable())
             {
-                var nCode = consuming.Code;
-                var wParam = consuming.WParam;
-                var mouseData = consuming.MouseData;
-                Rectangle desktopBounds;
-                if (nCode >= 0 && 512 == (int)wParam)
+                var nCode = mouseEvent.nCode;
+                var wParam = mouseEvent.wParam;
+                var hookStruct = mouseEvent.MouseData;
+
+                if (nCode >= 0 && (int)WM.WM_MOUSEMOVE == (int)wParam)
                 {
                     HideTooltip();
+
+                    // ReSharper disable PossibleInvalidOperationException
                     var cursorPosition = new Point(
-                        mouseData.Value.pt.x, mouseData.Value.pt.y
+                        hookStruct.Value.pt.x, hookStruct.Value.pt.y
                     );
-                    var flag = false;
+
+                    // ReSharper restore PossibleInvalidOperationException
+                    var reRender = false;
+
                     if (_tornTab != null && _dropAreas != null)
                     {
-                        for (var index = 0; index < _dropAreas.Length; ++index)
-                        {
-                            desktopBounds = _dropAreas[index].Item2;
-                            if (desktopBounds.Contains(cursorPosition))
+                        // ReSharper disable ForCanBeConvertedToForeach
+                        for (var i = 0; i < _dropAreas.Length; i++)
+
+                            // ReSharper restore ForCanBeConvertedToForeach
+                            // If the cursor is within the drop area, combine the tab for the window that belongs to that drop area
+                            if (_dropAreas[i]
+                                .Item2.Contains(cursorPosition))
                             {
                                 TitleBarTab tabToCombine = null;
+
                                 lock (_tornTabLock)
                                 {
                                     if (_tornTab != null)
@@ -640,8 +594,11 @@ namespace xyLOGIX.EasyTabs
 
                                 if (tabToCombine != null)
                                 {
-                                    var i1 = index;
-                                    BeginInvoke(
+                                    var i1 = i;
+
+                                    // In all cases where we need to affect the UI, we call Invoke so that those changes are made on the main UI thread since
+                                    // we are on a separate processing thread in this case
+                                    Invoke(
                                         new Action(
                                             () =>
                                             {
@@ -651,24 +608,28 @@ namespace xyLOGIX.EasyTabs
                                                         tabToCombine,
                                                         cursorPosition
                                                     );
+
                                                 tabToCombine = null;
                                                 _tornTabForm.Close();
                                                 _tornTabForm = null;
-                                                if (_parentForm.Tabs.Count != 0)
-                                                    return;
-                                                _parentForm.Close();
+
+                                                if (_parentForm.Tabs.Count == 0)
+                                                    _parentForm.Close();
                                             }
                                         )
                                     );
                                 }
                             }
-                        }
                     }
                     else if (!_parentForm.TabRenderer.IsTabRepositioning)
                     {
                         StartTooltipTimer();
+
                         var relativeCursorPosition =
                             GetRelativeCursorPosition(cursorPosition);
+
+                        // If we were over a close button previously, check to see if the cursor is still over that tab's
+                        // close button; if not, re-render
                         if (_isOverCloseButtonForTab != -1 &&
                             (_isOverCloseButtonForTab >=
                              _parentForm.Tabs.Count ||
@@ -677,21 +638,25 @@ namespace xyLOGIX.EasyTabs
                                  relativeCursorPosition
                              )))
                         {
-                            flag = true;
+                            reRender = true;
                             _isOverCloseButtonForTab = -1;
                         }
+
+                        // Otherwise, see if any tabs' close button is being hovered over
                         else
                         {
-                            for (var index = 0;
-                                 index < _parentForm.Tabs.Count;
-                                 ++index)
+                            // ReSharper disable ForCanBeConvertedToForeach
+                            for (var i = 0; i < _parentForm.Tabs.Count; i++)
+
+                                // ReSharper restore ForCanBeConvertedToForeach
                                 if (_parentForm.TabRenderer.IsOverCloseButton(
-                                        _parentForm.Tabs[index],
+                                        _parentForm.Tabs[i],
                                         relativeCursorPosition
                                     ))
                                 {
-                                    _isOverCloseButtonForTab = index;
-                                    flag = true;
+                                    _isOverCloseButtonForTab = i;
+                                    reRender = true;
+
                                     break;
                                 }
                         }
@@ -704,12 +669,12 @@ namespace xyLOGIX.EasyTabs
                                 ))
                             {
                                 _isOverSizingBox = true;
-                                flag = true;
+                                reRender = true;
                             }
                             else if (_isOverSizingBox)
                             {
                                 _isOverSizingBox = false;
-                                flag = true;
+                                reRender = true;
                             }
                         }
 
@@ -718,74 +683,92 @@ namespace xyLOGIX.EasyTabs
                             ))
                         {
                             _isOverAddButton = true;
-                            flag = true;
+                            reRender = true;
                         }
                         else if (_isOverAddButton)
                         {
                             _isOverAddButton = false;
-                            flag = true;
+                            reRender = true;
                         }
                     }
                     else
                     {
-                        BeginInvoke(
+                        Invoke(
                             new Action(
                                 () =>
                                 {
                                     _wasDragging = true;
-                                    var tabDropArea = TabDropArea;
-                                    tabDropArea.Inflate(
+
+                                    // When determining if a tab has been torn from the window while dragging, we take the drop area for this window and inflate it by the
+                                    // TabTearDragDistance setting
+                                    var dragArea = TabDropArea;
+                                    dragArea.Inflate(
                                         _parentForm.TabRenderer
                                                    .TabTearDragDistance,
                                         _parentForm.TabRenderer
                                                    .TabTearDragDistance
                                     );
-                                    if (tabDropArea.Contains(cursorPosition) ||
-                                        _tornTab != null)
-                                        return;
-                                    lock (_tornTabLock)
+
+                                    // If the cursor is outside the tear area, tear it away from the current window
+                                    if (!dragArea.Contains(cursorPosition) &&
+                                        _tornTab == null)
                                     {
-                                        if (_tornTab == null)
+                                        lock (_tornTabLock)
                                         {
-                                            _parentForm.TabRenderer
-                                                .IsTabRepositioning = false;
-                                            _tornTab = _parentForm.SelectedTab;
-                                            _tornTab.ClearSubscriptions();
-                                            _tornTabForm = new TornTabForm(
-                                                _tornTab,
+                                            if (_tornTab == null)
+                                            {
                                                 _parentForm.TabRenderer
-                                            );
+                                                    .IsTabRepositioning = false;
+
+                                                // Clear the event handler subscriptions from the tab and then create a thumbnail representation of it to use when dragging
+                                                _tornTab = _parentForm
+                                                    .SelectedTab;
+                                                _tornTab.ClearSubscriptions();
+                                                _tornTabForm = new TornTabForm(
+                                                    _tornTab,
+                                                    _parentForm.TabRenderer
+                                                );
+                                            }
+                                        }
+
+                                        if (_tornTab != null)
+                                        {
+                                            _parentForm.SelectedTabIndex =
+                                                _parentForm.SelectedTabIndex ==
+                                                _parentForm.Tabs.Count - 1
+                                                    ? _parentForm
+                                                        .SelectedTabIndex - 1
+                                                    : _parentForm
+                                                        .SelectedTabIndex + 1;
+                                            _parentForm.Tabs.Remove(_tornTab);
+
+                                            // If this tab was the only tab in the window, hide the parent window
+                                            if (_parentForm.Tabs.Count == 0)
+                                                _parentForm.Hide();
+
+                                            _tornTabForm.Show();
+                                            _dropAreas =
+                                                (from window in _parentForm
+                                                        .ApplicationContext
+                                                        .OpenWindows
+                                                        .Where(
+                                                            w => w.Tabs.Count >
+                                                                0
+                                                        )
+                                                    select new
+                                                        Tuple<TitleBarTabs,
+                                                            Rectangle>(
+                                                            window,
+                                                            window.TabDropArea
+                                                        )).ToArray();
                                         }
                                     }
-
-                                    if (_tornTab == null)
-                                        return;
-                                    _parentForm.SelectedTabIndex =
-                                        _parentForm.SelectedTabIndex ==
-                                        _parentForm.Tabs.Count - 1
-                                            ? _parentForm.SelectedTabIndex - 1
-                                            : _parentForm.SelectedTabIndex + 1;
-                                    _parentForm.Tabs.Remove(_tornTab);
-                                    if (_parentForm.Tabs.Count == 0)
-                                        _parentForm.Hide();
-                                    _tornTabForm.Show();
-                                    _dropAreas = _parentForm.ApplicationContext
-                                        .OpenWindows
-                                        .Where(w => w.Tabs.Count > 0)
-                                        .Select(
-                                            window
-                                                => new Tuple<TitleBarTabs,
-                                                    Rectangle>(
-                                                    window, window.TabDropArea
-                                                )
-                                        )
-                                        .ToArray();
                                 }
                             )
                         );
                     }
 
-                    BeginInvoke(
+                    Invoke(
                         new Action(
                             () => OnMouseMove(
                                 new MouseEventArgs(
@@ -795,45 +778,48 @@ namespace xyLOGIX.EasyTabs
                             )
                         )
                     );
+
                     if (_parentForm.TabRenderer.IsTabRepositioning)
-                        flag = true;
-                    if (flag)
-                        BeginInvoke(
-                            new Action(() => Render(cursorPosition, true))
-                        );
+                        reRender = true;
+
+                    if (reRender)
+                        Invoke(new Action(() => Render(cursorPosition, true)));
                 }
-                else if (nCode >= 0 && 515 == (int)wParam)
+                else if (nCode >= 0 && (int)WM.WM_LBUTTONDBLCLK == (int)wParam)
                 {
-                    desktopBounds = DesktopBounds;
-                    if (desktopBounds.Contains(_lastTwoClickCoordinates[0]))
-                    {
-                        desktopBounds = DesktopBounds;
-                        if (desktopBounds.Contains(_lastTwoClickCoordinates[1]))
-                            BeginInvoke(
-                                new Action(
-                                    () => _parentForm.WindowState =
+                    if (DesktopBounds.Contains(_lastTwoClickCoordinates[0]) &&
+                        DesktopBounds.Contains(_lastTwoClickCoordinates[1]))
+                        Invoke(
+                            new Action(
+                                () =>
+                                {
+                                    _parentForm.WindowState =
                                         _parentForm.WindowState ==
                                         FormWindowState.Maximized
                                             ? FormWindowState.Normal
-                                            : FormWindowState.Maximized
-                                )
-                            );
-                    }
+                                            : FormWindowState.Maximized;
+                                }
+                            )
+                        );
                 }
-                else if (nCode >= 0 && 513 == (int)wParam)
+                else if (nCode >= 0 && (int)WM.WM_LBUTTONDOWN == (int)wParam)
                 {
                     if (!_firstClick)
                         _lastTwoClickCoordinates[1] =
                             _lastTwoClickCoordinates[0];
+
                     _lastTwoClickCoordinates[0] = Cursor.Position;
+
                     _firstClick = false;
                     _wasDragging = false;
                 }
-                else if (nCode >= 0 && 514 == (int)wParam)
+                else if (nCode >= 0 && (int)WM.WM_LBUTTONUP == (int)wParam)
                 {
+                    // If we released the mouse button while we were dragging a torn tab, put that tab into a new window
                     if (_tornTab != null)
                     {
                         TitleBarTab tabToRelease = null;
+
                         lock (_tornTabLock)
                         {
                             if (_tornTab != null)
@@ -844,16 +830,18 @@ namespace xyLOGIX.EasyTabs
                         }
 
                         if (tabToRelease != null)
-                            BeginInvoke(
+                            Invoke(
                                 new Action(
                                     () =>
                                     {
-                                        var instance =
+                                        var newWindow =
                                             (TitleBarTabs)Activator
                                                 .CreateInstance(
                                                     _parentForm.GetType()
                                                 );
-                                        if (instance.WindowState ==
+
+                                        // Set the initial window position and state properly
+                                        if (newWindow.WindowState ==
                                             FormWindowState.Maximized)
                                         {
                                             var screen =
@@ -862,56 +850,53 @@ namespace xyLOGIX.EasyTabs
                                                         Cursor.Position
                                                     )
                                                 );
-                                            instance.StartPosition =
+
+                                            newWindow.StartPosition =
                                                 FormStartPosition.Manual;
-                                            instance.WindowState =
+                                            newWindow.WindowState =
                                                 FormWindowState.Normal;
-                                            instance.Left =
+                                            newWindow.Left =
                                                 screen.WorkingArea.Left;
-                                            instance.Top =
+                                            newWindow.Top =
                                                 screen.WorkingArea.Top;
-                                            instance.Width =
+                                            newWindow.Width =
                                                 screen.WorkingArea.Width;
-                                            instance.Height =
+                                            newWindow.Height =
                                                 screen.WorkingArea.Height;
                                         }
                                         else
                                         {
-                                            instance.Left = Cursor.Position.X;
-                                            instance.Top = Cursor.Position.Y;
+                                            newWindow.Left = Cursor.Position.X;
+                                            newWindow.Top = Cursor.Position.Y;
                                         }
 
-                                        tabToRelease.Parent = instance;
+                                        tabToRelease.Parent = newWindow;
                                         _parentForm.ApplicationContext
-                                                   .OpenWindow(instance);
-                                        instance.Show();
-                                        instance.Tabs.Add(tabToRelease);
-                                        instance.SelectedTabIndex = 0;
-                                        instance.ResizeTabContents();
+                                                   .OpenWindow(newWindow);
+
+                                        newWindow.Show();
+                                        newWindow.Tabs.Add(tabToRelease);
+                                        newWindow.SelectedTabIndex = 0;
+                                        newWindow.ResizeTabContents();
+
                                         _tornTabForm.Close();
                                         _tornTabForm = null;
-                                        if (_parentForm.Tabs.Count != 0)
-                                            return;
-                                        _parentForm.Close();
+
+                                        if (_parentForm.Tabs.Count == 0)
+                                            _parentForm.Close();
                                     }
                                 )
                             );
                     }
 
-                    BeginInvoke(
+                    Invoke(
                         new Action(
-                            () =>
-                            {
-                                var position = Cursor.Position;
-                                var x = position.X;
-                                position = Cursor.Position;
-                                var y = position.Y;
-                                OnMouseUp(
-                                    new MouseEventArgs(
-                                        MouseButtons.Left, 1, x, y, 0
-                                    )
-                                );
-                            }
+                            () => OnMouseUp(
+                                new MouseEventArgs(
+                                    MouseButtons.Left, 1, Cursor.Position.X,
+                                    Cursor.Position.Y, 0
+                                )
+                            )
                         )
                     );
                 }
@@ -919,8 +904,7 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>
-        /// Hook callback to process
-        /// <see cref="F:Win32Interop.Enums.WM.WM_MOUSEMOVE" /> messages to
+        /// Hook callback to process <see cref="WM.WM_MOUSEMOVE" /> messages to
         /// highlight/un-highlight the close button on each tab.
         /// </summary>
         /// <param name="nCode">The message being received.</param>
@@ -938,28 +922,33 @@ namespace xyLOGIX.EasyTabs
         {
             var mouseEvent = new MouseEvent
             {
-                Code = nCode, WParam = wParam, LParam = lParam
+                nCode = nCode, wParam = wParam, lParam = lParam
             };
-            if (nCode >= 0 && 512 == (int)wParam)
+
+            if (nCode >= 0 && (int)WM.WM_MOUSEMOVE == (int)wParam)
                 mouseEvent.MouseData = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(
                     lParam, typeof(MSLLHOOKSTRUCT)
                 );
+
             _mouseEvents.Add(mouseEvent);
-            if (nCode >= 0 && 513 == (int)wParam)
+
+            if (nCode >= 0 && (int)WM.WM_LBUTTONDOWN == (int)wParam)
             {
-                var ticks = DateTime.Now.Ticks;
-                if (_lastLeftButtonClickTicks > 0L &&
-                    ticks - _lastLeftButtonClickTicks <
-                    _doubleClickInterval * 10000U)
+                var currentTicks = DateTime.Now.Ticks;
+
+                if (_lastLeftButtonClickTicks > 0 &&
+                    currentTicks - _lastLeftButtonClickTicks <
+                    _doubleClickInterval * 10000)
                     _mouseEvents.Add(
                         new MouseEvent
                         {
-                            Code = nCode,
-                            WParam = new IntPtr(515),
-                            LParam = lParam
+                            nCode = nCode,
+                            wParam = new IntPtr((int)WM.WM_LBUTTONDBLCLK),
+                            lParam = lParam
                         }
                     );
-                _lastLeftButtonClickTicks = ticks;
+
+                _lastLeftButtonClickTicks = currentTicks;
             }
 
             return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
@@ -967,105 +956,56 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Sets the position of the overlay window to match that of
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" /> so that it
-        /// moves in
-        /// tandem with it.
+        /// <see cref="_parentForm" /> so that it moves in tandem with it.
         /// </summary>
         protected void OnPosition()
         {
-            if (IsDisposed)
-                return;
-            var systemMetrics = DisplayType == DisplayType.Classic
-                ? 0
-                : User32.GetSystemMetrics(92);
-            var top = _parentForm.Top;
-            Size size;
-            int num1;
-            if (DisplayType != DisplayType.Classic)
+            if (!IsDisposed)
             {
-                if (_parentForm.WindowState != FormWindowState.Maximized)
-                {
-                    if (!_parentForm.TabRenderer.RendersEntireTitleBar)
-                    {
-                        num1 = systemMetrics;
-                    }
-                    else if (!OperatingSystem.IsWindows10)
-                    {
-                        num1 = 0;
-                    }
-                    else
-                    {
-                        size = SystemInformation.BorderSize;
-                        num1 = size.Width;
-                    }
-                }
-                else
-                {
-                    num1 = SystemInformation.VerticalResizeBorderThickness +
-                           systemMetrics;
-                }
-            }
-            else
-            {
-                num1 = SystemInformation.VerticalResizeBorderThickness;
-            }
+                // 92 is SM_CXPADDEDBORDER, which returns the amount of extra border padding around captioned windows
+                var borderPadding = DisplayType == DisplayType.Classic
+                    ? 0
+                    : User32.GetSystemMetrics(92);
 
-            Top = top + num1;
-            var num2 = _parentForm.Left +
-                       SystemInformation.HorizontalResizeBorderThickness;
-            int num3;
-            if (!OperatingSystem.IsWindows10)
-            {
-                size = SystemInformation.BorderSize;
-                num3 = size.Width;
-            }
-            else
-            {
-                num3 = 0;
-            }
+                // If the form is in a non-maximized state, we position the tabs below the minimize/maximize/close
+                // buttons
+                Top = _parentForm.Top + (DisplayType == DisplayType.Classic
+                    ?
+                    SystemInformation.VerticalResizeBorderThickness
+                    : _parentForm.WindowState == FormWindowState.Maximized
+                        ? SystemInformation.VerticalResizeBorderThickness +
+                          borderPadding
+                        : _parentForm.TabRenderer.RendersEntireTitleBar
+                            ? OperatingSystem.IsWindows10
+                                ? SystemInformation.BorderSize.Width
+                                : 0
+                            : borderPadding);
+                Left = _parentForm.Left +
+                    SystemInformation.HorizontalResizeBorderThickness -
+                    (OperatingSystem.IsWindows10
+                        ? 0
+                        : SystemInformation.BorderSize.Width) + borderPadding;
+                Width = _parentForm.Width -
+                    (SystemInformation.VerticalResizeBorderThickness +
+                     borderPadding) * 2 + (OperatingSystem.IsWindows10
+                        ? 0
+                        : SystemInformation.BorderSize.Width * 2);
+                Height = _parentForm.TabRenderer.TabHeight +
+                         (DisplayType == DisplayType.Classic &&
+                          _parentForm.WindowState !=
+                          FormWindowState.Maximized &&
+                          !_parentForm.TabRenderer.RendersEntireTitleBar
+                             ?
+                             SystemInformation.CaptionButtonSize.Height
+                             : OperatingSystem.IsWindows10
+                                 ? -1 * SystemInformation.BorderSize.Width
+                                 : _parentForm.WindowState !=
+                                   FormWindowState.Maximized
+                                     ? borderPadding
+                                     : 0);
 
-            Left = num2 - num3 + systemMetrics;
-            var num4 = _parentForm.Width -
-                       (SystemInformation.VerticalResizeBorderThickness +
-                        systemMetrics) * 2;
-            int num5;
-            if (!OperatingSystem.IsWindows10)
-            {
-                size = SystemInformation.BorderSize;
-                num5 = size.Width * 2;
+                Render();
             }
-            else
-            {
-                num5 = 0;
-            }
-
-            Width = num4 + num5;
-            var tabHeight = _parentForm.TabRenderer.TabHeight;
-            int num6;
-            if (DisplayType != DisplayType.Classic ||
-                _parentForm.WindowState == FormWindowState.Maximized ||
-                _parentForm.TabRenderer.RendersEntireTitleBar)
-            {
-                if (!OperatingSystem.IsWindows10)
-                {
-                    num6 = _parentForm.WindowState != FormWindowState.Maximized
-                        ? systemMetrics
-                        : 0;
-                }
-                else
-                {
-                    size = SystemInformation.BorderSize;
-                    num6 = -1 * size.Width;
-                }
-            }
-            else
-            {
-                size = SystemInformation.CaptionButtonSize;
-                num6 = size.Height;
-            }
-
-            Height = tabHeight + num6;
-            Render();
         }
 
         /// <summary>
@@ -1235,12 +1175,106 @@ namespace xyLOGIX.EasyTabs
             }
         }
 
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Form.Activated" /> event is fired.
+        /// </summary>
+        /// <param name="sender">Object from which this event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void _parentForm_Activated(object sender, EventArgs e)
+        {
+            _active = true;
+            Render();
+        }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Form.Deactivate" /> event is fired.
+        /// </summary>
+        /// <param name="sender">Object from which this event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void _parentForm_Deactivate(object sender, EventArgs e)
+        {
+            _active = false;
+            Render();
+        }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Component.Disposed" /> event is fired.
+        /// </summary>
+        /// <param name="sender">Object from which this event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void _parentForm_Disposed(object sender, EventArgs e) { }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" /> is in the process
+        /// of closing.  This uninstalls <see cref="_hookproc" /> from the low-
+        /// level hooks list and stops the consumer thread that processes those events.
+        /// </summary>
+        /// <param name="sender">
+        /// Object from which this event originated,
+        /// <see cref="_parentForm" /> in this case.
+        /// </param>
+        /// <param name="e">Arguments associated with this event.</param>
+        private void _parentForm_FormClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+            {
+                _parentFormClosing = false;
+                return;
+            }
+
+            var form = (TitleBarTabs)sender;
+
+            if (form == null) return;
+
+            _parentFormClosing = true;
+
+            if (_parents.ContainsKey(form)) _parents.Remove(form);
+
+            // Uninstall the mouse hook
+            User32.UnhookWindowsHookEx(_hookId);
+
+            // Kill the mouse events processing thread
+            _mouseEvents.CompleteAdding();
+            _mouseEventsThread.Abort();
+        }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Control.SizeChanged" />, <see cref="Control.VisibleChanged" />, or
+        /// <see cref="Control.Move" /> events are fired which re-renders the tabs.
+        /// </summary>
+        /// <param name="sender">Object from which the event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void _parentForm_Refresh(object sender, EventArgs e)
+        {
+            if (_parentForm.WindowState == FormWindowState.Minimized)
+                Visible = false;
+            else
+                OnPosition();
+        }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Control.SystemColorsChanged" /> event is fired which re-renders
+        /// the tabs.
+        /// </summary>
+        /// <param name="sender">Object from which the event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void _parentForm_SystemColorsChanged(object sender, EventArgs e)
+        {
+            _aeroEnabled = _parentForm.IsCompositionEnabled;
+            OnPosition();
+        }
+
         private void HideTooltip()
         {
             showTooltipTimer.Stop();
 
             if (_parentForm.InvokeRequired)
-                _parentForm.BeginInvoke(
+                _parentForm.Invoke(
                     new Action(() => { _parentForm.Tooltip.Hide(_parentForm); })
                 );
             else
@@ -1250,114 +1284,13 @@ namespace xyLOGIX.EasyTabs
         private void InitializeComponent()
         {
             SuspendLayout();
+
+            //
+            // TitleBarTabsOverlay
+            //
             ClientSize = new Size(284, 261);
-            Name = nameof(TitleBarTabsOverlay);
+            Name = "TitleBarTabsOverlay";
             ResumeLayout(false);
-        }
-
-        /// <summary>
-        /// Event handler that is called when
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />'s
-        /// <see cref="E:System.Windows.Forms.Form.Deactivate" /> event is fired.
-        /// </summary>
-        /// <param name="sender">Object from which this event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void OnDeactivateParentForm(object sender, EventArgs e)
-        {
-            _active = false;
-            Render();
-        }
-
-        /// <summary>
-        /// Event handler that is called when
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />'s
-        /// <see cref="E:System.ComponentModel.Component.Disposed" /> event is fired.
-        /// </summary>
-        /// <param name="sender">Object from which this event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void OnDisposedParentForm(object sender, EventArgs e) { }
-
-        /// <summary>
-        /// Event handler that is called when
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />'s
-        /// <see cref="E:System.Windows.Forms.Form.Activated" /> event is fired.
-        /// </summary>
-        /// <param name="sender">Object from which this event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void OnParentFormActivated(object sender, EventArgs e)
-        {
-            _active = true;
-            Render();
-        }
-
-        /// <summary>
-        /// Event handler that is called when
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" /> is in the
-        /// process of
-        /// closing.  This uninstalls
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc" /> from the
-        /// low-level
-        /// hooks list and stops the consumer thread that processes those events.
-        /// </summary>
-        /// <param name="sender">
-        /// Object from which this event originated,
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" /> in this case.
-        /// </param>
-        /// <param name="e">Arguments associated with this event.</param>
-        private void OnParentFormClosing(object sender, CancelEventArgs e)
-        {
-            if (e.Cancel)
-            {
-                _parentFormClosing = false;
-            }
-            else
-            {
-                var key = (TitleBarTabs)sender;
-                if (key == null)
-                    return;
-                _parentFormClosing = true;
-                if (_parents.ContainsKey(key))
-                    _parents.Remove(key);
-                User32.UnhookWindowsHookEx(_hookId);
-                _mouseEvents.CompleteAdding();
-                _mouseEventsThread.Abort();
-            }
-        }
-
-        /// <summary>
-        /// Event handler that is called when
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />'s
-        /// <see cref="E:System.Windows.Forms.Control.SizeChanged" />,
-        /// <see cref="E:System.Windows.Forms.Control.VisibleChanged" />, or
-        /// <see cref="E:System.Windows.Forms.Control.Move" /> events are fired which
-        /// re-renders the tabs.
-        /// </summary>
-        /// <param name="sender">Object from which the event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void OnParentFormRefresh(object sender, EventArgs e)
-        {
-            if (_parentForm == null) return;
-            if (_parentForm.IsDisposed) return;
-
-            if (_parentForm.WindowState == FormWindowState.Minimized)
-                Visible = false;
-            else
-                OnPosition();
-        }
-
-        /// <summary>
-        /// Event handler that is called when
-        /// <see cref="F:xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm" />'s
-        /// <see cref="E:System.Windows.Forms.Control.SystemColorsChanged" /> event is
-        /// fired which re-renders
-        /// the tabs.
-        /// </summary>
-        /// <param name="sender">Object from which the event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void OnSystemColorsChangedParentForm(object sender, EventArgs e)
-        {
-            _aeroEnabled = _parentForm.IsCompositionEnabled;
-            OnPosition();
         }
 
         private void ShowTooltip(TitleBarTabs tabsForm, string caption)
@@ -1401,16 +1334,20 @@ namespace xyLOGIX.EasyTabs
 
         private void StartTooltipTimer()
         {
-            if (!_parentForm.ShowTooltips)
-                return;
-            var titleBarTab = _parentForm.TabRenderer.OverTab(
-                _parentForm.Tabs, GetRelativeCursorPosition(Cursor.Position)
+            if (!_parentForm.ShowTooltips) return;
+
+            var relativeCursorPosition =
+                GetRelativeCursorPosition(Cursor.Position);
+            var hoverTab = _parentForm.TabRenderer.OverTab(
+                _parentForm.Tabs, relativeCursorPosition
             );
-            if (titleBarTab == null)
-                return;
-            showTooltipTimer.Interval =
-                titleBarTab.Parent.Tooltip.AutomaticDelay;
-            showTooltipTimer.Start();
+
+            if (hoverTab != null)
+            {
+                showTooltipTimer.Interval =
+                    hoverTab.Parent.Tooltip.AutomaticDelay;
+                showTooltipTimer.Start();
+            }
         }
 
         private void TitleBarTabsOverlay_FormClosing(
@@ -1418,33 +1355,36 @@ namespace xyLOGIX.EasyTabs
             FormClosingEventArgs e
         )
         {
-            if (_parentFormClosing)
-                return;
-            e.Cancel = true;
-            _parentFormClosing = true;
-            _parentForm.Close();
+            if (!_parentFormClosing)
+            {
+                e.Cancel = true;
+                _parentFormClosing = true;
+                _parentForm.Close();
+            }
         }
 
         /// <summary>
         /// Contains information on mouse events captured by
-        /// <see
-        ///     cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)" />
-        /// and processed by
-        /// <see cref="M:xyLOGIX.EasyTabs.TitleBarTabsOverlay.InterpretMouseEvents" />.
+        /// <see cref="TitleBarTabsOverlay.MouseHookCallback" /> and processed by
+        /// <see cref="TitleBarTabsOverlay.InterpretMouseEvents" />.
         /// </summary>
         protected class MouseEvent
         {
-            /// <summary>Code for the event.</summary>
-            public int Code { get; set; }
-
-            /// <summary>LParam value associated with the event.</summary>
-            public IntPtr LParam { get; set; }
+            /// <summary>lParam value associated with the event.</summary>
+            public IntPtr lParam { get; set; }
 
             /// <summary>Data associated with the mouse event.</summary>
             public MSLLHOOKSTRUCT? MouseData { get; set; }
 
-            /// <summary>WParam value associated with the event.</summary>
-            public IntPtr WParam { get; set; }
+            /// <summary>Code for the event.</summary>
+
+            // ReSharper disable InconsistentNaming
+            public int nCode { get; set; }
+
+            /// <summary>wParam value associated with the event.</summary>
+            public IntPtr wParam { get; set; }
+
+            // ReSharper restore InconsistentNaming
         }
     }
 }
