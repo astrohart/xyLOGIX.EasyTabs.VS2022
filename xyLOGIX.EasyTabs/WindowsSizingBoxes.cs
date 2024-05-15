@@ -153,13 +153,56 @@ namespace xyLOGIX.EasyTabs
             }
         }
 
+        /// <summary>
+        /// Attempts to parse the provided <paramref name="svgXml" />, and, if successful,
+        /// returns a <see cref="T:System.Drawing.Image" /> that has been loaded from it.
+        /// </summary>
+        /// <param name="svgXml">
+        /// (Required.) A <see cref="T:System.String" /> that contains
+        /// fully-formed XML from which an SVG image can be loaded.
+        /// </param>
+        /// <param name="width">
+        /// (Required.) A positive integer specifying the width of the
+        /// resulting <see cref="T:System.Drawing.Image" />.
+        /// </param>
+        /// <param name="height">
+        /// (Required.) A positive integer specifying the height of
+        /// the resulting <see cref="T:System.Drawing.Image" />.
+        /// </param>
+        /// <returns>
+        /// If successful, a reference to an instance of
+        /// <see cref="T:System.Drawing.Image" /> describing the loaded image; otherwise, a
+        /// <see langword="null" /> reference is returned.
+        /// </returns>
         protected Image LoadSvg(string svgXml, int width, int height)
         {
-            var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(svgXml);
+            Image result = default;
 
-            return SvgDocument.Open(xmlDocument)
-                              .Draw(width, height);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(svgXml)) return result;
+                if (width <= 0 || height <= 0)
+                    return
+                        result; // can't have width or height equal to or less than zero
+
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(svgXml);
+
+                var svgDocument = SvgDocument.Open(xmlDocument);
+                if (svgDocument == null)
+                    return result; // failed to open SVG document
+
+                result = svgDocument.Draw(width, height);
+            }
+            catch (Exception ex)
+            {
+                // dump all the exception info to the log
+                DebugUtils.LogException(ex);
+
+                result = default;
+            }
+
+            return result;
         }
 
         /// <summary>
