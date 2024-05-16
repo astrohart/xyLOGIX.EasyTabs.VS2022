@@ -1,5 +1,6 @@
 ﻿using Core.Logging;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using PostSharp.Patterns.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -124,6 +125,20 @@ namespace xyLOGIX.EasyTabs
             get;
             internal set;
         }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether a new tab is created when this form
+        /// is first shown, by default.
+        /// </summary>
+        /// <remarks>The default value of this property is <see langword="true" />.</remarks>
+        [Browsable(true),
+         DesignerSerializationVisibility(
+             DesignerSerializationVisibility.Visible
+         ), EditorBrowsable(EditorBrowsableState.Always),
+         Description(
+             "Gets or sets a value that indicates whether a new tab is created when this form is first shown, by default."
+         ), DefaultValue(true)]
+        public bool CreateNewTabWhenShown { get; set; } = true;
 
         /// <summary>
         /// Flag indicating whether the application itself should exit when the
@@ -758,6 +773,16 @@ namespace xyLOGIX.EasyTabs
             SelectedTabIndexChanging(this, e);
         }
 
+        /// <summary>Raises the <see cref="E:System.Windows.Forms.Form.Shown" /> event.</summary>
+        /// <param name="e">A <see cref="T:System.EventArgs" /> that contains the event data.</param>
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            
+            if (CreateNewTabWhenShown)
+                AddNewTab();
+        }
+
         /// <summary>
         /// Overrides the <see cref="E:System.Windows.Forms.Control.SizeChanged" /> handler
         /// so that we can detect when the user has maximized or restored the window and
@@ -881,6 +906,7 @@ namespace xyLOGIX.EasyTabs
         /// to windows events to render and manipulate the tabs properly.
         /// </summary>
         /// <param name="m">Message received by the pump.</param>
+        [Log(AttributeExclude = true)]
         protected override void WndProc(ref Message m)
         {
             var flag = true;

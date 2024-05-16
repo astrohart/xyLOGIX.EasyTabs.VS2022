@@ -1,4 +1,6 @@
-﻿using PostSharp.Patterns.Diagnostics;
+﻿using Core.Logging;
+using Core.Logging.Constants;
+using PostSharp.Patterns.Diagnostics;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,17 +29,33 @@ namespace xyLOGIX.EasyTabs
     /// </summary>
     public class TitleBarTabsOverlay : Form
     {
+        /// <summary>
+        /// Represents the time interval, in milliseconds, that is considered a
+        /// double-click time for the mouse.
+        /// </summary>
+        /// <remarks>
+        /// This field is initialized using the <see cref="User32.GetDoubleClickTime" />
+        /// method from the <c>Win32Interop</c> package.
+        /// <para />
+        /// The double-click time is the maximum number of milliseconds that can elapse
+        /// between a first click and a second click for them to be considered a
+        /// double-click.
+        /// </remarks>
+        /// <value>
+        /// A <see cref="uint" /> value representing the double click time interval in
+        /// milliseconds.
+        /// </value>
         protected static uint
             _doubleClickInterval = User32.GetDoubleClickTime();
 
         /// <summary>
-        /// Flag indicating whether or not <see cref="_hookproc" /> has been
+        /// Flag indicating whether <see cref="_hookproc" /> has been
         /// installed as a hook.
         /// </summary>
         protected static bool _hookProcInstalled;
 
         /// <summary>
-        /// All of the parent forms and their overlays so that we don't create
+        /// All the parent forms and their overlays so that we don't create
         /// duplicate overlays across the application domain.
         /// </summary>
         protected static Dictionary<TitleBarTabs, TitleBarTabsOverlay>
@@ -62,7 +80,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         protected static bool _wasDragging;
 
-        /// <summary>Flag indicating whether or not the underlying window is active.</summary>
+        /// <summary>Flag indicating whether the underlying window is active.</summary>
         protected bool _active;
 
         /// <summary>
@@ -78,6 +96,10 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         protected Tuple<TitleBarTabs, Rectangle>[] _dropAreas;
 
+        /// <summary>
+        /// Value indicating whether this is the first left-mouse button click in a series
+        /// of subsequent clicks at the same or similar coordinates.
+        /// </summary>
         protected bool _firstClick = true;
 
         /// <summary>
@@ -92,13 +114,37 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         protected HOOKPROC _hookproc;
 
+        /// <summary>
+        /// Value indicating whether the mouse is currently hovering over the <b>Add</b>
+        /// button.
+        /// </summary>
         protected bool _isOverAddButton = true;
 
         /// <summary>Index of the tab, if any, whose close button is being hovered over.</summary>
         protected int _isOverCloseButtonForTab = -1;
 
+        /// <summary>
+        /// Value indicating whether the mouse is currently hovering over the sizing box,
+        /// i.e., the area that provides the form's <b>Minimize</b>,
+        /// <b>Maximize/Restore</b>, and <b>Close</b> buttons.
+        /// </summary>
         protected bool _isOverSizingBox;
+
+        /// <summary>
+        /// Measures the UNIX ticks since the last click of the left mouse-button at the
+        /// same or similar coordinates.  This determines whether the appropriate Windows
+        /// message is to be sent.
+        /// </summary>
         protected long _lastLeftButtonClickTicks;
+
+        /// <summary>
+        /// Array of <see cref="T:System.Drawing.Point" /> values that contains the
+        /// coordinates of the most recent two clicks of the left mouse button.
+        /// </summary>
+        /// <remarks>
+        /// This field is used to determine whether a double-click has indeed
+        /// occurred.
+        /// </remarks>
         protected Point[] _lastTwoClickCoordinates = new Point[2];
 
         /// <summary>
@@ -114,13 +160,29 @@ namespace xyLOGIX.EasyTabs
         /// <summary>Parent form for the overlay.</summary>
         protected TitleBarTabs _parentForm;
 
+        /// <summary>
+        /// Value indicating whether the parent <see cref="T:System.Windows.Forms.Form" />
+        /// is in the process of closing.
+        /// </summary>
         protected bool _parentFormClosing;
+
+        /// <summary>
+        /// A <see cref="T:System.Timers.Timer" /> that measures the time interval within
+        /// which, if the  mouse has been hovering over a tab, a
+        /// <see cref="T:System.Windows.Forms.ToolTip" /> is to be shown.
+        /// </summary>
         protected Timer showTooltipTimer;
 
         /// <summary>
+        /// Constructs a new instance of
+        /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTabsOverlay" /> and returns a reference
+        /// to it.
+        /// </summary>
+        /// <remarks>
         /// Blank default constructor to ensure that the overlays are only
         /// initialized through <see cref="GetInstance" />.
-        /// </summary>
+        /// </remarks>
+        [Log(AttributeExclude = true)]
         protected TitleBarTabsOverlay() { }
 
         /// <summary>
@@ -133,21 +195,17 @@ namespace xyLOGIX.EasyTabs
         /// </param>
         protected TitleBarTabsOverlay(TitleBarTabs parentForm)
         {
+            if (parentForm == null)
+                throw new ArgumentNullException(nameof(parentForm));
+            if (parentForm.IsDisposed)
+                throw new ObjectDisposedException(
+                    nameof(parentForm),
+                    "The parent form is in the 'Disposed' state."
+                );
+
             _parentForm = parentForm;
 
-            // We don't want this window visible in the taskbar
-            ShowInTaskbar = false;
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimizeBox = false;
-            MaximizeBox = false;
-            _aeroEnabled = _parentForm.IsCompositionEnabled;
-
-            Show(_parentForm);
-            AttachHandlers();
-
-            showTooltipTimer = new Timer { AutoReset = false };
-
-            showTooltipTimer.Elapsed += ShowTooltipTimer_Elapsed;
+            Initialize();
         }
 
         /// <summary>
@@ -191,8 +249,9 @@ namespace xyLOGIX.EasyTabs
         {
             get
             {
-                RECT windowRectangle;
-                User32.GetWindowRect(_parentForm.Handle, out windowRectangle);
+                User32.GetWindowRect(
+                    _parentForm.Handle, out var windowRectangle
+                );
 
                 return new Rectangle(
                     windowRectangle.left + SystemInformation
@@ -377,7 +436,7 @@ namespace xyLOGIX.EasyTabs
                             var topPos = new POINT { x = Left, y = Top };
                             var blend = new BLENDFUNCTION
                             {
-                                // We want to blend the bitmap's content with the screen content under it
+                                // We want to blend the content of the bitmap with the screen content under it
                                 BlendOp = Convert.ToByte((int)AC.AC_SRC_OVER),
                                 BlendFlags = 0,
 
@@ -385,7 +444,7 @@ namespace xyLOGIX.EasyTabs
                                 SourceConstantAlpha =
                                     (byte)(_parentForm.Opacity * 255),
 
-                                // We use the bitmap's alpha channel for blending instead of a pre-defined transparency key
+                                // We use the alpha channel of the bitmap for blending instead of a pre-defined transparency key
                                 AlphaFormat =
                                     Convert.ToByte((int)AC.AC_SRC_ALPHA)
                             };
@@ -432,24 +491,23 @@ namespace xyLOGIX.EasyTabs
         {
             FormClosing += TitleBarTabsOverlay_FormClosing;
 
-            _parentForm.FormClosing += _parentForm_FormClosing;
-            _parentForm.Disposed += _parentForm_Disposed;
-            _parentForm.Deactivate += _parentForm_Deactivate;
-            _parentForm.Activated += _parentForm_Activated;
-            _parentForm.SizeChanged += _parentForm_Refresh;
-            _parentForm.Shown += _parentForm_Refresh;
-            _parentForm.VisibleChanged += _parentForm_Refresh;
-            _parentForm.Move += _parentForm_Refresh;
-            _parentForm.SystemColorsChanged += _parentForm_SystemColorsChanged;
+            _parentForm.FormClosing += OnParentFormClosing;
+            _parentForm.Deactivate += OnParentFormDeactivate;
+            _parentForm.Activated += OnParentFormActivated;
+            _parentForm.SizeChanged += OnRefreshParentForm;
+            _parentForm.Shown += OnRefreshParentForm;
+            _parentForm.VisibleChanged += OnRefreshParentForm;
+            _parentForm.Move += OnRefreshParentForm;
+            _parentForm.SystemColorsChanged += OnSystemColorsChangedParentForm;
 
             if (_hookproc == null)
             {
                 // Spin up a consumer thread to process mouse events from _mouseEvents
                 _mouseEventsThread = new Thread(InterpretMouseEvents)
                 {
-                    Name = "Low level mouse hooks processing thread"
+                    Name = "Low level mouse hooks processing thread",
+                    Priority = ThreadPriority.Highest
                 };
-                _mouseEventsThread.Priority = ThreadPriority.Highest;
                 _mouseEventsThread.Start();
 
                 using (var curProcess = Process.GetCurrentProcess())
@@ -560,8 +618,8 @@ namespace xyLOGIX.EasyTabs
                 foreach (var mouseEvent in
                          _mouseEvents.GetConsumingEnumerable())
                 {
-                    var nCode = mouseEvent.nCode;
-                    var wParam = mouseEvent.wParam;
+                    var nCode = mouseEvent.Code;
+                    var wParam = mouseEvent.WParam;
                     var hookStruct = mouseEvent.MouseData;
 
                     if (nCode >= 0 && (int)WM.WM_MOUSEMOVE == (int)wParam)
@@ -944,7 +1002,7 @@ namespace xyLOGIX.EasyTabs
         {
             var mouseEvent = new MouseEvent
             {
-                nCode = nCode, wParam = wParam, lParam = lParam
+                Code = nCode, WParam = wParam, LParam = lParam
             };
 
             if (nCode >= 0 && (int)WM.WM_MOUSEMOVE == (int)wParam)
@@ -964,9 +1022,9 @@ namespace xyLOGIX.EasyTabs
                     _mouseEvents.Add(
                         new MouseEvent
                         {
-                            nCode = nCode,
-                            wParam = new IntPtr((int)WM.WM_LBUTTONDBLCLK),
-                            lParam = lParam
+                            Code = nCode,
+                            WParam = new IntPtr((int)WM.WM_LBUTTONDBLCLK),
+                            LParam = lParam
                         }
                     );
 
@@ -982,52 +1040,57 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         protected void OnPosition()
         {
-            if (!IsDisposed)
+            if (IsDisposed)
             {
-                // 92 is SM_CXPADDEDBORDER, which returns the amount of extra border padding around captioned windows
-                var borderPadding = DisplayType == DisplayType.Classic
-                    ? 0
-                    : User32.GetSystemMetrics(92);
-
-                // If the form is in a non-maximized state, we position the tabs below the minimize/maximize/close
-                // buttons
-                Top = _parentForm.Top + (DisplayType == DisplayType.Classic
-                    ?
-                    SystemInformation.VerticalResizeBorderThickness
-                    : _parentForm.WindowState == FormWindowState.Maximized
-                        ? SystemInformation.VerticalResizeBorderThickness +
-                          borderPadding
-                        : _parentForm.TabRenderer.RendersEntireTitleBar
-                            ? OperatingSystem.IsWindows10
-                                ? SystemInformation.BorderSize.Width
-                                : 0
-                            : borderPadding);
-                Left = _parentForm.Left +
-                    SystemInformation.HorizontalResizeBorderThickness -
-                    (OperatingSystem.IsWindows10
-                        ? 0
-                        : SystemInformation.BorderSize.Width) + borderPadding;
-                Width = _parentForm.Width -
-                    (SystemInformation.VerticalResizeBorderThickness +
-                     borderPadding) * 2 + (OperatingSystem.IsWindows10
-                        ? 0
-                        : SystemInformation.BorderSize.Width * 2);
-                Height = _parentForm.TabRenderer.TabHeight +
-                         (DisplayType == DisplayType.Classic &&
-                          _parentForm.WindowState !=
-                          FormWindowState.Maximized &&
-                          !_parentForm.TabRenderer.RendersEntireTitleBar
-                             ?
-                             SystemInformation.CaptionButtonSize.Height
-                             : OperatingSystem.IsWindows10
-                                 ? -1 * SystemInformation.BorderSize.Width
-                                 : _parentForm.WindowState !=
-                                   FormWindowState.Maximized
-                                     ? borderPadding
-                                     : 0);
-
-                Render();
+                DebugUtils.WriteLine(
+                    DebugLevel.Error,
+                    "TitleBarTabsOverlay.OnPosition: *** ERROR *** The overlay form is currently in the 'Disposed' state."
+                );
+                return;
             }
+
+            // 92 is <c>SM_CXPADDEDBORDER</c>, which returns the amount of extra border padding around captioned windows
+            var borderPadding = DisplayType == DisplayType.Classic
+                ? 0
+                : User32.GetSystemMetrics(92);
+
+            // If the form is in a non-maximized state, we position the tabs below the minimize/maximize/close
+            // buttons
+            Top = _parentForm.Top + (DisplayType == DisplayType.Classic
+                ?
+                SystemInformation.VerticalResizeBorderThickness
+                : _parentForm.WindowState == FormWindowState.Maximized
+                    ? SystemInformation.VerticalResizeBorderThickness +
+                      borderPadding
+                    : _parentForm.TabRenderer.RendersEntireTitleBar
+                        ? OperatingSystem.IsWindows10
+                            ? SystemInformation.BorderSize.Width
+                            : 0
+                        : borderPadding);
+            Left = _parentForm.Left +
+                SystemInformation.HorizontalResizeBorderThickness -
+                (OperatingSystem.IsWindows10
+                    ? 0
+                    : SystemInformation.BorderSize.Width) + borderPadding;
+            Width = _parentForm.Width -
+                (SystemInformation.VerticalResizeBorderThickness +
+                 borderPadding) * 2 + (OperatingSystem.IsWindows10
+                    ? 0
+                    : SystemInformation.BorderSize.Width * 2);
+            Height = _parentForm.TabRenderer.TabHeight +
+                     (DisplayType == DisplayType.Classic &&
+                      _parentForm.WindowState != FormWindowState.Maximized &&
+                      !_parentForm.TabRenderer.RendersEntireTitleBar
+                         ?
+                         SystemInformation.CaptionButtonSize.Height
+                         : OperatingSystem.IsWindows10
+                             ? -1 * SystemInformation.BorderSize.Width
+                             : _parentForm.WindowState !=
+                               FormWindowState.Maximized
+                                 ? borderPadding
+                                 : 0);
+
+            Render();
         }
 
         /// <summary>
@@ -1035,6 +1098,7 @@ namespace xyLOGIX.EasyTabs
         /// click events on the tabs themselves.
         /// </summary>
         /// <param name="m">Message received by the pump.</param>
+        [Log(AttributeExclude = true)]
         protected override void WndProc(ref Message m)
         {
             switch ((WM)m.Msg)
@@ -1199,47 +1263,91 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Control.SizeChanged" />, <see cref="Control.VisibleChanged" />, or
+        /// <see cref="Control.Move" /> events are fired which re-renders the tabs.
+        /// </summary>
+        /// <param name="sender">Object from which the event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void OnRefreshParentForm(object sender, EventArgs e)
+        {
+            if (_parentForm.WindowState == FormWindowState.Minimized)
+                Visible = false;
+            else
+                OnPosition();
+        }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
+        /// <see cref="Control.SystemColorsChanged" /> event is fired which re-renders
+        /// the tabs.
+        /// </summary>
+        /// <param name="sender">Object from which the event originated.</param>
+        /// <param name="e">Arguments associated with the event.</param>
+        private void OnSystemColorsChangedParentForm(object sender, EventArgs e)
+        {
+            _aeroEnabled = _parentForm.IsCompositionEnabled;
+            OnPosition();
+        }
+
+        /// <summary>
+        /// Prevents the <see cref="T:System.Windows.Forms.ToolTip" /> from being shown, or
+        /// hides if it is currently showing.
+        /// </summary>
+        private void HideTooltip()
+        {
+            showTooltipTimer.Stop();
+
+            if (_parentForm.InvokeRequired)
+                _parentForm.Invoke(
+                    new Action(() => { _parentForm.Tooltip.Hide(_parentForm); })
+                );
+            else
+                _parentForm.Tooltip.Hide(_parentForm);
+        }
+
+        /// <summary>
+        /// Called to run initialization logic for this overlay form.
+        /// </summary>
+        private void Initialize()
+        {
+            // We don't want this window visible in the taskbar
+            ShowInTaskbar = false;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MinimizeBox = false;
+            MaximizeBox = false;
+            _aeroEnabled = _parentForm.IsCompositionEnabled;
+
+            Show(_parentForm);
+            AttachHandlers();
+
+            showTooltipTimer = new Timer { AutoReset = false };
+
+            showTooltipTimer.Elapsed += ShowTooltipTimer_Elapsed;
+        }
+
+        /// <summary>
+        /// Event handler that is called when <see cref="_parentForm" />'s
         /// <see cref="Form.Activated" /> event is fired.
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void _parentForm_Activated(object sender, EventArgs e)
+        private void OnParentFormActivated(object sender, EventArgs e)
         {
             _active = true;
             Render();
         }
 
         /// <summary>
-        /// Event handler that is called when <see cref="_parentForm" />'s
-        /// <see cref="Form.Deactivate" /> event is fired.
-        /// </summary>
-        /// <param name="sender">Object from which this event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void _parentForm_Deactivate(object sender, EventArgs e)
-        {
-            _active = false;
-            Render();
-        }
-
-        /// <summary>
-        /// Event handler that is called when <see cref="_parentForm" />'s
-        /// <see cref="Component.Disposed" /> event is fired.
-        /// </summary>
-        /// <param name="sender">Object from which this event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void _parentForm_Disposed(object sender, EventArgs e) { }
-
-        /// <summary>
         /// Event handler that is called when <see cref="_parentForm" /> is in the process
-        /// of closing.  This uninstalls <see cref="_hookproc" /> from the low-
-        /// level hooks list and stops the consumer thread that processes those events.
+        /// of closing.  This uninstalls <see cref="_hookproc" /> from the low-level hooks
+        /// list and stops the consumer thread that processes those events.
         /// </summary>
         /// <param name="sender">
         /// Object from which this event originated,
         /// <see cref="_parentForm" /> in this case.
         /// </param>
         /// <param name="e">Arguments associated with this event.</param>
-        private void _parentForm_FormClosing(object sender, CancelEventArgs e)
+        private void OnParentFormClosing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
             {
@@ -1265,54 +1373,14 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>
         /// Event handler that is called when <see cref="_parentForm" />'s
-        /// <see cref="Control.SizeChanged" />, <see cref="Control.VisibleChanged" />, or
-        /// <see cref="Control.Move" /> events are fired which re-renders the tabs.
+        /// <see cref="Form.Deactivate" /> event is fired.
         /// </summary>
-        /// <param name="sender">Object from which the event originated.</param>
+        /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void _parentForm_Refresh(object sender, EventArgs e)
+        private void OnParentFormDeactivate(object sender, EventArgs e)
         {
-            if (_parentForm.WindowState == FormWindowState.Minimized)
-                Visible = false;
-            else
-                OnPosition();
-        }
-
-        /// <summary>
-        /// Event handler that is called when <see cref="_parentForm" />'s
-        /// <see cref="Control.SystemColorsChanged" /> event is fired which re-renders
-        /// the tabs.
-        /// </summary>
-        /// <param name="sender">Object from which the event originated.</param>
-        /// <param name="e">Arguments associated with the event.</param>
-        private void _parentForm_SystemColorsChanged(object sender, EventArgs e)
-        {
-            _aeroEnabled = _parentForm.IsCompositionEnabled;
-            OnPosition();
-        }
-
-        private void HideTooltip()
-        {
-            showTooltipTimer.Stop();
-
-            if (_parentForm.InvokeRequired)
-                _parentForm.Invoke(
-                    new Action(() => { _parentForm.Tooltip.Hide(_parentForm); })
-                );
-            else
-                _parentForm.Tooltip.Hide(_parentForm);
-        }
-
-        private void InitializeComponent()
-        {
-            SuspendLayout();
-
-            //
-            // TitleBarTabsOverlay
-            //
-            ClientSize = new Size(284, 261);
-            Name = "TitleBarTabsOverlay";
-            ResumeLayout(false);
+            _active = false;
+            Render();
         }
 
         private void ShowTooltip(TitleBarTabs tabsForm, string caption)
@@ -1383,30 +1451,6 @@ namespace xyLOGIX.EasyTabs
                 _parentFormClosing = true;
                 _parentForm.Close();
             }
-        }
-
-        /// <summary>
-        /// Contains information on mouse events captured by
-        /// <see cref="TitleBarTabsOverlay.MouseHookCallback" /> and processed by
-        /// <see cref="TitleBarTabsOverlay.InterpretMouseEvents" />.
-        /// </summary>
-        protected class MouseEvent
-        {
-            /// <summary>lParam value associated with the event.</summary>
-            public IntPtr lParam { get; set; }
-
-            /// <summary>Data associated with the mouse event.</summary>
-            public MSLLHOOKSTRUCT? MouseData { get; set; }
-
-            /// <summary>Code for the event.</summary>
-
-            // ReSharper disable InconsistentNaming
-            public int nCode { get; set; }
-
-            /// <summary>wParam value associated with the event.</summary>
-            public IntPtr wParam { get; set; }
-
-            // ReSharper restore InconsistentNaming
         }
     }
 }
