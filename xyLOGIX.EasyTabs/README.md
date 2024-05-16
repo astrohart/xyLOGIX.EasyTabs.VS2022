@@ -110,11 +110,11 @@
   - [ResumeEvents()](#M-xyLOGIX-EasyTabs-ListWithEvents`1-ResumeEvents 'xyLOGIX.EasyTabs.ListWithEvents`1.ResumeEvents')
   - [SetEventsSuppressed(eventsSuppressed)](#M-xyLOGIX-EasyTabs-ListWithEvents`1-SetEventsSuppressed-System-Boolean- 'xyLOGIX.EasyTabs.ListWithEvents`1.SetEventsSuppressed(System.Boolean)')
   - [SuppressEvents()](#M-xyLOGIX-EasyTabs-ListWithEvents`1-SuppressEvents 'xyLOGIX.EasyTabs.ListWithEvents`1.SuppressEvents')
-- [MouseEvent](#T-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseEvent')
-  - [MouseData](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-MouseData 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseEvent.MouseData')
-  - [lParam](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-lParam 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseEvent.lParam')
-  - [nCode](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-nCode 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseEvent.nCode')
-  - [wParam](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-wParam 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseEvent.wParam')
+- [MouseEvent](#T-xyLOGIX-EasyTabs-MouseEvent 'xyLOGIX.EasyTabs.MouseEvent')
+  - [Code](#P-xyLOGIX-EasyTabs-MouseEvent-Code 'xyLOGIX.EasyTabs.MouseEvent.Code')
+  - [LParam](#P-xyLOGIX-EasyTabs-MouseEvent-LParam 'xyLOGIX.EasyTabs.MouseEvent.LParam')
+  - [MouseData](#P-xyLOGIX-EasyTabs-MouseEvent-MouseData 'xyLOGIX.EasyTabs.MouseEvent.MouseData')
+  - [WParam](#P-xyLOGIX-EasyTabs-MouseEvent-WParam 'xyLOGIX.EasyTabs.MouseEvent.WParam')
 - [OperatingSystem](#T-xyLOGIX-EasyTabs-OperatingSystem 'xyLOGIX.EasyTabs.OperatingSystem')
   - [OperatingSystemVersionKeyPath](#F-xyLOGIX-EasyTabs-OperatingSystem-OperatingSystemVersionKeyPath 'xyLOGIX.EasyTabs.OperatingSystem.OperatingSystemVersionKeyPath')
   - [ProductNameValue](#F-xyLOGIX-EasyTabs-OperatingSystem-ProductNameValue 'xyLOGIX.EasyTabs.OperatingSystem.ProductNameValue')
@@ -267,6 +267,7 @@
   - [components](#F-xyLOGIX-EasyTabs-TitleBarTabs-components 'xyLOGIX.EasyTabs.TitleBarTabs.components')
   - [AeroPeekEnabled](#P-xyLOGIX-EasyTabs-TitleBarTabs-AeroPeekEnabled 'xyLOGIX.EasyTabs.TitleBarTabs.AeroPeekEnabled')
   - [ApplicationContext](#P-xyLOGIX-EasyTabs-TitleBarTabs-ApplicationContext 'xyLOGIX.EasyTabs.TitleBarTabs.ApplicationContext')
+  - [CreateNewTabWhenShown](#P-xyLOGIX-EasyTabs-TitleBarTabs-CreateNewTabWhenShown 'xyLOGIX.EasyTabs.TitleBarTabs.CreateNewTabWhenShown')
   - [ExitOnLastTabClose](#P-xyLOGIX-EasyTabs-TitleBarTabs-ExitOnLastTabClose 'xyLOGIX.EasyTabs.TitleBarTabs.ExitOnLastTabClose')
   - [IsClosing](#P-xyLOGIX-EasyTabs-TitleBarTabs-IsClosing 'xyLOGIX.EasyTabs.TitleBarTabs.IsClosing')
   - [IsCompositionEnabled](#P-xyLOGIX-EasyTabs-TitleBarTabs-IsCompositionEnabled 'xyLOGIX.EasyTabs.TitleBarTabs.IsCompositionEnabled')
@@ -298,6 +299,7 @@
   - [OnPreviewTabbedThumbnailClosed(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnPreviewTabbedThumbnailClosed-System-Object,Microsoft-WindowsAPICodePack-Taskbar-TabbedThumbnailEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnPreviewTabbedThumbnailClosed(System.Object,Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnailEventArgs)')
   - [OnSelectedTabIndexChanged(e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnSelectedTabIndexChanged-xyLOGIX-EasyTabs-TitleBarTabEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnSelectedTabIndexChanged(xyLOGIX.EasyTabs.TitleBarTabEventArgs)')
   - [OnSelectedTabIndexChanging(e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnSelectedTabIndexChanging-xyLOGIX-EasyTabs-TitleBarTabCancelEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnSelectedTabIndexChanging(xyLOGIX.EasyTabs.TitleBarTabCancelEventArgs)')
+  - [OnShown(e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnShown-System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnShown(System.EventArgs)')
   - [OnSizeChanged(e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnSizeChanged-System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnSizeChanged(System.EventArgs)')
   - [OnTabClicked(e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnTabClicked-xyLOGIX-EasyTabs-TitleBarTabEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnTabClicked(xyLOGIX.EasyTabs.TitleBarTabEventArgs)')
   - [OnTabDeselected(e)](#M-xyLOGIX-EasyTabs-TitleBarTabs-OnTabDeselected-xyLOGIX-EasyTabs-TitleBarTabEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabs.OnTabDeselected(xyLOGIX.EasyTabs.TitleBarTabEventArgs)')
@@ -322,19 +324,27 @@
   - [#ctor(parentForm)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-#ctor-xyLOGIX-EasyTabs-TitleBarTabs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.#ctor(xyLOGIX.EasyTabs.TitleBarTabs)')
   - [_active](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_active 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._active')
   - [_aeroEnabled](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_aeroEnabled 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._aeroEnabled')
+  - [_doubleClickInterval](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_doubleClickInterval 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._doubleClickInterval')
   - [_dropAreas](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_dropAreas 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._dropAreas')
+  - [_firstClick](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_firstClick 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._firstClick')
   - [_hookId](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookId 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookId')
   - [_hookProcInstalled](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookProcInstalled 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookProcInstalled')
   - [_hookproc](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookproc 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc')
+  - [_isOverAddButton](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_isOverAddButton 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._isOverAddButton')
   - [_isOverCloseButtonForTab](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_isOverCloseButtonForTab 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._isOverCloseButtonForTab')
+  - [_isOverSizingBox](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_isOverSizingBox 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._isOverSizingBox')
+  - [_lastLeftButtonClickTicks](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_lastLeftButtonClickTicks 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._lastLeftButtonClickTicks')
+  - [_lastTwoClickCoordinates](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_lastTwoClickCoordinates 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._lastTwoClickCoordinates')
   - [_mouseEvents](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_mouseEvents 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._mouseEvents')
   - [_mouseEventsThread](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_mouseEventsThread 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._mouseEventsThread')
   - [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')
+  - [_parentFormClosing](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentFormClosing 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentFormClosing')
   - [_parents](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parents 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parents')
   - [_tornTab](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_tornTab 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._tornTab')
   - [_tornTabForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_tornTabForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._tornTabForm')
   - [_tornTabLock](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_tornTabLock 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._tornTabLock')
   - [_wasDragging](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_wasDragging 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._wasDragging')
+  - [showTooltipTimer](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-showTooltipTimer 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.showTooltipTimer')
   - [CreateParams](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-CreateParams 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.CreateParams')
   - [DisplayType](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-DisplayType 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.DisplayType')
   - [TabDropArea](#P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-TabDropArea 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.TabDropArea')
@@ -344,18 +354,19 @@
   - [DrawTitleBarBackground(graphics)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-DrawTitleBarBackground-System-Drawing-Graphics- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.DrawTitleBarBackground(System.Drawing.Graphics)')
   - [GetInstance(parentForm)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-GetInstance-xyLOGIX-EasyTabs-TitleBarTabs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.GetInstance(xyLOGIX.EasyTabs.TitleBarTabs)')
   - [GetRelativeCursorPosition(cursorPosition)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-GetRelativeCursorPosition-System-Drawing-Point- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.GetRelativeCursorPosition(System.Drawing.Point)')
+  - [HideTooltip()](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-HideTooltip 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.HideTooltip')
+  - [Initialize()](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-Initialize 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.Initialize')
   - [InterpretMouseEvents()](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-InterpretMouseEvents 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.InterpretMouseEvents')
   - [MouseHookCallback(nCode,wParam,lParam)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseHookCallback-System-Int32,System-IntPtr,System-IntPtr- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)')
+  - [OnParentFormActivated(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnParentFormActivated-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.OnParentFormActivated(System.Object,System.EventArgs)')
+  - [OnParentFormClosing(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnParentFormClosing-System-Object,System-ComponentModel-CancelEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.OnParentFormClosing(System.Object,System.ComponentModel.CancelEventArgs)')
+  - [OnParentFormDeactivate(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnParentFormDeactivate-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.OnParentFormDeactivate(System.Object,System.EventArgs)')
   - [OnPosition()](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnPosition 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.OnPosition')
+  - [OnRefreshParentForm(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnRefreshParentForm-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.OnRefreshParentForm(System.Object,System.EventArgs)')
+  - [OnSystemColorsChangedParentForm(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnSystemColorsChangedParentForm-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.OnSystemColorsChangedParentForm(System.Object,System.EventArgs)')
   - [Render(forceRedraw)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-Render-System-Boolean- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.Render(System.Boolean)')
   - [Render(cursorPosition,forceRedraw)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-Render-System-Drawing-Point,System-Boolean- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.Render(System.Drawing.Point,System.Boolean)')
   - [WndProc(m)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-WndProc-System-Windows-Forms-Message@- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.WndProc(System.Windows.Forms.Message@)')
-  - [_parentForm_Activated(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Activated-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm_Activated(System.Object,System.EventArgs)')
-  - [_parentForm_Deactivate(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Deactivate-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm_Deactivate(System.Object,System.EventArgs)')
-  - [_parentForm_Disposed(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Disposed-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm_Disposed(System.Object,System.EventArgs)')
-  - [_parentForm_FormClosing(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_FormClosing-System-Object,System-ComponentModel-CancelEventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm_FormClosing(System.Object,System.ComponentModel.CancelEventArgs)')
-  - [_parentForm_Refresh(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Refresh-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm_Refresh(System.Object,System.EventArgs)')
-  - [_parentForm_SystemColorsChanged(sender,e)](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_SystemColorsChanged-System-Object,System-EventArgs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm_SystemColorsChanged(System.Object,System.EventArgs)')
 - [TornTabForm](#T-xyLOGIX-EasyTabs-TornTabForm 'xyLOGIX.EasyTabs.TornTabForm')
   - [#ctor(tab,tabRenderer)](#M-xyLOGIX-EasyTabs-TornTabForm-#ctor-xyLOGIX-EasyTabs-TitleBarTab,xyLOGIX-EasyTabs-TabRendererBase- 'xyLOGIX.EasyTabs.TornTabForm.#ctor(xyLOGIX.EasyTabs.TitleBarTab,xyLOGIX.EasyTabs.TabRendererBase)')
   - [_cursorOffset](#F-xyLOGIX-EasyTabs-TornTabForm-_cursorOffset 'xyLOGIX.EasyTabs.TornTabForm._cursorOffset')
@@ -1723,46 +1734,47 @@ Stops raising events until
 
 This method has no parameters.
 
-<a name='T-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent'></a>
+<a name='T-xyLOGIX-EasyTabs-MouseEvent'></a>
 ## MouseEvent `type`
 
 ##### Namespace
 
-xyLOGIX.EasyTabs.TitleBarTabsOverlay
+xyLOGIX.EasyTabs
 
 ##### Summary
 
 Contains information on mouse events captured by
-[MouseHookCallback](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseHookCallback-System-Int32,System-IntPtr,System-IntPtr- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)') and processed by
+[MouseHookCallback](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseHookCallback 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback') and
+processed by
 [InterpretMouseEvents](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-InterpretMouseEvents 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.InterpretMouseEvents').
 
-<a name='P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-MouseData'></a>
+<a name='P-xyLOGIX-EasyTabs-MouseEvent-Code'></a>
+### Code `property`
+
+##### Summary
+
+Code for the event.
+
+<a name='P-xyLOGIX-EasyTabs-MouseEvent-LParam'></a>
+### LParam `property`
+
+##### Summary
+
+LParam value associated with the event.
+
+<a name='P-xyLOGIX-EasyTabs-MouseEvent-MouseData'></a>
 ### MouseData `property`
 
 ##### Summary
 
 Data associated with the mouse event.
 
-<a name='P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-lParam'></a>
-### lParam `property`
+<a name='P-xyLOGIX-EasyTabs-MouseEvent-WParam'></a>
+### WParam `property`
 
 ##### Summary
 
-lParam value associated with the event.
-
-<a name='P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-nCode'></a>
-### nCode `property`
-
-##### Summary
-
-Code for the event.
-
-<a name='P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseEvent-wParam'></a>
-### wParam `property`
-
-##### Summary
-
-wParam value associated with the event.
+WParam value associated with the event.
 
 <a name='T-xyLOGIX-EasyTabs-OperatingSystem'></a>
 ## OperatingSystem `type`
@@ -3591,6 +3603,18 @@ allowing the user to switch between tabs from the taskbar.
 
 Application context under which this particular window runs.
 
+<a name='P-xyLOGIX-EasyTabs-TitleBarTabs-CreateNewTabWhenShown'></a>
+### CreateNewTabWhenShown `property`
+
+##### Summary
+
+Gets or sets a value that indicates whether a new tab is created when this form
+is first shown, by default.
+
+##### Remarks
+
+The default value of this property is `true`.
+
 <a name='P-xyLOGIX-EasyTabs-TitleBarTabs-ExitOnLastTabClose'></a>
 ### ExitOnLastTabClose `property`
 
@@ -3995,6 +4019,19 @@ event.
 | ---- | ---- | ----------- |
 | e | [xyLOGIX.EasyTabs.TitleBarTabCancelEventArgs](#T-xyLOGIX-EasyTabs-TitleBarTabCancelEventArgs 'xyLOGIX.EasyTabs.TitleBarTabCancelEventArgs') | Arguments associated with the event. |
 
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabs-OnShown-System-EventArgs-'></a>
+### OnShown(e) `method`
+
+##### Summary
+
+Raises the [](#E-System-Windows-Forms-Form-Shown 'System.Windows.Forms.Form.Shown') event.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | A [EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') that contains the event data. |
+
 <a name='M-xyLOGIX-EasyTabs-TitleBarTabs-OnSizeChanged-System-EventArgs-'></a>
 ### OnSizeChanged(e) `method`
 
@@ -4297,12 +4334,18 @@ tabs.
 
 ##### Summary
 
-Blank default constructor to ensure that the overlays are only
-initialized through [GetInstance](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-GetInstance-xyLOGIX-EasyTabs-TitleBarTabs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.GetInstance(xyLOGIX.EasyTabs.TitleBarTabs)').
+Constructs a new instance of
+[TitleBarTabsOverlay](#T-xyLOGIX-EasyTabs-TitleBarTabsOverlay 'xyLOGIX.EasyTabs.TitleBarTabsOverlay') and returns a reference
+to it.
 
 ##### Parameters
 
 This constructor has no parameters.
+
+##### Remarks
+
+Blank default constructor to ensure that the overlays are only
+initialized through [GetInstance](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-GetInstance-xyLOGIX-EasyTabs-TitleBarTabs- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.GetInstance(xyLOGIX.EasyTabs.TitleBarTabs)').
 
 <a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-#ctor-xyLOGIX-EasyTabs-TitleBarTabs-'></a>
 ### #ctor(parentForm) `constructor`
@@ -4324,7 +4367,7 @@ of. |
 
 ##### Summary
 
-Flag indicating whether or not the underlying window is active.
+Flag indicating whether the underlying window is active.
 
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_aeroEnabled'></a>
 ### _aeroEnabled `constants`
@@ -4334,6 +4377,25 @@ Flag indicating whether or not the underlying window is active.
 Flag indicating whether we should draw the titlebar background (i.e.
 we are in a non-Aero environment).
 
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_doubleClickInterval'></a>
+### _doubleClickInterval `constants`
+
+##### Summary
+
+Represents the time interval, in milliseconds, that is considered a
+double-click time for the mouse.
+
+##### Remarks
+
+This field is initialized using the [GetDoubleClickTime](#M-Win32Interop-Methods-User32-GetDoubleClickTime 'Win32Interop.Methods.User32.GetDoubleClickTime')
+method from the `Win32Interop` package.
+
+
+
+The double-click time is the maximum number of milliseconds that can elapse
+between a first click and a second click for them to be considered a
+double-click.
+
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_dropAreas'></a>
 ### _dropAreas `constants`
 
@@ -4342,6 +4404,14 @@ we are in a non-Aero environment).
 When a tab is torn from the window, this is where we store the areas on all
 open windows where tabs can be dropped to combine the tab with that
 window.
+
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_firstClick'></a>
+### _firstClick `constants`
+
+##### Summary
+
+Value indicating whether this is the first left-mouse button click in a series
+of subsequent clicks at the same or similar coordinates.
 
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookId'></a>
 ### _hookId `constants`
@@ -4356,7 +4426,7 @@ Pointer to the low-level mouse hook callback (
 
 ##### Summary
 
-Flag indicating whether or not [_hookproc](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookproc 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc') has been
+Flag indicating whether [_hookproc](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookproc 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc') has been
 installed as a hook.
 
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookproc'></a>
@@ -4367,12 +4437,51 @@ installed as a hook.
 Delegate of [MouseHookCallback](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseHookCallback-System-Int32,System-IntPtr,System-IntPtr- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)'); declared as a member
 variable to keep it from being garbage collected.
 
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_isOverAddButton'></a>
+### _isOverAddButton `constants`
+
+##### Summary
+
+Value indicating whether the mouse is currently hovering over the 
+button.
+
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_isOverCloseButtonForTab'></a>
 ### _isOverCloseButtonForTab `constants`
 
 ##### Summary
 
 Index of the tab, if any, whose close button is being hovered over.
+
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_isOverSizingBox'></a>
+### _isOverSizingBox `constants`
+
+##### Summary
+
+Value indicating whether the mouse is currently hovering over the sizing box,
+i.e., the area that provides the form's ,
+, and buttons.
+
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_lastLeftButtonClickTicks'></a>
+### _lastLeftButtonClickTicks `constants`
+
+##### Summary
+
+Measures the UNIX ticks since the last click of the left mouse-button at the
+same or similar coordinates.  This determines whether the appropriate Windows
+message is to be sent.
+
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_lastTwoClickCoordinates'></a>
+### _lastTwoClickCoordinates `constants`
+
+##### Summary
+
+Array of [Point](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Drawing.Point 'System.Drawing.Point') values that contains the
+coordinates of the most recent two clicks of the left mouse button.
+
+##### Remarks
+
+This field is used to determine whether a double-click has indeed
+occurred.
 
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_mouseEvents'></a>
 ### _mouseEvents `constants`
@@ -4396,12 +4505,20 @@ Consumer thread for processing events in [_mouseEvents](#F-xyLOGIX-EasyTabs-Titl
 
 Parent form for the overlay.
 
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentFormClosing'></a>
+### _parentFormClosing `constants`
+
+##### Summary
+
+Value indicating whether the parent [Form](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Windows.Forms.Form 'System.Windows.Forms.Form')
+is in the process of closing.
+
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parents'></a>
 ### _parents `constants`
 
 ##### Summary
 
-All of the parent forms and their overlays so that we don't create
+All the parent forms and their overlays so that we don't create
 duplicate overlays across the application domain.
 
 <a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_tornTab'></a>
@@ -4434,6 +4551,15 @@ Semaphore to control access to [_tornTab](#F-xyLOGIX-EasyTabs-TitleBarTabsOverla
 Flag used in [WndProc](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-WndProc-System-Windows-Forms-Message@- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.WndProc(System.Windows.Forms.Message@)') and [MouseHookCallback](#M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-MouseHookCallback-System-Int32,System-IntPtr,System-IntPtr- 'xyLOGIX.EasyTabs.TitleBarTabsOverlay.MouseHookCallback(System.Int32,System.IntPtr,System.IntPtr)') to
 track whether the user was click/dragging when a particular event
 occurred.
+
+<a name='F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-showTooltipTimer'></a>
+### showTooltipTimer `constants`
+
+##### Summary
+
+A [Timer](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Timers.Timer 'System.Timers.Timer') that measures the time interval within
+which, if the  mouse has been hovering over a tab, a
+[ToolTip](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Windows.Forms.ToolTip 'System.Windows.Forms.ToolTip') is to be shown.
 
 <a name='P-xyLOGIX-EasyTabs-TitleBarTabsOverlay-CreateParams'></a>
 ### CreateParams `property`
@@ -4537,6 +4663,29 @@ The relative location of the cursor within the overlay.
 | cursorPosition | [System.Drawing.Point](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Drawing.Point 'System.Drawing.Point') | Cursor position that represents the absolute
 position of the cursor on the screen. |
 
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-HideTooltip'></a>
+### HideTooltip() `method`
+
+##### Summary
+
+Prevents the [ToolTip](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Windows.Forms.ToolTip 'System.Windows.Forms.ToolTip') from being shown, or
+hides if it is currently showing.
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-Initialize'></a>
+### Initialize() `method`
+
+##### Summary
+
+Called to run initialization logic for this overlay form.
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-InterpretMouseEvents'></a>
 ### InterpretMouseEvents() `method`
 
@@ -4571,6 +4720,53 @@ if the procedure ignores the message.
 | wParam | [System.IntPtr](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IntPtr 'System.IntPtr') | Additional information about the message. |
 | lParam | [System.IntPtr](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IntPtr 'System.IntPtr') | Additional information about the message. |
 
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnParentFormActivated-System-Object,System-EventArgs-'></a>
+### OnParentFormActivated(sender,e) `method`
+
+##### Summary
+
+Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
+[](#E-System-Windows-Forms-Form-Activated 'System.Windows.Forms.Form.Activated') event is fired.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated. |
+| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
+
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnParentFormClosing-System-Object,System-ComponentModel-CancelEventArgs-'></a>
+### OnParentFormClosing(sender,e) `method`
+
+##### Summary
+
+Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm') is in the process
+of closing.  This uninstalls [_hookproc](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookproc 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc') from the low-level hooks
+list and stops the consumer thread that processes those events.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated,
+[_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm') in this case. |
+| e | [System.ComponentModel.CancelEventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ComponentModel.CancelEventArgs 'System.ComponentModel.CancelEventArgs') | Arguments associated with this event. |
+
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnParentFormDeactivate-System-Object,System-EventArgs-'></a>
+### OnParentFormDeactivate(sender,e) `method`
+
+##### Summary
+
+Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
+[](#E-System-Windows-Forms-Form-Deactivate 'System.Windows.Forms.Form.Deactivate') event is fired.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated. |
+| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
+
 <a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnPosition'></a>
 ### OnPosition() `method`
 
@@ -4582,6 +4778,38 @@ Sets the position of the overlay window to match that of
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnRefreshParentForm-System-Object,System-EventArgs-'></a>
+### OnRefreshParentForm(sender,e) `method`
+
+##### Summary
+
+Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
+[](#E-System-Windows-Forms-Control-SizeChanged 'System.Windows.Forms.Control.SizeChanged'), [](#E-System-Windows-Forms-Control-VisibleChanged 'System.Windows.Forms.Control.VisibleChanged'), or
+[](#E-System-Windows-Forms-Control-Move 'System.Windows.Forms.Control.Move') events are fired which re-renders the tabs.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which the event originated. |
+| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
+
+<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-OnSystemColorsChangedParentForm-System-Object,System-EventArgs-'></a>
+### OnSystemColorsChangedParentForm(sender,e) `method`
+
+##### Summary
+
+Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
+[](#E-System-Windows-Forms-Control-SystemColorsChanged 'System.Windows.Forms.Control.SystemColorsChanged') event is fired which re-renders
+the tabs.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which the event originated. |
+| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
 
 <a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-Render-System-Boolean-'></a>
 ### Render(forceRedraw) `method`
@@ -4629,100 +4857,6 @@ click events on the tabs themselves.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | m | [System.Windows.Forms.Message@](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Windows.Forms.Message@ 'System.Windows.Forms.Message@') | Message received by the pump. |
-
-<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Activated-System-Object,System-EventArgs-'></a>
-### _parentForm_Activated(sender,e) `method`
-
-##### Summary
-
-Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
-[](#E-System-Windows-Forms-Form-Activated 'System.Windows.Forms.Form.Activated') event is fired.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated. |
-| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
-
-<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Deactivate-System-Object,System-EventArgs-'></a>
-### _parentForm_Deactivate(sender,e) `method`
-
-##### Summary
-
-Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
-[](#E-System-Windows-Forms-Form-Deactivate 'System.Windows.Forms.Form.Deactivate') event is fired.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated. |
-| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
-
-<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Disposed-System-Object,System-EventArgs-'></a>
-### _parentForm_Disposed(sender,e) `method`
-
-##### Summary
-
-Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
-[](#E-System-ComponentModel-Component-Disposed 'System.ComponentModel.Component.Disposed') event is fired.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated. |
-| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
-
-<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_FormClosing-System-Object,System-ComponentModel-CancelEventArgs-'></a>
-### _parentForm_FormClosing(sender,e) `method`
-
-##### Summary
-
-Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm') is in the process
-of closing.  This uninstalls [_hookproc](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_hookproc 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._hookproc') from the low-
-level hooks list and stops the consumer thread that processes those events.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which this event originated,
-[_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm') in this case. |
-| e | [System.ComponentModel.CancelEventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ComponentModel.CancelEventArgs 'System.ComponentModel.CancelEventArgs') | Arguments associated with this event. |
-
-<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_Refresh-System-Object,System-EventArgs-'></a>
-### _parentForm_Refresh(sender,e) `method`
-
-##### Summary
-
-Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
-[](#E-System-Windows-Forms-Control-SizeChanged 'System.Windows.Forms.Control.SizeChanged'), [](#E-System-Windows-Forms-Control-VisibleChanged 'System.Windows.Forms.Control.VisibleChanged'), or
-[](#E-System-Windows-Forms-Control-Move 'System.Windows.Forms.Control.Move') events are fired which re-renders the tabs.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which the event originated. |
-| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
-
-<a name='M-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm_SystemColorsChanged-System-Object,System-EventArgs-'></a>
-### _parentForm_SystemColorsChanged(sender,e) `method`
-
-##### Summary
-
-Event handler that is called when [_parentForm](#F-xyLOGIX-EasyTabs-TitleBarTabsOverlay-_parentForm 'xyLOGIX.EasyTabs.TitleBarTabsOverlay._parentForm')'s
-[](#E-System-Windows-Forms-Control-SystemColorsChanged 'System.Windows.Forms.Control.SystemColorsChanged') event is fired which re-renders
-the tabs.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| sender | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object from which the event originated. |
-| e | [System.EventArgs](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.EventArgs 'System.EventArgs') | Arguments associated with the event. |
 
 <a name='T-xyLOGIX-EasyTabs-TornTabForm'></a>
 ## TornTabForm `type`
