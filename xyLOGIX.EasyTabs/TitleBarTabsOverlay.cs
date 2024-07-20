@@ -1,4 +1,4 @@
-﻿using Core.Logging;
+using Core.Logging;
 using Core.Logging.Constants;
 using PostSharp.Patterns.Diagnostics;
 using System;

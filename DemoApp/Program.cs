@@ -1,4 +1,4 @@
-﻿using Alphaleonis.Win32.Filesystem;
+using Alphaleonis.Win32.Filesystem;
 using Core.Assemblies.Info;
 using Core.Logging;
 using Core.Logging.Constants;

@@ -1,4 +1,4 @@
-﻿namespace xyLOGIX.EasyTabs
+namespace xyLOGIX.EasyTabs
 {
     /// <summary>The type of theme being used to render the desktop.</summary>
     public enum DisplayType

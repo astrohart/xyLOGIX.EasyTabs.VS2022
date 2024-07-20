@@ -1,4 +1,4 @@
-﻿using Core.Logging;
+using Core.Logging;
 using Svg;
 using System;
 using System.Drawing;

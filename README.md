@@ -1,4 +1,4 @@
-﻿# xyLOGIX.EasyTabs `class library`
+# xyLOGIX.EasyTabs `class library`
 
 Originally developed by [lstratman](https://github.com/lstratman).
 

@@ -1,4 +1,4 @@
-﻿using Core.Logging;
+using Core.Logging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

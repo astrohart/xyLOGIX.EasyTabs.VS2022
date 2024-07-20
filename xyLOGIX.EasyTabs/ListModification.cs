@@ -1,4 +1,4 @@
-﻿namespace xyLOGIX.EasyTabs
+namespace xyLOGIX.EasyTabs
 {
     /// <summary>
     /// List of possible <see cref="T:xyLOGIX.EasyTabs.ListWithEvents`1" />
