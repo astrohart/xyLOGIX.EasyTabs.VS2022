@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using Core.Logging;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using PostSharp.Patterns.Diagnostics;
@@ -96,7 +97,7 @@ namespace xyLOGIX.EasyTabs
         public bool AeroPeekEnabled
         {
             get => _aeroPeekEnabled;
-            set
+            [DebuggerStepThrough] set
             {
                 _aeroPeekEnabled = value;
                 if (!_aeroPeekEnabled)
@@ -200,7 +201,7 @@ namespace xyLOGIX.EasyTabs
 
                 return result;
             }
-            set
+            [DebuggerStepThrough] set
             {
                 if (value == null) return;
                 if (Tabs.ToArray()
@@ -263,7 +264,7 @@ namespace xyLOGIX.EasyTabs
 
                 return result;
             }
-            set
+            [DebuggerStepThrough] set
             {
                 if (value < 0) return;
 
@@ -333,7 +334,7 @@ namespace xyLOGIX.EasyTabs
         public TabRendererBase TabRenderer
         {
             get => _tabRenderer;
-            set
+            [DebuggerStepThrough] set
             {
                 _tabRenderer = value;
                 SetFrameSize();

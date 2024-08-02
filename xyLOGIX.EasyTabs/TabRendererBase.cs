@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using Core.Extensions;
 using Core.Logging;
 using System;
@@ -271,7 +272,7 @@ namespace xyLOGIX.EasyTabs
         public Color ForeColor
         {
             get => _foreColor;
-            set
+            [DebuggerStepThrough] set
             {
                 var changed = value != _foreColor;
                 _foreColor = value;
@@ -329,7 +330,7 @@ namespace xyLOGIX.EasyTabs
         public bool IsTabRepositioning
         {
             get => _isTabRepositioning;
-            set
+            [DebuggerStepThrough] set
             {
                 var changed = _isTabRepositioning != value;
                 _isTabRepositioning = value;
@@ -425,7 +426,7 @@ namespace xyLOGIX.EasyTabs
         public bool ShowAddButton
         {
             get => _addButtonShown;
-            set
+            [DebuggerStepThrough] set
             {
                 var changed = _addButtonShown != value;
                 _addButtonShown = value;
@@ -440,7 +441,7 @@ namespace xyLOGIX.EasyTabs
         public Color TabBackColor
         {
             get => _tabBackColor;
-            set
+            [DebuggerStepThrough] set
             {
                 var changed = value != _tabBackColor;
                 _tabBackColor = value;

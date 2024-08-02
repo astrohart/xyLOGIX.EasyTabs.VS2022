@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using Core.Logging;
 using Svg;
 using System;
@@ -88,7 +89,7 @@ namespace xyLOGIX.EasyTabs
         public Color CloseButtonHighlightColor
         {
             get => _closeButtonHighlightColor;
-            set
+            [DebuggerStepThrough] set
             {
                 var changed = _closeButtonHighlightColor != value;
                 _closeButtonHighlightColor = value;
@@ -110,7 +111,7 @@ namespace xyLOGIX.EasyTabs
         public Color MinimizeMaximizeButtonHighlightColor
         {
             get => _minimizeMaximizeButtonHighlightColor;
-            set
+            [DebuggerStepThrough] set
             {
                 var changed = _minimizeMaximizeButtonHighlightColor != value;
                 _minimizeMaximizeButtonHighlightColor = value;

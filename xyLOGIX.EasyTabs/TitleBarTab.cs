@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.ComponentModel;
@@ -69,7 +70,7 @@ namespace xyLOGIX.EasyTabs
         public Form Content
         {
             get => _content;
-            set
+            [DebuggerStepThrough] set
             {
                 if (_content != null)
                 {

@@ -75,7 +75,7 @@ namespace xyLOGIX.EasyTabs
         public new virtual T this[int index]
         {
             get => base[index];
-            set
+            [DebuggerStepThrough] set
             {
                 lock (SyncRoot)
                 {
