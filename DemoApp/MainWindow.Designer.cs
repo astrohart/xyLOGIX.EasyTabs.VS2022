@@ -1,4 +1,4 @@
-namespace DemoApp
+﻿namespace DemoApp
 {
     partial class MainWindow
     {
@@ -31,4 +31,3 @@ namespace DemoApp
         #endregion
     }
 }
-

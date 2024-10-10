@@ -1,4 +1,4 @@
-namespace DemoApp
+﻿namespace DemoApp
 {
     partial class MyTabContent
     {

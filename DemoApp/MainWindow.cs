@@ -1,4 +1,4 @@
-using xyLOGIX.EasyTabs;
+﻿using xyLOGIX.EasyTabs;
 
 namespace DemoApp
 {
