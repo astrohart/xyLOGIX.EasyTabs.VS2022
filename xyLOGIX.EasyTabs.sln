@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Extensions.Providers.F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Extensions.Providers.Interfaces", "..\Core.Extensions\Core.Extensions.Providers.Interfaces\Core.Extensions.Providers.Interfaces.csproj", "{1A927747-537E-4341-83BD-8B3E093AB122}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Assemblies.Info", "..\Core.Assemblies.Info\Core.Assemblies.Info\Core.Assemblies.Info.csproj", "{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Assemblies.Info", "..\Core.Assemblies.Info.VS2019\Core.Assemblies.Info\Core.Assemblies.Info.csproj", "{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Win32.Interact", "..\Core.Win32.Interact\Core.Win32.Interact\Core.Win32.Interact.csproj", "{9C2F7C24-51B4-4F98-AF2E-3A6BF12F5268}"
 EndProject

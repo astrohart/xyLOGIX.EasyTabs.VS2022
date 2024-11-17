@@ -132,7 +132,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core.Assemblies.Info\Core.Assemblies.Info\Core.Assemblies.Info.csproj">
+    <ProjectReference Include="..\..\Core.Assemblies.Info.VS2019\Core.Assemblies.Info\Core.Assemblies.Info.csproj">
       <Project>{69827DE2-40A0-4471-BBA8-E2211C7D5ED7}</Project>
       <Name>Core.Assemblies.Info</Name>
     </ProjectReference>
