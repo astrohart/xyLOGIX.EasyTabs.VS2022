@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36128.20
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xyLOGIX.EasyTabs", "xyLOGIX.EasyTabs\xyLOGIX.EasyTabs.csproj", "{71AB81E7-3907-4E09-BFD5-B3102D51586F}"
 EndProject
