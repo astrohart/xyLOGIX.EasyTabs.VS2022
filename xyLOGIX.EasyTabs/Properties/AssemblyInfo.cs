@@ -9,6 +9,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: ComVisible(false)]
-[assembly: Guid("3b44bf22-2809-4fcb-9f0b-9954c6d46a43")]
+[assembly: Guid("e8829c72-7e0b-415c-8b57-c840a83f092a")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyVersion("1.0.0.0")]
