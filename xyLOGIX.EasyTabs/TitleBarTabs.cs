@@ -139,16 +139,16 @@ namespace xyLOGIX.EasyTabs
          Description(
              "Gets or sets a value that indicates whether a new tab is created when this form is first shown, by default."
          ), DefaultValue(true)]
-        public bool CreateNewTabWhenShown { get; set; } = true;
+        public bool CreateNewTabWhenShown { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = true;
 
         /// <summary>
         /// Flag indicating whether the application itself should exit when the
         /// last tab is closed.
         /// </summary>
-        public bool ExitOnLastTabClose { get; set; } = true;
+        public bool ExitOnLastTabClose { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = true;
 
         /// <summary>Flag indicating whether we are in the process of closing the window.</summary>
-        public bool IsClosing { get; set; }
+        public bool IsClosing { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Flag indicating whether composition is enabled on the desktop.</summary>
         internal bool IsCompositionEnabled
@@ -168,7 +168,7 @@ namespace xyLOGIX.EasyTabs
         /// Borderless window that is rendered over top of the non-client area of
         /// this window.
         /// </summary>
-        public TitleBarTabsOverlay Overlay { get; protected set; }
+        public TitleBarTabsOverlay Overlay { [DebuggerStepThrough] get; [DebuggerStepThrough] protected set; }
 
         /// <summary>The tab that is currently selected by the user.</summary>
         public TitleBarTab SelectedTab
@@ -324,7 +324,7 @@ namespace xyLOGIX.EasyTabs
         /// Flag indicating whether a tooltip should be shown when hovering over a
         /// tab.
         /// </summary>
-        public bool ShowTooltips { get; set; }
+        public bool ShowTooltips { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Area of the screen in which tabs can be dropped for this window.</summary>
         public Rectangle TabDropArea
@@ -346,7 +346,7 @@ namespace xyLOGIX.EasyTabs
             => _tabs;
 
         /// <summary>Tooltip UI element to show when hovering over a tab.</summary>
-        public ToolTip Tooltip { get; set; }
+        public ToolTip Tooltip { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Event that is raised after a tab has been selected.</summary>
         public event TitleBarTabEventHandler SelectedTabIndexChanged;
@@ -479,7 +479,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected internal void OnTabClicked(TitleBarTabEventArgs e)
+        protected internal void OnTabClicked(TitleBarTab[NotLogged] EventArgs e)
         {
             if (TabClicked == null)
                 return;
@@ -574,7 +574,7 @@ namespace xyLOGIX.EasyTabs
         /// tab when the size of the client area for this window changes.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected override void OnClientSizeChanged(EventArgs e)
+        protected override void OnClientSizeChanged([NotLogged] EventArgs e)
         {
             base.OnClientSizeChanged(e);
             ResizeTabContents();
@@ -588,7 +588,7 @@ namespace xyLOGIX.EasyTabs
         /// A <see cref="T:System.Windows.Forms.FormClosingEventArgs" />
         /// that contains the event data.
         /// </param>
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        protected override void OnFormClosing(FormClosing[NotLogged] EventArgs e)
         {
             base.OnFormClosing(e);
 
@@ -615,7 +615,7 @@ namespace xyLOGIX.EasyTabs
         /// caption.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected override void OnLoad(EventArgs e)
+        protected override void OnLoad([NotLogged] EventArgs e)
         {
             base.OnLoad(e);
             Overlay = TitleBarTabsOverlay.GetInstance(this);
@@ -631,7 +631,7 @@ namespace xyLOGIX.EasyTabs
         /// blank so that code is never executed.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected override void OnPaintBackground(PaintEventArgs e) { }
+        protected override void OnPaintBackground(Paint[NotLogged] EventArgs e) { }
 
         /// <summary>
         /// Handler method that's called when the user clicks on an Aero Peek preview
@@ -645,8 +645,8 @@ namespace xyLOGIX.EasyTabs
         /// before any of their own logic.
         /// </remarks>
         protected virtual void OnPreviewTabbedThumbnailActivated(
-            object sender,
-            TabbedThumbnailEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] TabbedThumbnailEventArgs e
         )
         {
             using (var enumerator = Tabs
@@ -681,8 +681,8 @@ namespace xyLOGIX.EasyTabs
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with this event.</param>
         protected virtual void OnPreviewTabbedThumbnailBitmapRequested(
-            object sender,
-            TabbedThumbnailBitmapRequestedEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] TabbedThumbnailBitmapRequestedEventArgs e
         )
         {
             using (var enumerator = Tabs
@@ -717,8 +717,8 @@ namespace xyLOGIX.EasyTabs
         /// prior to running their own logic.
         /// </remarks>
         protected virtual void OnPreviewTabbedThumbnailClosed(
-            object sender,
-            TabbedThumbnailEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] TabbedThumbnailEventArgs e
         )
         {
             using (var enumerator = Tabs
@@ -747,7 +747,7 @@ namespace xyLOGIX.EasyTabs
         /// .
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnSelectedTabIndexChanged(TitleBarTabEventArgs e)
+        protected void OnSelectedTabIndexChanged(TitleBarTab[NotLogged] EventArgs e)
         {
             if (SelectedTabIndex != -1 &&
                 _previews.ContainsKey(SelectedTab.Content) && AeroPeekEnabled)
@@ -766,7 +766,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnSelectedTabIndexChanging(TitleBarTabCancelEventArgs e)
+        protected void OnSelectedTabIndexChanging(TitleBarTabCancel[NotLogged] EventArgs e)
         {
             ResizeTabContents(e.Tab);
             if (SelectedTabIndexChanging == null)
@@ -776,7 +776,7 @@ namespace xyLOGIX.EasyTabs
 
         /// <summary>Raises the <see cref="E:System.Windows.Forms.Form.Shown" /> event.</summary>
         /// <param name="e">A <see cref="T:System.EventArgs" /> that contains the event data.</param>
-        protected override void OnShown(EventArgs e)
+        protected override void OnShown([NotLogged] EventArgs e)
         {
             base.OnShown(e);
             
@@ -791,7 +791,7 @@ namespace xyLOGIX.EasyTabs
         /// of the non-client area accordingly.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected override void OnSizeChanged(EventArgs e)
+        protected override void OnSizeChanged([NotLogged] EventArgs e)
         {
             if (!WindowState.Equals(_previousWindowState))
                 SetFrameSize();
@@ -805,7 +805,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnTabDeselected(TitleBarTabEventArgs e)
+        protected void OnTabDeselected(TitleBarTab[NotLogged] EventArgs e)
             => TabDeselected?.Invoke(this, e);
 
         /// <summary>
@@ -817,7 +817,7 @@ namespace xyLOGIX.EasyTabs
         /// the tab's content to be used when Aero Peek is activated.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnTabDeselecting(TitleBarTabCancelEventArgs e)
+        protected void OnTabDeselecting(TitleBarTabCancel[NotLogged] EventArgs e)
         {
             if (_previousSelectedTab != null && AeroPeekEnabled)
                 UpdateTabThumbnail(_previousSelectedTab);
@@ -972,7 +972,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" /> object in this case).
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void Content_TextChanged(object sender, EventArgs e)
+        private void Content_TextChanged([NotLogged] object sender, [NotLogged] EventArgs e)
         {
             if (AeroPeekEnabled)
             {
@@ -1084,8 +1084,8 @@ namespace xyLOGIX.EasyTabs
         /// <param name="sender">Object for which this event was raised.</param>
         /// <param name="e">Arguments associated with the event.</param>
         private void OnTabsCollectionModified(
-            object sender,
-            ListModificationEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] ListModificationEventArgs e
         )
         {
             SetFrameSize();
@@ -1140,7 +1140,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> in this case).
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void TitleBarTabs_Closing(object sender, CancelEventArgs e)
+        private void TitleBarTabs_Closing([NotLogged] object sender, Cancel[NotLogged] EventArgs e)
         {
             if (e.Cancel)
                 return;
