@@ -50,7 +50,7 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>The area in which the <c>Tab</c> is rendered in the client window.</summary>
-        internal Rectangle Area { get; set; }
+        internal Rectangle Area { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// The caption that's displayed in the <c>Tab</c>'s title (simply uses the
@@ -64,7 +64,7 @@ namespace xyLOGIX.EasyTabs
         }
 
         /// <summary>The area of the close button for this <c>Tab</c> in the client window.</summary>
-        internal Rectangle CloseButtonArea { get; set; }
+        internal Rectangle CloseButtonArea { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>The content that should be displayed for this <c>Tab</c>.</summary>
         public Form Content
@@ -122,16 +122,16 @@ namespace xyLOGIX.EasyTabs
         /// Flag indicating whether we should display the close button for
         /// this <c>Tab</c>.
         /// </summary>
-        public bool ShowCloseButton { get; set; }
+        public bool ShowCloseButton { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Pre-rendered image of the <c>Tab</c>'s background.</summary>
-        internal Bitmap TabImage { get; set; }
+        internal Bitmap TabImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets a unique identifier that refers to this
         /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> instance.
         /// </summary>
-        public Guid TitleBarTabId { get; } = Guid.NewGuid();
+        public Guid TitleBarTabId { [DebuggerStepThrough] get; } = Guid.NewGuid();
 
         /// <summary>
         /// Event that is fired when <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" />
@@ -196,7 +196,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" /> in this case).
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void Content_Closing(object sender, CancelEventArgs e)
+        protected void Content_Closing([NotLogged] object sender, Cancel[NotLogged] EventArgs e)
         {
             if (Closing == null)
                 return;
@@ -215,7 +215,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" /> in this case).
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void Content_TextChanged(object sender, EventArgs e)
+        private void Content_TextChanged([NotLogged] object sender, [NotLogged] EventArgs e)
         {
             if (TextChanged == null)
                 return;
