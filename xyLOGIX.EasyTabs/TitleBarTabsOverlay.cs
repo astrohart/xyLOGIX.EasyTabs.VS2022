@@ -1268,7 +1268,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which the event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void OnRefreshParentForm(object sender, EventArgs e)
+        private void OnRefreshParentForm([NotLogged] object sender, [NotLogged] EventArgs e)
         {
             if (_parentForm.WindowState == FormWindowState.Minimized)
                 Visible = false;
@@ -1283,7 +1283,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which the event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void OnSystemColorsChangedParentForm(object sender, EventArgs e)
+        private void OnSystemColorsChangedParentForm([NotLogged] object sender, [NotLogged] EventArgs e)
         {
             _aeroEnabled = _parentForm.IsCompositionEnabled;
             OnPosition();
@@ -1331,7 +1331,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void OnParentFormActivated(object sender, EventArgs e)
+        private void OnParentFormActivated([NotLogged] object sender, [NotLogged] EventArgs e)
         {
             _active = true;
             Render();
@@ -1347,7 +1347,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="_parentForm" /> in this case.
         /// </param>
         /// <param name="e">Arguments associated with this event.</param>
-        private void OnParentFormClosing(object sender, CancelEventArgs e)
+        private void OnParentFormClosing([NotLogged] object sender, Cancel[NotLogged] EventArgs e)
         {
             if (e.Cancel)
             {
@@ -1377,7 +1377,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void OnParentFormDeactivate(object sender, EventArgs e)
+        private void OnParentFormDeactivate([NotLogged] object sender, [NotLogged] EventArgs e)
         {
             _active = false;
             Render();
@@ -1394,7 +1394,7 @@ namespace xyLOGIX.EasyTabs
             );
         }
 
-        private void ShowTooltipTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void ShowTooltipTimer_Elapsed([NotLogged] object sender, Elapsed[NotLogged] EventArgs e)
         {
             if (!_parentForm.ShowTooltips) return;
 
@@ -1441,8 +1441,8 @@ namespace xyLOGIX.EasyTabs
         }
 
         private void TitleBarTabsOverlay_FormClosing(
-            object sender,
-            FormClosingEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] FormClosingEventArgs e
         )
         {
             if (!_parentFormClosing)
