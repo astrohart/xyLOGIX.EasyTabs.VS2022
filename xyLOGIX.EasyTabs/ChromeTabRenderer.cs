@@ -75,28 +75,28 @@ namespace xyLOGIX.EasyTabs
         /// used as the background of the content area for the tab when the tab is active;
         /// its width also determines how wide the default content area for the tab is.
         /// </summary>
-        public override Image ActiveCenterImage { get; set; } =
+        public override Image ActiveCenterImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeCenter;
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
         /// displayed the left side of an active tab.
         /// </summary>
-        public override Image ActiveLeftSideImage { get; set; } =
+        public override Image ActiveLeftSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeLeft;
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
         /// displayed on the right side of an active tab.
         /// </summary>
-        public override Image ActiveRightSideImage { get; set; } =
+        public override Image ActiveRightSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeRight;
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Bitmap" /> that is to be
         /// displayed when the user hovers over the <b>Add</b> button.
         /// </summary>
-        public override Bitmap AddButtonHoverImage { get; set; } =
+        public override Bitmap AddButtonHoverImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             new Bitmap(Resources.ChromeAddHover);
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace xyLOGIX.EasyTabs
         /// for the <c>Add</c> button when the user is not hovering the mouse over it.
         /// it.
         /// </summary>
-        public override Bitmap AddButtonImage { get; set; } =
+        public override Bitmap AddButtonImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             new Bitmap(Resources.ChromeAdd);
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace xyLOGIX.EasyTabs
         /// used for the background, if any, that should be displayed in the non-client
         /// area behind the actual tabs.
         /// </summary>
-        public override Image BackgroundImage { get; set; } =
+        public override Image BackgroundImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             OperatingSystem.IsWindows10
                 ? Resources.ChromeBackground
                 : (Image)null;
@@ -151,26 +151,26 @@ namespace xyLOGIX.EasyTabs
         /// <para />
         /// Child classes may override this property to specify their own caption font.
         /// </remarks>
-        public override Font CaptionFont { get; set; } =
+        public override Font CaptionFont { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             SystemFonts.CaptionFont;
 
         /// <summary>
         /// Amount of space we should put to the left of the caption when
         /// rendering the content area of the tab.
         /// </summary>
-        public override int CaptionMarginLeft { get; set; }
+        public override int CaptionMarginLeft { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the caption when
         /// rendering the content area of the tab.
         /// </summary>
-        public override int CaptionMarginRight { get; set; }
+        public override int CaptionMarginRight { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the caption text.
         /// </summary>
-        public override int CaptionMarginTop { get; set; } = 9;
+        public override int CaptionMarginTop { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 9;
 
         /// <summary>
         /// Gets the amount of space, in pixels, that we should put to the left of
@@ -184,37 +184,37 @@ namespace xyLOGIX.EasyTabs
         /// Amount of space that we should leave to the right of the close button
         /// when rendering the content area of the tab.
         /// </summary>
-        public override int CloseButtonMarginRight { get; set; } = 4;
+        public override int CloseButtonMarginRight { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 4;
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the close button.
         /// </summary>
-        public override int CloseButtonMarginTop { get; set; } = 9;
+        public override int CloseButtonMarginTop { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 9;
 
         /// <summary>
         /// Amount of space we should put to the left of the tab icon when
         /// rendering the content area of the tab.
         /// </summary>
-        public override int IconMarginLeft { get; set; } = 9;
+        public override int IconMarginLeft { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 9;
 
         /// <summary>
         /// Amount of space that we should leave to the right of the icon when
         /// rendering the content area of the tab.
         /// </summary>
-        public override int IconMarginRight { get; set; } = 5;
+        public override int IconMarginRight { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 5;
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the icon.
         /// </summary>
-        public override int IconMarginTop { get; set; } = 9;
+        public override int IconMarginTop { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 9;
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be used to
         /// display the right side of an inactive tab.
         /// </summary>
-        public override Image InactiveRightSideImage { get; set; } =
+        public override Image InactiveRightSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeInactiveRight;
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace xyLOGIX.EasyTabs
         /// The width of this <see cref="T:System.Drawing.Image" /> is also used
         /// to determine the default width of the tab content area.
         /// </remarks>
-        public override Image InactiveTabContentAreaImage { get; set; } =
+        public override Image InactiveTabContentAreaImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeInactiveCenter;
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace xyLOGIX.EasyTabs
         /// each tab to close that tab when the user is hovering the mouse over the tab's
         /// <b>Close</b> button.
         /// </summary>
-        public override Image TabCloseButtonHoverImage { get; set; } =
+        public override Image TabCloseButtonHoverImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeCloseHover;
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace xyLOGIX.EasyTabs
         /// <para />
         /// This property allows clients of this class to customize that image.
         /// </remarks>
-        public override Image TabCloseButtonImage { get; set; } =
+        public override Image TabCloseButtonImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } =
             Resources.ChromeClose;
 
         /// <summary>
