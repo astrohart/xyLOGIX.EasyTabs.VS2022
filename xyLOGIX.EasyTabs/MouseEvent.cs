@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Diagnostics;
+using System;
 using Win32Interop.Structs;
 
 namespace xyLOGIX.EasyTabs
