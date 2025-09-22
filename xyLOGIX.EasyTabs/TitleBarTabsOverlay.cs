@@ -1347,7 +1347,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="_parentForm" /> in this case.
         /// </param>
         /// <param name="e">Arguments associated with this event.</param>
-        private void OnParentFormClosing([NotLogged] object sender, Cancel[NotLogged] EventArgs e)
+        private void OnParentFormClosing([NotLogged] object sender, [NotLogged] CancelEventArgs e)
         {
             if (e.Cancel)
             {
@@ -1394,7 +1394,7 @@ namespace xyLOGIX.EasyTabs
             );
         }
 
-        private void ShowTooltipTimer_Elapsed([NotLogged] object sender, Elapsed[NotLogged] EventArgs e)
+        private void ShowTooltipTimer_Elapsed([NotLogged] object sender, [NotLogged] ElapsedEventArgs e)
         {
             if (!_parentForm.ShowTooltips) return;
 
