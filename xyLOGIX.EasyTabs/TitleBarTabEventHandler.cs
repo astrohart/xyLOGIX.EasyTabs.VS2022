@@ -9,7 +9,7 @@ namespace xyLOGIX.EasyTabs
     /// <param name="sender">Object for which this event was raised.</param>
     /// <param name="e">Data associated with the event.</param>
     public delegate void TitleBarTabEventHandler(
-        object sender,
-        TitleBarTabEventArgs e
+        [NotLogged] object sender,
+        [NotLogged] TitleBarTabEventArgs e
     );
 }
