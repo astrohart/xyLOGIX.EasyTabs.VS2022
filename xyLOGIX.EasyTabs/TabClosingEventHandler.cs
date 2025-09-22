@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using PostSharp.Patterns.Diagnostics;
+using System.Windows.Forms;
 
 namespace xyLOGIX.EasyTabs
 {
