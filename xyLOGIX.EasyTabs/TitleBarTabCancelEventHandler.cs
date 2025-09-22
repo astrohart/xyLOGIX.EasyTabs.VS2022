@@ -13,7 +13,7 @@ namespace xyLOGIX.EasyTabs
     /// <param name="sender">Object for which this event was raised.</param>
     /// <param name="e">Data associated with the event.</param>
     public delegate void TitleBarTabCancelEventHandler(
-        object sender,
-        TitleBarTabCancelEventArgs e
+        [NotLogged] object sender,
+        [NotLogged] TitleBarTabCancelEventArgs e
     );
 }
