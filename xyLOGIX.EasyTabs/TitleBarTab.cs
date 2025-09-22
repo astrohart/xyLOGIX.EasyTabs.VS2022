@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using PostSharp.Patterns.Diagnostics;
+using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.ComponentModel;
@@ -196,7 +197,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="P:xyLOGIX.EasyTabs.TitleBarTab.Content" /> in this case).
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void Content_Closing([NotLogged] object sender, Cancel[NotLogged] EventArgs e)
+        protected void Content_Closing([NotLogged] object sender, [NotLogged] CancelEventArgs e)
         {
             if (Closing == null)
                 return;
