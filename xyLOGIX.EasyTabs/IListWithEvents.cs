@@ -14,7 +14,7 @@ namespace xyLOGIX.EasyTabs
     public interface IListWithEvents<T> : IList<T>
     {
         /// <summary>Gets whether the events are currently being suppressed.</summary>
-        bool EventsSuppressed { get; }
+        bool EventsSuppressed { [DebuggerStepThrough] get; }
 
         /// <summary>Occurs whenever the list is cleared.</summary>
         event EventHandler Cleared;
