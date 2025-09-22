@@ -139,67 +139,67 @@ namespace xyLOGIX.EasyTabs
         /// used as the background of the content area for the tab when the tab is active;
         /// its width also determines how wide the default content area for the tab is.
         /// </summary>
-        public abstract Image ActiveCenterImage { get; set; }
+        public abstract Image ActiveCenterImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
         /// displayed the left side of an active tab.
         /// </summary>
-        public abstract Image ActiveLeftSideImage { get; set; }
+        public abstract Image ActiveLeftSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
         /// displayed on the right side of an active tab.
         /// </summary>
-        public abstract Image ActiveRightSideImage { get; set; }
+        public abstract Image ActiveRightSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Bitmap" /> that is to be
         /// displayed when the user hovers over the <b>Add</b> button.
         /// </summary>
-        public abstract Bitmap AddButtonHoverImage { get; set; }
+        public abstract Bitmap AddButtonHoverImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Bitmap" /> that is to be displayed
         /// for the <c>Add</c> button when the user is not hovering the mouse over it.
         /// it.
         /// </summary>
-        public abstract Bitmap AddButtonImage { get; set; }
+        public abstract Bitmap AddButtonImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets the amount of space, in pixels, that we should put to the left of
         /// the add tab button when rendering the content area of the tab.
         /// </summary>
         /// <remarks>Child classes must override this property and specify its value.</remarks>
-        public abstract int AddButtonMarginLeft { get; }
+        public abstract int AddButtonMarginLeft { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Gets the amount of space, in pixels, that we should leave to the right
         /// of the add tab button when rendering the content area of the tab.
         /// </summary>
         /// <remarks>Child classes must override this property and specify its value.</remarks>
-        public abstract int AddButtonMarginRight { get; }
+        public abstract int AddButtonMarginRight { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Gets the amount of space, in pixels, that we should leave between the
         /// top of the content area and the top of the add tab button.
         /// </summary>
         /// <remarks>Child classes must override this property and specify its value.</remarks>
-        public abstract int AddButtonMarginTop { get; }
+        public abstract int AddButtonMarginTop { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Rectangle" /> value that
         /// demarcates the area on the screen where the <b>Add</b>, or <b>+</b> button is
         /// located.
         /// </summary>
-        public Rectangle AddButtonRectangle { get; private set; }
+        public Rectangle AddButtonRectangle { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
         /// used for the background, if any, that should be displayed in the non-client
         /// area behind the actual tabs.
         /// </summary>
-        public abstract Image BackgroundImage { get; set; }
+        public abstract Image BackgroundImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets the <see cref="T:System.Drawing.Font" /> that is to be used to render the
@@ -211,44 +211,44 @@ namespace xyLOGIX.EasyTabs
         /// <para />
         /// Child classes may override this property to specify their own caption font.
         /// </remarks>
-        public abstract Font CaptionFont { get; set; }
+        public abstract Font CaptionFont { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space we should put to the left of the caption when
         /// rendering the content area of the tab.
         /// </summary>
-        public abstract int CaptionMarginLeft { get; set; }
+        public abstract int CaptionMarginLeft { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the caption when
         /// rendering the content area of the tab.
         /// </summary>
-        public abstract int CaptionMarginRight { get; set; }
+        public abstract int CaptionMarginRight { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the caption text.
         /// </summary>
-        public abstract int CaptionMarginTop { get; set; }
+        public abstract int CaptionMarginTop { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets the amount of space, in pixels, that we should put to the left of
         /// the close button when rendering the content area of the tab.
         /// </summary>
         /// <remarks>Child classes must override this property and specify its value.</remarks>
-        public abstract int CloseButtonMarginLeft { get; }
+        public abstract int CloseButtonMarginLeft { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the close button
         /// when rendering the content area of the tab.
         /// </summary>
-        public abstract int CloseButtonMarginRight { get; set; }
+        public abstract int CloseButtonMarginRight { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the close button.
         /// </summary>
-        public abstract int CloseButtonMarginTop { get; set; }
+        public abstract int CloseButtonMarginTop { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets a <see cref="T:System.Drawing.Point" /> that represents the mouse
@@ -259,7 +259,7 @@ namespace xyLOGIX.EasyTabs
         /// The default value of this property is
         /// <see cref="F:System.Drawing.Point.Empty" />.
         /// </remarks>
-        public Point DragStart { get; protected set; } = Point.Empty;
+        public Point DragStart { [DebuggerStepThrough] get; [DebuggerStepThrough] protected set; } = Point.Empty;
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Color" /> value that is to be used
@@ -284,25 +284,25 @@ namespace xyLOGIX.EasyTabs
         /// Amount of space we should put to the left of the tab icon when
         /// rendering the content area of the tab.
         /// </summary>
-        public abstract int IconMarginLeft { get; set; }
+        public abstract int IconMarginLeft { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave to the right of the icon when
         /// rendering the content area of the tab.
         /// </summary>
-        public abstract int IconMarginRight { get; set; }
+        public abstract int IconMarginRight { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Amount of space that we should leave between the top of the content
         /// area and the top of the icon.
         /// </summary>
-        public abstract int IconMarginTop { get; set; }
+        public abstract int IconMarginTop { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be used to
         /// display the right side of an inactive tab.
         /// </summary>
-        public abstract Image InactiveRightSideImage { get; set; }
+        public abstract Image InactiveRightSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be
@@ -313,13 +313,13 @@ namespace xyLOGIX.EasyTabs
         /// The width of this <see cref="T:System.Drawing.Image" /> is also used
         /// to determine the default width of the tab content area.
         /// </remarks>
-        public abstract Image InactiveTabContentAreaImage { get; set; }
+        public abstract Image InactiveTabContentAreaImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Drawing.Image" /> that is to be used to
         /// display the left side of an inactive tab.
         /// </summary>
-        public Image InactiveTabLeftSideImage { get; set; }
+        public Image InactiveTabLeftSideImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Gets a value that indicates whether a tab is being repositioned.</summary>
         /// <remarks>
@@ -372,7 +372,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTabs" /> that represents the parent
         /// container that this renderer instance is associated with.
         /// </summary>
-        public TitleBarTabs Parent { get; }
+        public TitleBarTabs Parent { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Gets the count of tabs that were present when we last rendered.
@@ -416,7 +416,7 @@ namespace xyLOGIX.EasyTabs
         /// Child classes must implement this property to affect the rendering for
         /// each concrete renderer type.
         /// </remarks>
-        public abstract bool RendersEntireTitleBar { get; }
+        public abstract bool RendersEntireTitleBar { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the <b>Add</b> button is to be
@@ -473,7 +473,7 @@ namespace xyLOGIX.EasyTabs
         /// each tab to close that tab when the user is hovering the mouse over the tab's
         /// <b>Close</b> button.
         /// </summary>
-        public abstract Image TabCloseButtonHoverImage { get; set; }
+        public abstract Image TabCloseButtonHoverImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// Gets or sets the <see cref="T:System.Drawing.Image" /> that is to be
@@ -485,7 +485,7 @@ namespace xyLOGIX.EasyTabs
         /// <para />
         /// This property allows clients of this class to customize that image.
         /// </remarks>
-        public abstract Image TabCloseButtonImage { get; set; }
+        public abstract Image TabCloseButtonImage { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Gets the width, in pixels, of the content area of the tabs.</summary>
         public int TabContentWidth
@@ -510,13 +510,13 @@ namespace xyLOGIX.EasyTabs
         /// Horizontal distance that a tab must be dragged before it starts to be
         /// repositioned.
         /// </summary>
-        public virtual int TabRepositionDragDistance { get; set; } = 10;
+        public virtual int TabRepositionDragDistance { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 10;
 
         /// <summary>
         /// Distance that a user must drag a tab outside the tab area before it
         /// shows up as "torn" from its parent window.
         /// </summary>
-        public virtual int TabTearDragDistance { get; set; } = 10;
+        public virtual int TabTearDragDistance { [DebuggerStepThrough] get; [DebuggerStepThrough] set; } = 10;
 
         /// <summary>
         /// Gets a value indicating how many pixels of padding should be above the tabs.
@@ -525,7 +525,7 @@ namespace xyLOGIX.EasyTabs
         /// Child classes should override this property to specify their own
         /// values.
         /// </remarks>
-        public abstract int TopPadding { get; }
+        public abstract int TopPadding { [DebuggerStepThrough] get; }
 
         /// <summary>
         /// Occurs when the value of the
@@ -985,8 +985,8 @@ namespace xyLOGIX.EasyTabs
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
         protected internal virtual void OnOverlayMouseDown(
-            object sender,
-            MouseEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] MouseEventArgs e
         )
         {
             _wasTabRepositioning = false;
@@ -1006,8 +1006,8 @@ namespace xyLOGIX.EasyTabs
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
         protected internal virtual void OnOverlayMouseMove(
-            object sender,
-            MouseEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] MouseEventArgs e
         )
         {
             if (!DragStart.IsEmpty || IsTabRepositioning)
@@ -1035,8 +1035,8 @@ namespace xyLOGIX.EasyTabs
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
         protected internal virtual void OnOverlayMouseUp(
-            object sender,
-            MouseEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] MouseEventArgs e
         )
         {
             DragStart = Point.Empty;
@@ -1458,8 +1458,8 @@ namespace xyLOGIX.EasyTabs
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
         private void Tabs_CollectionModified(
-            object sender,
-            ListModificationEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] ListModificationEventArgs e
         )
         {
             var source = (ListWithEvents<TitleBarTab>)sender;
