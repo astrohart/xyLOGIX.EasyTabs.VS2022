@@ -67,7 +67,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnWindowFormClosed(object sender, FormClosedEventArgs e)
+        protected void OnWindowFormClosed([NotLogged] object sender, FormClosed[NotLogged] EventArgs e)
         {
             if (_openWindows == null) return;
 
