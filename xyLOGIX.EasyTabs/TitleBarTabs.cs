@@ -479,7 +479,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected internal void OnTabClicked(TitleBarTab[NotLogged] EventArgs e)
+        protected internal void OnTabClicked([NotLogged] TitleBarTabEventArgs e)
         {
             if (TabClicked == null)
                 return;
@@ -588,7 +588,7 @@ namespace xyLOGIX.EasyTabs
         /// A <see cref="T:System.Windows.Forms.FormClosingEventArgs" />
         /// that contains the event data.
         /// </param>
-        protected override void OnFormClosing(FormClosing[NotLogged] EventArgs e)
+        protected override void OnFormClosing([NotLogged] FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
 
@@ -631,7 +631,7 @@ namespace xyLOGIX.EasyTabs
         /// blank so that code is never executed.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected override void OnPaintBackground(Paint[NotLogged] EventArgs e) { }
+        protected override void OnPaintBackground([NotLogged] PaintEventArgs e) { }
 
         /// <summary>
         /// Handler method that's called when the user clicks on an Aero Peek preview
@@ -747,7 +747,7 @@ namespace xyLOGIX.EasyTabs
         /// .
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnSelectedTabIndexChanged(TitleBarTab[NotLogged] EventArgs e)
+        protected void OnSelectedTabIndexChanged([NotLogged] TitleBarTabEventArgs e)
         {
             if (SelectedTabIndex != -1 &&
                 _previews.ContainsKey(SelectedTab.Content) && AeroPeekEnabled)
@@ -766,7 +766,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnSelectedTabIndexChanging(TitleBarTabCancel[NotLogged] EventArgs e)
+        protected void OnSelectedTabIndexChanging([NotLogged] TitleBarTabCancelEventArgs e)
         {
             ResizeTabContents(e.Tab);
             if (SelectedTabIndexChanging == null)
@@ -805,7 +805,7 @@ namespace xyLOGIX.EasyTabs
         /// event.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnTabDeselected(TitleBarTab[NotLogged] EventArgs e)
+        protected void OnTabDeselected([NotLogged] TitleBarTabEventArgs e)
             => TabDeselected?.Invoke(this, e);
 
         /// <summary>
@@ -817,7 +817,7 @@ namespace xyLOGIX.EasyTabs
         /// the tab's content to be used when Aero Peek is activated.
         /// </summary>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnTabDeselecting(TitleBarTabCancel[NotLogged] EventArgs e)
+        protected void OnTabDeselecting([NotLogged] TitleBarTabCancelEventArgs e)
         {
             if (_previousSelectedTab != null && AeroPeekEnabled)
                 UpdateTabThumbnail(_previousSelectedTab);
@@ -1140,7 +1140,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="T:xyLOGIX.EasyTabs.TitleBarTab" /> in this case).
         /// </param>
         /// <param name="e">Arguments associated with the event.</param>
-        private void TitleBarTabs_Closing([NotLogged] object sender, Cancel[NotLogged] EventArgs e)
+        private void TitleBarTabs_Closing([NotLogged] object sender, [NotLogged] CancelEventArgs e)
         {
             if (e.Cancel)
                 return;
