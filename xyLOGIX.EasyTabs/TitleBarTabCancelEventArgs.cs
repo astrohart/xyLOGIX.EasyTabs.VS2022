@@ -10,7 +10,7 @@ namespace xyLOGIX.EasyTabs
     public class TitleBarTabCancelEventArgs : CancelEventArgs
     {
         /// <summary>Action that is being performed.</summary>
-        public TabControlAction Action { get; set; }
+        public TabControlAction Action { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>
         /// The tab that the
@@ -18,9 +18,9 @@ namespace xyLOGIX.EasyTabs
         /// performed
         /// on.
         /// </summary>
-        public TitleBarTab Tab { get; set; }
+        public TitleBarTab Tab { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         /// <summary>Index of the tab within the collection.</summary>
-        public int TabIndex { get; set; }
+        public int TabIndex { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
     }
 }
