@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostSharp.Patterns.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -195,7 +196,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="F:xyLOGIX.EasyTabs.TornTabForm._layeredWindow" /> as well.
         /// </summary>
         /// <param name="e">Arguments associated with this event.</param>
-        protected override void OnClosing(Cancel[NotLogged] EventArgs e)
+        protected override void OnClosing([NotLogged] CancelEventArgs e)
         {
             base.OnClosing(e);
             _layeredWindow.Close();
