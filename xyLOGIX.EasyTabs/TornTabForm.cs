@@ -195,7 +195,7 @@ namespace xyLOGIX.EasyTabs
         /// <see cref="F:xyLOGIX.EasyTabs.TornTabForm._layeredWindow" /> as well.
         /// </summary>
         /// <param name="e">Arguments associated with this event.</param>
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnClosing(Cancel[NotLogged] EventArgs e)
         {
             base.OnClosing(e);
             _layeredWindow.Close();
@@ -210,7 +210,7 @@ namespace xyLOGIX.EasyTabs
         /// .
         /// </summary>
         /// <param name="e">Arguments associated with this event.</param>
-        protected override void OnLoad(EventArgs e)
+        protected override void OnLoad([NotLogged] EventArgs e)
         {
             base.OnLoad(e);
 
@@ -258,7 +258,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with this event.</param>
-        private void TornTabForm_Disposed(object sender, EventArgs e)
+        private void TornTabForm_Disposed([NotLogged] object sender, [NotLogged] EventArgs e)
             => User32.UnhookWindowsHookEx(_hookId);
     }
 }
