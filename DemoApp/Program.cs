@@ -56,8 +56,8 @@ namespace DemoApp
         /// exception message's text.
         /// </remarks>
         private static void OnApplicationThreadException(
-            object sender,
-            ThreadExceptionEventArgs e
+            [NotLogged] object sender,
+            [NotLogged] ThreadExceptionEventArgs e
         )
         {
             // dump all the exception info to the log
