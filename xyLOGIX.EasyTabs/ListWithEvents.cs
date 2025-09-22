@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostSharp.Patterns.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -333,7 +334,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListModificationEventArgs" /> that
         /// contains the event data.
         /// </param>
-        protected virtual void OnCollectionModified(ListModification[NotLogged] EventArgs e)
+        protected virtual void OnCollectionModified([NotLogged] ListModificationEventArgs e)
         {
             if (_suppressEvents || CollectionModified == null)
                 return;
@@ -356,7 +357,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListItemEventArgs" /> that contains
         /// the event data.
         /// </param>
-        protected virtual void OnItemAdded(ListItem[NotLogged] EventArgs e)
+        protected virtual void OnItemAdded([NotLogged] ListItemEventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -376,7 +377,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListItemEventArgs" /> that contains
         /// the event data.
         /// </param>
-        protected virtual void OnItemModified(ListItem[NotLogged] EventArgs e)
+        protected virtual void OnItemModified([NotLogged] ListItemEventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -416,7 +417,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListRangeEventArgs" /> that contains
         /// the event data.
         /// </param>
-        protected virtual void OnRangeAdded(ListRange[NotLogged] EventArgs e)
+        protected virtual void OnRangeAdded([NotLogged] ListRangeEventArgs e)
         {
             if (_suppressEvents)
                 return;
