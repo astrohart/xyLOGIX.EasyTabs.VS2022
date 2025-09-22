@@ -314,7 +314,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:System.EventArgs" /> that contains the event
         /// data.
         /// </param>
-        protected virtual void OnCleared(EventArgs e)
+        protected virtual void OnCleared([NotLogged] EventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -333,7 +333,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListModificationEventArgs" /> that
         /// contains the event data.
         /// </param>
-        protected virtual void OnCollectionModified(ListModificationEventArgs e)
+        protected virtual void OnCollectionModified(ListModification[NotLogged] EventArgs e)
         {
             if (_suppressEvents || CollectionModified == null)
                 return;
@@ -356,7 +356,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListItemEventArgs" /> that contains
         /// the event data.
         /// </param>
-        protected virtual void OnItemAdded(ListItemEventArgs e)
+        protected virtual void OnItemAdded(ListItem[NotLogged] EventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -376,7 +376,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListItemEventArgs" /> that contains
         /// the event data.
         /// </param>
-        protected virtual void OnItemModified(ListItemEventArgs e)
+        protected virtual void OnItemModified(ListItem[NotLogged] EventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -396,7 +396,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:System.EventArgs" /> that contains the event
         /// data.
         /// </param>
-        protected virtual void OnItemRemoved(EventArgs e)
+        protected virtual void OnItemRemoved([NotLogged] EventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -416,7 +416,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:xyLOGIX.EasyTabs.ListRangeEventArgs" /> that contains
         /// the event data.
         /// </param>
-        protected virtual void OnRangeAdded(ListRangeEventArgs e)
+        protected virtual void OnRangeAdded(ListRange[NotLogged] EventArgs e)
         {
             if (_suppressEvents)
                 return;
@@ -436,7 +436,7 @@ namespace xyLOGIX.EasyTabs
         /// An <see cref="T:System.EventArgs" /> that contains the event
         /// data.
         /// </param>
-        protected virtual void OnRangeRemoved(EventArgs e)
+        protected virtual void OnRangeRemoved([NotLogged] EventArgs e)
         {
             if (_suppressEvents)
                 return;
