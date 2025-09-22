@@ -19,6 +19,6 @@ namespace xyLOGIX.EasyTabs
     /// </remarks>
     public delegate void TabClosingEventHandler(
         TitleBarTab sender,
-        FormClosingEventArgs e
+        [NotLogged] FormClosingEventArgs e
     );
 }
