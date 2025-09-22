@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PostSharp.Patterns.Diagnostics;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace xyLOGIX.EasyTabs
@@ -67,7 +68,7 @@ namespace xyLOGIX.EasyTabs
         /// </summary>
         /// <param name="sender">Object from which this event originated.</param>
         /// <param name="e">Arguments associated with the event.</param>
-        protected void OnWindowFormClosed([NotLogged] object sender, FormClosed[NotLogged] EventArgs e)
+        protected void OnWindowFormClosed([NotLogged] object sender, [NotLogged] FormClosedEventArgs e)
         {
             if (_openWindows == null) return;
 
