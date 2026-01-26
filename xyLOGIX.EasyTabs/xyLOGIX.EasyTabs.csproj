@@ -11,8 +11,7 @@
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>xyLOGIX.EasyTabs</RootNamespace>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
