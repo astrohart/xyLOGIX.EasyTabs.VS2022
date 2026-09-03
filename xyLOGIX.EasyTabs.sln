@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xyLOGIX.EasyTabs", "xyLOGIX
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{557B5AA6-0177-4D6E-A354-529D1B8AB26E}"
 	ProjectSection(SolutionItems) = preProject
-		3 Sep 2026 Robust Visual Studio Package Manager Console Automation Script Guidelines Rev G.md = 3 Sep 2026 Robust Visual Studio Package Manager Console Automation Script Guidelines Rev G.md
+		3 Sep 2026 Robust Visual Studio Package Manager Console Automation Script Guidelines Rev H.md = 3 Sep 2026 Robust Visual Studio Package Manager Console Automation Script Guidelines Rev H.md
 		2 Sep 2026 Strip Line Breaks from Comments Configuration Spec Rev B.md = 2 Sep 2026 Strip Line Breaks from Comments Configuration Spec Rev B.md
 		README.md = README.md
 	EndProjectSection
